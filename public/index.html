@@ -1,53 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <title>SocketPractice</title>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
 
-  </head>
-  <body>
-    <div id = "login">
-        <input id = "userName" type = "text" class = "text-line">
-        <button id = 'login-button' onclick = "loginSucceed()">Login</button>
+</head>
+
+<body>
+    <div id="login">
+        <input id="userName" type="text" class="text-line">
+        <button id='login-button' onclick="loginSucceed()">Login</button>
         <p id="newUser"></p>
     </div>
 
-    <div id="sketch">
-            <canvas id="paint"></canvas>
-          </div>
-      
-          <div id="settings">
-            Colours
-            <button class = "painting" onclick="getColor('blue');">Blue</button>
-            <button class = "painting" onclick="getColor('red');">Red</button>
-            <button onclick="getColor('green');">Green</button>
-            <button onclick="getColor('white');">White</button>
-            <button onclick="getColor('white');">Eraser</button>
-          </div>
-      
-          <div id="settings">
-            Brush Size
-            <button onclick="getSize('2');">Small</button>
-            <button onclick="getSize('5');">Med</button>
-            <button onclick="getSize('10');">Large</button>
-            <button onclick="getSize('20');">X Large</button>
-          </div>
-      
-          <div id="settings">
-            Clear Canvas
-            <button onclick="clearCanvas();">Clear</button>
-          </div>
-          <script src="script.js"></script>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
 
-   
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+                <div id="sketch">
+                    <canvas id="paint"></canvas>
+                </div>
+                <hr>
+
+                <div id="settings">
+                    Colours
+                    <button class="painting" onclick="getColor('blue');">Blue</button>
+                    <button class="painting" onclick="getColor('red');">Red</button>
+                    <button onclick="getColor('green');">Green</button>
+                    <button onclick="getColor('white');">White</button>
+                    <button onclick="getColor('white');">Eraser</button>
+                </div>
+
+                <div id="settings">
+                    Brush Size
+                    <button onclick="getSize('2');">Small</button>
+                    <button onclick="getSize('5');">Med</button>
+                    <button onclick="getSize('10');">Large</button>
+                    <button onclick="getSize('20');">X Large</button>
+                </div>
+
+                <div id="settings">
+                    Clear Canvas
+                    <button onclick="clearCanvas();">Clear</button>
+                </div>
+                <script src="script.js"></script>
+            </div>
+
+            <div class="col-4">
+                <ul id="messages"></ul>
+                <form action="">
+                    <input id="m" autocomplete="off" /><button>Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="main.js"></script>
-  </body>
+</body>
+
 </html>

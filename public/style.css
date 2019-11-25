@@ -1,35 +1,53 @@
 * {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     box-sizing: border-box;
   }
   body {
     font: 13px Helvetica, Arial;
+    height: 100%;
+    display:block;
   }
+  
+
+  .container {
+    max-width: -webkit-fill-available !important; 
+    
+  }
+
+  .row{
+      height:1000px;
+  }
+  
   form {
     background: #000;
     padding: 3px;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     width: 100%;
+    
   }
   form input {
     border: 0;
     padding: 10px;
-    width: 90%;
+    width: 80%;
     margin-right: 0.5%;
+    margin-left:auto;
+    
   }
   form button {
-    width: 9%;
+    width: 15%;
     background: rgb(130, 224, 255);
     border: none;
     padding: 10px;
   }
   #messages {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
+    height: 910px;
+    width: 550px;
+    border: 1px solid #000;
+    display: table-cell;
+    vertical-align: bottom; 
+ }
   #messages li {
     padding: 5px 10px;
   }
@@ -44,7 +62,8 @@
 
 /* canvas style */
 
+
 #settings { display: block; text-align:center}
 
 
-#paint {border: 1px solid black; background : 'white'; margin-left: auto; margin-right: auto; display: block;}
+#paint {border: 1px solid black; background : 'white'; margin-left: auto; margin-right: auto; display: block; width: 800px; height: 800px;}

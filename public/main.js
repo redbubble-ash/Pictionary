@@ -25,13 +25,13 @@ $("form").submit(function() {
 });
 socket.on("hello", function(msg) {
   $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
-  window.scrollTo(0, document.body.scrollHeight);
+  window.scrollTo(0, -document.body.scrollHeight);
 });
 socket.on("correct answer", function(msg) {
   $("#messages").append(
     $("<li>").text(msg.userName + " has the correct answer!")
   );
-  window.scrollTo(0, document.body.scrollHeight);
+  window.scrollTo(0, -document.body.scrollHeight);
 });
 
 // Canvas drawing area
