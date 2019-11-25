@@ -4,8 +4,6 @@
 <head>
     <meta charset="UTF-8" />
     <title>Pictionary</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -17,7 +15,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <link rel="stylesheet" href="style.css" />
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="main.js"></script>
 
 
@@ -27,7 +27,7 @@
     <div class="grey-out hidden">
         <form class="user"><label for="username">Enter a nickname </label>
             <input id="userName" type="text" placeholder="Nickname" maxlength="14" autofocus>
-            <button type="submit" id='login-button'>Submit</button>
+            <button type="submit" id="login-button">Submit</button>
             <p id="newUser"></p>
         </form>
     </div>
@@ -65,9 +65,9 @@
                 <script src="script.js"></script>
             </div>
 
-            <div class="col-4">
+            <div class="col-4" style="height:900px;">
                 <ul id="messages"></ul>
-                <form action="">
+                <form id="messagesForm" action="">
                     <input id="m" autocomplete="off" /><button>Send</button>
                 </form>
             </div>

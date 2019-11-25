@@ -9,19 +9,20 @@ function loginSucceed() {
     $(".user").submit(function () {
         event.preventDefault();
         userName = $("#userName").val().trim();
-        if (userName == '') {
-            return false
-        };
+        // if (userName == "") {
+        //     return false
+        // };
 
-        var index = users.indexOf(user);
+        // var index = users.indexOf(user);
 
-        if (index > -1) {
-            alert(user + ' already exists');
-            return false
-        };
+        // if (index > -1) {
+        //     alert(user + ' already exists');
+        //     return false
+        // };
 
         $("#newUser").html("Log in succeed: " + userName);
         socket.emit('join', userName);
+        console.log(userName + " has joined!");
         $(".grey-out").fadeOut(300);
         $(".user").fadeOut(300);
         //$('input.guess-input').focus();
@@ -33,10 +34,10 @@ function loginSucceed() {
 $(document).ready(function () {
     loginSucceed();
     var users = [];
-    socket.on('userlist', userlist);
+    //socket.on('userlist', userlist);
 
     // Chat and guess area
-    $("form").submit(function () {
+    $("#messagesForm").submit(function () {
         socket.emit("chat message", {
             userName: userName,
             msg: $("#m").val()

@@ -22,7 +22,7 @@
     height: 100%;
     background-color: #4A4A4A;
     opacity: .8;
-    display: none ;
+    display: none;
     z-index: 900;
 }
 
@@ -88,7 +88,7 @@
     padding: 10px;
   }
   #messages {
-    height: 910px;
+    height: 800px;
     width: 550px;
     border: 1px solid #000;
     display: table-cell;

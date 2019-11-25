@@ -15,17 +15,17 @@ app.use(express.static(path.join(__dirname, "public")));
 var users = [];
 
 io.on("connection", function (socket) {
-    io.emit('userlist', users);
+    //io.emit('userlist', users);
 
     socket.on('join', function (name) {
-        socket.usename = name;
+        socket.userName = name;
 
         // user automatically joins a room under their own name
         socket.join(name);
-        console.log(socket.username + ' has joined. ID: ' + socket.id);
+        console.log(socket.userName + ' has joined. ID: ' + socket.id);
 
         // save the name of the user to an array called users
-        users.push(socket.username);
+        users.push(socket.userName);
 
         // update all clients with the list of users
 		io.emit('userlist', users);
