@@ -8,7 +8,53 @@
     height: 100%;
     display:block;
   }
+
+  .hidden {
+    display: none;
+}
+ 
   
+.grey-out {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #4A4A4A;
+    opacity: .8;
+    display: none ;
+    z-index: 900;
+}
+
+.user {
+    position: relative;
+    background-color: white;
+    max-height: 300px;
+    max-width: 300px;
+    text-align: center;
+    padding: 25px 5px;
+    top: 20%;
+    margin: auto;
+    border-radius: 6px;
+}
+
+#username {
+    width: 90%;
+    font-size: 30px;
+    padding: 5px;
+    margin: 10px;
+}
+
+#login-button{
+
+    width: 70px;
+    height: 30px;
+    background-color: #9BCD9B;
+
+}
+
+
+
 
   .container {
     max-width: -webkit-fill-available !important; 

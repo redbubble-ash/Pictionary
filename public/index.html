@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>SocketPractice</title>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <title>Pictionary</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -17,14 +17,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
+
 
 </head>
 
 <body>
-    <div id="login">
-        <input id="userName" type="text" class="text-line">
-        <button id='login-button' onclick="loginSucceed()">Login</button>
-        <p id="newUser"></p>
+    <div class="grey-out hidden">
+        <form class="user"><label for="username">Enter a nickname </label>
+            <input id="userName" type="text" placeholder="Nickname" maxlength="14" autofocus>
+            <button type="submit" id='login-button'>Submit</button>
+            <p id="newUser"></p>
+        </form>
     </div>
 
     <div class="container">
@@ -69,8 +74,6 @@
         </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="main.js"></script>
 </body>
 
 </html>

@@ -6,35 +6,42 @@ var io = require("socket.io")(server); // initialize a new instance of socket.io
 var port = 3000;
 
 server.listen(port, () => {
-  console.log("Server listening at port %d", port);
+    console.log("Server listening at port %d", port);
 });
 
 // Routing, serve html
 app.use(express.static(path.join(__dirname, "public")));
-// app.get('/',function(req,res){
-//     res.sendFile(path.join(__dirname,'public','index.html'));
-// })
 
-// io.on('connection',function(socket){
-//     console.log('new connection made(console).');
-//     // emit has to send an object
-//     socket.emit('msg-from-server',{
-//         greeting: 'hello from server'
-//     });
+var users = [];
 
-//     socket.on('msg-from-client',(msg)=>{
-//         console.log(msg.greeting);
-//     })
-io.on("connection", function(socket) {
-  socket.on("chat message", function(msg) {
-    io.emit("hello", msg);
-  });
+io.on("connection", function (socket) {
+    io.emit('userlist', users);
 
-  socket.on("correct answer", function(msg){
-      io.emit("correct answer", msg)
-  })
+    socket.on('join', function (name) {
+        socket.usename = name;
 
-  socket.on('draw', function(line){
-      socket.broadcast.emit('draw',line);
-  })
+        // user automatically joins a room under their own name
+        socket.join(name);
+        console.log(socket.username + ' has joined. ID: ' + socket.id);
+
+        // save the name of the user to an array called users
+        users.push(socket.username);
+
+        // update all clients with the list of users
+		io.emit('userlist', users);
+		
+
+    })
+
+    socket.on("chat message", function (msg) {
+        io.emit("hello", msg);
+    });
+
+    socket.on("correct answer", function (msg) {
+        io.emit("correct answer", msg)
+    })
+
+    socket.on('draw', function (line) {
+        socket.broadcast.emit('draw', line);
+    })
 });
