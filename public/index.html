@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SocketPractice</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" href="style.css"/>
+
+  </head>
+  <body>
+    <div id = "login">
+        <input id = "userName" type = "text" class = "text-line">
+        <button id = 'login-button' onclick = "loginSucceed()">Login</button>
+        <p id="newUser"></p>
+    </div>
+
+    <div id="sketch">
+            <canvas id="paint"></canvas>
+          </div>
+      
+          <div id="settings">
+            Colours
+            <button class = "painting" onclick="getColor('blue');">Blue</button>
+            <button class = "painting" onclick="getColor('red');">Red</button>
+            <button onclick="getColor('green');">Green</button>
+            <button onclick="getColor('white');">White</button>
+            <button onclick="getColor('white');">Eraser</button>
+          </div>
+      
+          <div id="settings">
+            Brush Size
+            <button onclick="getSize('2');">Small</button>
+            <button onclick="getSize('5');">Med</button>
+            <button onclick="getSize('10');">Large</button>
+            <button onclick="getSize('20');">X Large</button>
+          </div>
+      
+          <div id="settings">
+            Clear Canvas
+            <button onclick="clearCanvas();">Clear</button>
+          </div>
+          <script src="script.js"></script>
+
+   
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
