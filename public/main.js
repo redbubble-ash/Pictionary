@@ -20,17 +20,6 @@ function loginSucceed() {
         //     return false
         // };
 
-        var newPlayer = {
-            player_name: userName
-        };
-
-        submitPlayer(newPlayer);
-
-        function submitPlayer(player){
-            $.post("/api/players", player)
-            .then(console.log(userName + " has joined the game!"));
-        };
-
         $("#newUser").html("Log in succeed: " + userName);
         socket.emit('join', userName);
         console.log(userName + " has joined!");

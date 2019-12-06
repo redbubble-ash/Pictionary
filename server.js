@@ -3,22 +3,14 @@ var app = express();
 var path = require("path");
 var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
-var port = process.env.PORT || 3000;
+var port = 3000;
 
-// Requiring our models for syncing
-var db = require("./models");
-
-// Sets up the Express app to handle data parsing
-app.use(express.urlencoded({
-    extended: true
-}));
-app.use(express.json());
+server.listen(port, () => {
+    console.log("Server listening at port %d", port);
+});
 
 // Routing, serve html
 app.use(express.static(path.join(__dirname, "public")));
-
-require("./routes/html-routes.js")(app);
-require("./routes/player-api-routes.js")(app);
 
 var users = [];
 
@@ -36,8 +28,8 @@ io.on("connection", function (socket) {
         users.push(socket.userName);
 
         // update all clients with the list of users
-        io.emit('userlist', users);
-
+		io.emit('userlist', users);
+		
 
     })
 
@@ -53,14 +45,3 @@ io.on("connection", function (socket) {
         socket.broadcast.emit('draw', line);
     })
 });
-
-// Syncing our sequelize models and then starting our Express app
-// =============================================================
-db.sequelize.sync({
-    force: true
-}).then(function () {
-    server.listen(port, () => {
-        console.log("Server listening at port %d", port);
-    });
-});
-
