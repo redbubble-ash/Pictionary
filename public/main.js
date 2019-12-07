@@ -1,6 +1,6 @@
-var socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
-var userName;
-var conversation = "";
+let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
+let userName;
+let conversation = "";
 
 // Login
 function loginSucceed() {
@@ -63,14 +63,14 @@ $(document).ready(function () {
     });
 
     // Canvas drawing area
-    var canvas = document.getElementById("paint");
+    var canvas = document.getElementById("drawArea");
     var ctx = canvas.getContext("2d");
 
     var sketch = document.getElementById("sketch");
     var sketch_style = getComputedStyle(sketch);
     var canDraw = true; // prevent user from drawing when false
-    canvas.width = 500;
-    canvas.height = 250;
+    canvas.width = window.innerWidth *  .5; // controls responsive resizing of drawing canvas, width
+    canvas.height = window.innerHeight * .8;
     var startX, startY, endX, endY;
 
     var mouse = {
