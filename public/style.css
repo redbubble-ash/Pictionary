@@ -37,6 +37,9 @@
     margin: auto;
     border-radius: 6px;
 }
+#sketch {
+  border: 1px solid black;
+}
 
 #username {
     width: 90%;

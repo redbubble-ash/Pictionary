@@ -2,6 +2,7 @@ let socket = io(); // load socket.io-client. exposes a io global, and then conne
 let userName;
 let conversation = "";
 
+
 // Login
 function loginSucceed() {
     $(".grey-out").fadeIn(500);
@@ -67,9 +68,9 @@ $(document).ready(function () {
     var ctx = canvas.getContext("2d");
 
     var sketch = document.getElementById("sketch");
-    var sketch_style = getComputedStyle(sketch);
+    //var sketch_style = getComputedStyle(sketch);
     var canDraw = true; // prevent user from drawing when false
-    canvas.width = window.innerWidth *  .5; // controls responsive resizing of drawing canvas, width
+    canvas.width = window.innerWidth *  .63; // controls responsive resizing of drawing canvas, width
     canvas.height = window.innerHeight * .8;
     var startX, startY, endX, endY;
 
@@ -90,12 +91,41 @@ $(document).ready(function () {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
 
-    ctx.strokeStyle = canDraw ? "red" : "transparent";
+     //this begins colour controls
+    let colour = "red";
+    document.getElementById("blue").onclick = function() {changeBlue()};
+    document.getElementById("red").onclick = function() {changeRed()};
+    document.getElementById("green").onclick = function() {changeGreen()};
+    document.getElementById("yellow").onclick = function() {changeYellow()};
+    document.getElementById("eraser").onclick = function() {changeWhite()};
+    function changeBlue(){
+        colour = "blue";
+        console.log(colour);//for debugging
+    }
+    function changeRed(){
+        colour = "red";
+        console.log(colour);//for debugging
+    }
+    function changeGreen(){
+        colour = "green";
+        console.log(colour);//for debugging
+    }
+    function changeYellow(){
+        colour = "yellow";
+        console.log(colour);//for debugging
+    }
+    function changeWhite(){
+        colour = "white";
+        console.log(colour);//for debugging
+    }
+
+
+    //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
     disableDrawing();
     socket.on("draw", draw);
 
     function draw(line) {
-        ctx.strokeStyle = line.strokeStyle;
+        
         ctx.lineWidth = line.lineWidth;
         ctx.beginPath();
         ctx.moveTo(line.from.x, line.from.y);
@@ -104,18 +134,18 @@ $(document).ready(function () {
         ctx.stroke();
     }
 
-    function getColor(colour) {
-        if (canDraw) ctx.strokeStyle = colour;
-        else ctx.strokeStyle = "transparent";
-    }
+    // function getColor(colour) {
+    //     if (canDraw) ctx.strokeStyle = colour;
+    //     else ctx.strokeStyle = "transparent";
+    // }
 
-    function getSize(size) {
-        ctx.lineWidth = size;
-    }
+    // function getSize(size) {
+    //     ctx.lineWidth = size;
+    // }
 
-    function clearCanvas() {
-        ctx.clearRect(0, 0, 500, 250);
-    }
+    // function clearCanvas() {
+    //     ctx.clearRect(0, 0, 500, 250);
+    // }
     //ctx.strokeStyle =
     //ctx.strokeStyle = document.settings.colour[1].value;
 
@@ -134,6 +164,7 @@ $(document).ready(function () {
 
     var onPaint = function () {
         //   ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = colour; //allows color to change
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
@@ -148,7 +179,7 @@ $(document).ready(function () {
                 x: endX,
                 y: endY
             },
-            strokeStyle: ctx.strokeStyle,
+            strokeStyle: colour,
             lineWidth: ctx.lineWidth
         };
         socket.emit("draw", line);
