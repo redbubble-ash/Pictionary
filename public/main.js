@@ -93,7 +93,7 @@ $(document).ready(function () {
     ctx.lineCap = "round";
 
      //this begins colour controls
-    let colour = "red";
+    let colour = "white";
     document.getElementById("red").onclick = function() {colour = "red";};
     document.getElementById("orange").onclick = function() {colour = "orange";};
     document.getElementById("yellow").onclick = function() {colour = "yellow";};
@@ -112,13 +112,23 @@ $(document).ready(function () {
     document.getElementById("large").onclick = function() {lineSize = 20;};
     document.getElementById("xLarger").onclick = function() {lineSize = 30;};
 
-    // canvas clear & fill functions
-    document.getElementById("clear").onclick = function() {socket.emit("cleanScreen", console.log("clear screen was sent"));};
+    // canvas clear functions
+    document.getElementById("clear").onclick = function() {socket.emit("clearScreen", console.log("clear screen was sent"));};
     function clearScreen(){
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
         console.log("This screen was cleared")
     }
     socket.on("clearScreen", clearScreen);
+
+    // canvas fill function
+    document.getElementById("fill").onclick = function() {socket.emit("fillScreen", colour);};
+    socket.on("fillScreen", fillScreen);
+    function fillScreen(colour){
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = colour;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'source-over';
+    }
 
 
     //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";

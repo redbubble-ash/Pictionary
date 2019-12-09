@@ -47,7 +47,11 @@ io.on("connection", function (socket) {
         socket.broadcast.emit('draw', line);
     })
 
-    socket.on("cleanScreen", function(){
+    socket.on("clearScreen", function(){
         io.emit("clearScreen");
     });
+
+    socket.on("fillScreen", function(colour){
+        io.emit("fillScreen", colour);
+    })
 });
