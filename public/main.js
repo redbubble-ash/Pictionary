@@ -37,6 +37,7 @@ $(document).ready(function () {
     var users = [];
     //socket.on('userlist', userlist);
 
+
     // Chat and guess area
     $("#messagesForm").submit(function () {
         socket.emit("chat message", {
@@ -53,6 +54,15 @@ $(document).ready(function () {
         $("#m").val("");
         return false;
     });
+
+    socket.on('secretWord', function(secretWord){
+        document.getElementById('secretword').innerHTML= secretWord;
+
+    })
+
+
+
+
     socket.on("hello", function (msg) {
         $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
         window.scrollTo(0, -document.body.scrollHeight);
