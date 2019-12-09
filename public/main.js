@@ -128,6 +128,8 @@ $(document).ready(function() {
     var onPaint = function() {
       //   ctx.lineTo(mouse.x, mouse.y);
       if (drawer) {
+        ctx.strokeStyle = colour;
+        ctx.lineWidth = lineSize;
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
@@ -143,8 +145,8 @@ $(document).ready(function() {
           x: endX,
           y: endY
         },
-        strokeStyle: ctx.strokeStyle,
-        lineWidth: ctx.lineWidth
+        strokeStyle: colour,
+        lineWidth: lineSize
       };
       if (drawer) {
         socket.emit("draw", line);
