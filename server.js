@@ -5,6 +5,8 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = 3000;
 
+let main = "./public/main.js";
+
 server.listen(port, () => {
     console.log("Server listening at port %d", port);
 });
@@ -44,4 +46,8 @@ io.on("connection", function (socket) {
     socket.on('draw', function (line) {
         socket.broadcast.emit('draw', line);
     })
+
+    socket.on("cleanScreen", function(){
+        io.emit("clearScreen");
+    });
 });

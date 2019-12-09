@@ -162,11 +162,35 @@ $(document).ready(function () {
         console.log(lineSize);//for debugging
     }
 
+    // canvas clear & fill functions
+    document.getElementById("clear").onclick = function() {socket.emit("cleanScreen", console.log("clear screen was sent"));};
+    function clearScreen(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        console.log("This screen was cleared")
+    }
+    socket.on("clearScreen", clearScreen);
+
 
     //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
     disableDrawing();
     socket.on("draw", draw);
 
+    /* consider chunk below for deletion
+    // function getColor(colour) {
+        //     if (canDraw) ctx.strokeStyle = colour;
+        //     else ctx.strokeStyle = "transparent";
+        // }
+        
+        // function getSize(size) {
+            //     ctx.lineWidth = size;
+            // }
+            
+            // function clearCanvas() {
+                //     ctx.clearRect(0, 0, 500, 250);
+                // }
+                //ctx.strokeStyle =
+                //ctx.strokeStyle = document.settings.colour[1].value;
+                */
     function draw(line) {
         ctx.strokeStyle = line.strokeStyle;
         ctx.lineWidth = line.lineWidth;
@@ -176,22 +200,6 @@ $(document).ready(function () {
         ctx.closePath();
         ctx.stroke();
     }
-/* consider chunk below for deletion
-    // function getColor(colour) {
-    //     if (canDraw) ctx.strokeStyle = colour;
-    //     else ctx.strokeStyle = "transparent";
-    // }
-
-    // function getSize(size) {
-    //     ctx.lineWidth = size;
-    // }
-
-    // function clearCanvas() {
-    //     ctx.clearRect(0, 0, 500, 250);
-    // }
-    //ctx.strokeStyle =
-    //ctx.strokeStyle = document.settings.colour[1].value;
-*/
     canvas.onmousedown = function (e) {
         //   ctx.beginPath();
         //   ctx.moveTo(mouse.x, mouse.y);
