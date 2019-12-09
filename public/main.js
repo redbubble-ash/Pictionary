@@ -3,6 +3,7 @@ let userName;
 let conversation = "";
 
 
+
 // Login
 function loginSucceed() {
     $(".grey-out").fadeIn(500);
@@ -48,6 +49,7 @@ $(document).ready(function () {
             socket.emit("correct answer", {
                 userName: userName
             });
+            socket.emit("next round");
         }
         $("#m").val("");
         return false;
@@ -61,7 +63,13 @@ $(document).ready(function () {
             $("<li>").text(msg.userName + " has the correct answer!")
         );
         window.scrollTo(0, -document.body.scrollHeight);
+        socket.emit("take turns");
     });
+
+    
+
+   
+
 
     // Canvas drawing area
     let canvas = document.getElementById("drawArea");
@@ -80,15 +88,74 @@ $(document).ready(function () {
         y: 0
     };
 
-    /* Mouse Capturing Work */
-    canvas.onmousemove = function (e) {
-        mouse.x = e.pageX - this.offsetLeft;
-        mouse.y = e.pageY - this.offsetTop;
-        endX = mouse.x;
-        endY = mouse.y;
-    };
+    socket.on('not your turn', function(){drawer = false});
 
-    /* Drawing on Paint App */
+    socket.on("your turn", function (){
+        drawer = true;
+        console.log('draw on canvas');
+         canvas.onmousemove = function (e) {
+            mouse.x = e.pageX - this.offsetLeft;
+            mouse.y = e.pageY - this.offsetTop;
+            endX = mouse.x;
+            endY = mouse.y;
+        };
+    
+        /* Drawing on Paint App */
+        canvas.onmousedown = function (e) {
+            //   ctx.beginPath();
+            //   ctx.moveTo(mouse.x, mouse.y);
+            startX = mouse.x;
+            startY = mouse.y;
+    
+            canvas.addEventListener("mousemove", onPaint, false);
+        };
+    
+        canvas.onmouseup = function () {
+            canvas.removeEventListener("mousemove", onPaint, false);
+        };
+    
+        var onPaint = function () {
+            //   ctx.lineTo(mouse.x, mouse.y);
+            if(drawer){
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+
+            }
+
+            var line = {
+                from: {
+                    x: startX,
+                    y: startY
+                },
+                to: {
+                    x: endX,
+                    y: endY
+                },
+                strokeStyle: ctx.strokeStyle,
+                lineWidth: ctx.lineWidth
+            };
+            if(drawer){
+                socket.emit("draw", line);
+
+            }
+            
+            startX = endX;
+            startY = endY;
+        };
+
+    });
+
+   
+
+    /* Mouse Capturing Work */
+    
+
+    // disableDrawing();
+    socket.on("draw", draw);
+    
+
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
 
