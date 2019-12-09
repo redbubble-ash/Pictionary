@@ -72,9 +72,9 @@ $(document).ready(function () {
     var canDraw = true; // prevent user from drawing when false
     canvas.width = window.innerWidth *  .63; // controls responsive resizing of drawing canvas, width
     canvas.height = window.innerHeight * .8;
-    var startX, startY, endX, endY;
+    let startX, startY, endX, endY;
 
-    var mouse = {
+    let mouse = {
         x: 0,
         y: 0
     };
@@ -93,11 +93,15 @@ $(document).ready(function () {
 
      //this begins colour controls
     let colour = "red";
-    document.getElementById("blue").onclick = function() {changeBlue()};
     document.getElementById("red").onclick = function() {changeRed()};
-    document.getElementById("green").onclick = function() {changeGreen()};
+    document.getElementById("orange").onclick = function() {changeOrange()};
     document.getElementById("yellow").onclick = function() {changeYellow()};
-    document.getElementById("eraser").onclick = function() {changeWhite()};
+    document.getElementById("green").onclick = function() {changeGreen()};
+    document.getElementById("blue").onclick = function() {changeBlue()};
+    document.getElementById("purple").onclick = function() {changePurple()};
+    document.getElementById("brown").onclick = function() {changeBrown()};
+    document.getElementById("black").onclick = function() {changeBlack()};
+    document.getElementById("white").onclick = function() {changeWhite()};
     function changeBlue(){
         colour = "blue";
         console.log(colour);//for debugging
@@ -118,14 +122,29 @@ $(document).ready(function () {
         colour = "white";
         console.log(colour);//for debugging
     }
-
+    function changeBlack(){
+        colour = "black";
+        console.log(colour);//for debugging
+    }
+    function changeOrange(){
+        colour = "orange";
+        console.log(colour);//for debugging
+    }
+    function changeBrown(){
+        colour = "sienna";
+        console.log(colour);//for debugging
+    }
+    function changePurple(){
+        colour = "rebeccapurple";
+        console.log(colour);//for debugging
+    }
 
     //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
     disableDrawing();
     socket.on("draw", draw);
 
     function draw(line) {
-        
+        ctx.strokeStyle = line.strokeStyle;
         ctx.lineWidth = line.lineWidth;
         ctx.beginPath();
         ctx.moveTo(line.from.x, line.from.y);
@@ -139,9 +158,9 @@ $(document).ready(function () {
     //     else ctx.strokeStyle = "transparent";
     // }
 
-    // function getSize(size) {
-    //     ctx.lineWidth = size;
-    // }
+    function getSize(size) {
+        ctx.lineWidth = size;
+    }
 
     // function clearCanvas() {
     //     ctx.clearRect(0, 0, 500, 250);
@@ -182,7 +201,7 @@ $(document).ready(function () {
             strokeStyle: colour,
             lineWidth: ctx.lineWidth
         };
-        socket.emit("draw", line);
+        socket.emit("draw", line); //sends line through socket
         startX = endX;
         startY = endY;
     };
