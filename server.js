@@ -49,7 +49,7 @@ io.on("connection", function (socket) {
 		// io.emit('userlist', users);
 		
 
-    })
+    });
 
     socket.on("chat message", function (msg) {
         io.emit("hello", msg);
@@ -76,7 +76,7 @@ io.on("connection", function (socket) {
 
     socket.on("correct answer", function (msg) {
         io.emit("correct answer", msg)
-    })
+    });
 
     socket.on('next round',function(){
         users[0].leave('drawer');
@@ -87,11 +87,11 @@ io.on("connection", function (socket) {
         users[0].join('drawer');
 
         console.log('next round: ' + users[0].userName + " is now the drawer");
-    })
+    });
 
     socket.on('draw', function (line) {
         socket.broadcast.emit('draw', line);
-    })
+    });
 
     socket.on("clearScreen", function(){
         io.emit("clearScreen");
@@ -99,6 +99,7 @@ io.on("connection", function (socket) {
 
     socket.on("fillScreen", function(colour){
         io.emit("fillScreen", colour);
+    });
     // TODO: trigger next round when drawer left
     socket.on('disconnect',()=>{
         if(users[0]==socket){
@@ -111,6 +112,6 @@ io.on("connection", function (socket) {
             console.log('guesser disconnected');
             console.log(users.length);
         }
-       
     })
-});
+
+})
