@@ -139,6 +139,30 @@ $(document).ready(function () {
         console.log(colour);//for debugging
     }
 
+    //size changing
+    let lineSize = 2;
+    document.getElementById("small").onclick = function() {changeSmall()};
+    document.getElementById("medium").onclick = function() {changeMed()};
+    document.getElementById("large").onclick = function() {changeLarge()};
+    document.getElementById("xLarger").onclick = function() {changeXLarge()};
+    function changeSmall(){
+        lineSize = 2;
+        console.log(lineSize);//for debugging
+    }
+    function changeMed(){
+        lineSize = 5;
+        console.log(lineSize);//for debugging
+    }
+    function changeLarge(){
+        lineSize = 10;
+        console.log(lineSize);//for debugging
+    }
+    function changeXLarge(){
+        lineSize = 20;
+        console.log(lineSize);//for debugging
+    }
+
+
     //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
     disableDrawing();
     socket.on("draw", draw);
@@ -152,22 +176,22 @@ $(document).ready(function () {
         ctx.closePath();
         ctx.stroke();
     }
-
+/* consider chunk below for deletion
     // function getColor(colour) {
     //     if (canDraw) ctx.strokeStyle = colour;
     //     else ctx.strokeStyle = "transparent";
     // }
 
-    function getSize(size) {
-        ctx.lineWidth = size;
-    }
+    // function getSize(size) {
+    //     ctx.lineWidth = size;
+    // }
 
     // function clearCanvas() {
     //     ctx.clearRect(0, 0, 500, 250);
     // }
     //ctx.strokeStyle =
     //ctx.strokeStyle = document.settings.colour[1].value;
-
+*/
     canvas.onmousedown = function (e) {
         //   ctx.beginPath();
         //   ctx.moveTo(mouse.x, mouse.y);
@@ -184,6 +208,7 @@ $(document).ready(function () {
     var onPaint = function () {
         //   ctx.lineTo(mouse.x, mouse.y);
         ctx.strokeStyle = colour; //allows color to change
+        ctx.lineWidth = lineSize;// allows size to change
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
