@@ -33,7 +33,7 @@ io.on("connection", function (socket) {
 
         // save the name of the user to an array called users
         users.push(socket);
-        console.log(users);
+        // console.log(users);
         console.log(users.indexOf(socket));
 
         if(users.length==1){
@@ -42,7 +42,7 @@ io.on("connection", function (socket) {
             console.log(name + " joined drawer");
             secretWord = generateSecretWord();
             console.log(secretWord);
-            io.emit('gameStatus', {
+            io.to(socket.id).emit('gameStatus', {
                 secretWord: secretWord,
                 drawer: true
             });
@@ -50,7 +50,7 @@ io.on("connection", function (socket) {
         else{
             socket.join('guesser');
             console.log(name + " joined guesser");
-            io.emit('gameStatus',{
+            io.to(socket.id).emit('gameStatus',{
                 secretWord: secretWord,
                 drawer: false
             })
