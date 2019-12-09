@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 var users = [];
 var canvas = [];
-let curTurnIdx = 0;
+// let curTurnIdx = 0;
 
 io.on("connection", function (socket) {
     //io.emit('userlist', users);
@@ -27,17 +27,21 @@ io.on("connection", function (socket) {
         console.log(socket.userName + ' has joined. ID: ' + socket.id);
 
         // save the name of the user to an array called users
-        users.push(socket.id);
+        users.push(socket);
         console.log(users);
-        console.log(users.indexOf(socket.id));
+        console.log(users.indexOf(socket));
 
-        if(users.indexOf(socket.id)==curTurnIdx){
-            // socket.join('drawer');
-            io.to(socket.id).emit('your turn');
+        if(users.length==1){
+            socket.join('drawer');
+            // io.to(socket.id).emit('your turn');
+            console.log(name + " joined drawer");
         }
         else{
-            // socket.join('guesser');
+            socket.join('guesser');
+            console.log(name + " joined guesser");
         }
+
+        // console.log(socket.rooms);
       
         // update all clients with the list of users
 		// io.emit('userlist', users);
@@ -47,6 +51,25 @@ io.on("connection", function (socket) {
 
     socket.on("chat message", function (msg) {
         io.emit("hello", msg);
+        
+        // io.to('guesser').emit('hello', msg);
+        // users[curTurnIdx].leave('drawer');
+        // console.log(users[curTurnIdx].userName + "left drawer");
+        // users[curTurnIdx].join('guesser');
+        // console.log(users[curTurnIdx].userName + "join guesser");
+        // users[curTurnIdx+1].leave('guesser');
+        // console.log(users[curTurnIdx].userName + "left guesser");
+        // users[curTurnIdx+1].join('drawer');
+        // console.log(users[curTurnIdx+1].userName + "join drawer");
+        // if(users[curTurnIdx]==socket){
+        //     socket.leave('drawer');
+        //     console.log('left drawer');
+        //     socket.join('guesser');
+        //     console.log('join guesser');
+        // }
+       
+        // socket.join('drawer');
+        // console.log()
     });
 
     socket.on("correct answer", function (msg) {
@@ -54,14 +77,32 @@ io.on("connection", function (socket) {
     })
 
     socket.on('next round',function(){
-        io.to(users[curTurnIdx]).emit('not your turn');
-        console.log('drawer becomes a guesser');
-        curTurnIdx = (curTurnIdx+1)%users.length;
-        io.to(users[curTurnIdx]).emit('your turn');
-        console.log('next guesser becomes the drawer');
+        users[0].leave('drawer');
+        users[0].join('guesser');
+        users.push(users.shift());
+        // curTurnIdx = (curTurnIdx+1)%users.length;
+        users[0].leave('guesser');
+        users[0].join('drawer');
+
+        console.log('next round: ' + users[0].userName + " is now the drawer");
     })
 
     socket.on('draw', function (line) {
         socket.broadcast.emit('draw', line);
+    })
+
+    // TODO: trigger next round when drawer left
+    socket.on('disconnect',()=>{
+        if(users[0]==socket){
+            users.splice(users.indexOf(socket),1);
+            console.log('drawer disconnected');
+            console.log(users.length);
+        }
+        else{
+            users.splice(users.indexOf(socket),1);
+            console.log('guesser disconnected');
+            console.log(users.length);
+        }
+       
     })
 });
