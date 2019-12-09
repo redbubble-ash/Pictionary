@@ -64,12 +64,13 @@ $(document).ready(function () {
     });
 
     // Canvas drawing area
-    var canvas = document.getElementById("drawArea");
-    var ctx = canvas.getContext("2d");
-
-    var sketch = document.getElementById("sketch");
+    let canvas = document.getElementById("drawArea");
+    let ctx = canvas.getContext("2d");
+/* consider for deletion
+    //var sketch = document.getElementById("sketch");
     //var sketch_style = getComputedStyle(sketch);
-    var canDraw = true; // prevent user from drawing when false
+    //var canDraw = true; // prevent user from drawing when false
+*/
     canvas.width = window.innerWidth *  .63; // controls responsive resizing of drawing canvas, width
     canvas.height = window.innerHeight * .8;
     let startX, startY, endX, endY;
@@ -93,74 +94,23 @@ $(document).ready(function () {
 
      //this begins colour controls
     let colour = "red";
-    document.getElementById("red").onclick = function() {changeRed()};
-    document.getElementById("orange").onclick = function() {changeOrange()};
-    document.getElementById("yellow").onclick = function() {changeYellow()};
-    document.getElementById("green").onclick = function() {changeGreen()};
-    document.getElementById("blue").onclick = function() {changeBlue()};
-    document.getElementById("purple").onclick = function() {changePurple()};
-    document.getElementById("brown").onclick = function() {changeBrown()};
-    document.getElementById("black").onclick = function() {changeBlack()};
-    document.getElementById("white").onclick = function() {changeWhite()};
-    function changeBlue(){
-        colour = "blue";
-        console.log(colour);//for debugging
-    }
-    function changeRed(){
-        colour = "red";
-        console.log(colour);//for debugging
-    }
-    function changeGreen(){
-        colour = "green";
-        console.log(colour);//for debugging
-    }
-    function changeYellow(){
-        colour = "yellow";
-        console.log(colour);//for debugging
-    }
-    function changeWhite(){
-        colour = "white";
-        console.log(colour);//for debugging
-    }
-    function changeBlack(){
-        colour = "black";
-        console.log(colour);//for debugging
-    }
-    function changeOrange(){
-        colour = "orange";
-        console.log(colour);//for debugging
-    }
-    function changeBrown(){
-        colour = "sienna";
-        console.log(colour);//for debugging
-    }
-    function changePurple(){
-        colour = "rebeccapurple";
-        console.log(colour);//for debugging
-    }
+    document.getElementById("red").onclick = function() {colour = "red";};
+    document.getElementById("orange").onclick = function() {colour = "orange";};
+    document.getElementById("yellow").onclick = function() {colour = "yellow";};
+    document.getElementById("green").onclick = function() {colour = "green";};
+    document.getElementById("blue").onclick = function() {colour = "blue";};
+    document.getElementById("purple").onclick = function() {colour = "rebeccapurple";};
+    document.getElementById("brown").onclick = function() {colour = "sienna";};
+    document.getElementById("black").onclick = function() {colour = "black";};
+    document.getElementById("white").onclick = function() {colour = "white";};
 
     //size changing
     let lineSize = 2;
-    document.getElementById("small").onclick = function() {changeSmall()};
-    document.getElementById("medium").onclick = function() {changeMed()};
-    document.getElementById("large").onclick = function() {changeLarge()};
-    document.getElementById("xLarger").onclick = function() {changeXLarge()};
-    function changeSmall(){
-        lineSize = 2;
-        console.log(lineSize);//for debugging
-    }
-    function changeMed(){
-        lineSize = 5;
-        console.log(lineSize);//for debugging
-    }
-    function changeLarge(){
-        lineSize = 10;
-        console.log(lineSize);//for debugging
-    }
-    function changeXLarge(){
-        lineSize = 20;
-        console.log(lineSize);//for debugging
-    }
+    document.getElementById("xSmaller").onclick = function() {lineSize = 2;};
+    document.getElementById("small").onclick = function() {lineSize = 5;};
+    document.getElementById("medium").onclick = function() {lineSize = 10;};
+    document.getElementById("large").onclick = function() {lineSize = 20;};
+    document.getElementById("xLarger").onclick = function() {lineSize = 30;};
 
     // canvas clear & fill functions
     document.getElementById("clear").onclick = function() {socket.emit("cleanScreen", console.log("clear screen was sent"));};
@@ -190,7 +140,7 @@ $(document).ready(function () {
                 // }
                 //ctx.strokeStyle =
                 //ctx.strokeStyle = document.settings.colour[1].value;
-                */
+    */
     function draw(line) {
         ctx.strokeStyle = line.strokeStyle;
         ctx.lineWidth = line.lineWidth;
