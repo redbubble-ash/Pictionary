@@ -56,10 +56,23 @@ $(document).ready(function () {
         return false;
     });
 
-    socket.on('secretWord', function(secretWord){
-        document.getElementById('secretword').innerHTML= secretWord;
-
+    socket.on('gameStatus', function(status){
+        if(status.drawer==true){
+            document.getElementById('secretword').innerHTML= status.secretWord;
+        }
+        else{
+            document.getElementById('secretword').innerHTML= "______";
+        }
     })
+
+
+
+
+
+    // socket.on('secretWord', function(secretWord){
+    //     document.getElementById('secretword').innerHTML= secretWord;
+
+    // })
 
 
 

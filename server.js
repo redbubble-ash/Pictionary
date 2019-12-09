@@ -19,6 +19,7 @@ var canvas = [];
 // let curTurnIdx = 0;
 
 var words = ['apple','banana','orange','strawberry'];
+var secretWord;
 
 io.on("connection", function (socket) {
     //io.emit('userlist', users);
@@ -39,13 +40,20 @@ io.on("connection", function (socket) {
             socket.join('drawer');
             // io.to(socket.id).emit('your turn');
             console.log(name + " joined drawer");
-            let sw = words[Math.floor(Math.random()*words.length)];
-            console.log(sw);
-            io.to('drawer').emit('secretWord', sw);
+            secretWord = generateSecretWord();
+            console.log(secretWord);
+            io.emit('gameStatus', {
+                secretWord: secretWord,
+                drawer: true
+            });
         }
         else{
             socket.join('guesser');
             console.log(name + " joined guesser");
+            io.emit('gameStatus',{
+                secretWord: secretWord,
+                drawer: false
+            })
         }
 
         // console.log(socket.rooms);
@@ -94,9 +102,21 @@ io.on("connection", function (socket) {
         users[0].join('drawer');
 
         console.log('next round: ' + users[0].userName + " is now the drawer");
-        let sw = words[Math.floor(Math.random()*words.length)];
-        console.log(sw);
-        io.to('drawer').emit('secretWord', sw);
+        secretWord = generateSecretWord();
+        console.log(secretWord);
+        io.to('drawer').emit('gameStatus', {
+            secretWord: secretWord,
+            drawer: true
+        });
+
+        io.to('guesser').emit('gameStatus', {
+            secretWord: secretWord,
+            drawer: false
+        });
+
+
+
+
     })
 
     socket.on('draw', function (line) {
@@ -125,7 +145,6 @@ io.on("connection", function (socket) {
     })
 });
 
-
-let secretWord = function(){
-    return words[Math.random(words.length)];
+let generateSecretWord = function(){
+    return words[Math.floor(Math.random()*words.length)];
 }
