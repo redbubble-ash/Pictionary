@@ -5,6 +5,8 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = 3000;
 
+let main = "./public/main.js";
+
 server.listen(port, () => {
     console.log("Server listening at port %d", port);
 });
@@ -46,17 +48,14 @@ io.on("connection", function (socket) {
             console.log(name + " joined guesser");
         }
 
-        
-
         // console.log(socket.rooms);
-      
         // update all clients with tche list of users
         // io.emit('userlist', users);
         
 
 		
 
-    })
+    });
 
     socket.on("chat message", function (msg) {
         io.emit("hello", msg);
@@ -83,7 +82,7 @@ io.on("connection", function (socket) {
 
     socket.on("correct answer", function (msg) {
         io.emit("correct answer", msg)
-    })
+    });
 
     socket.on('next round',function(){
         users[0].leave('drawer');
@@ -101,8 +100,15 @@ io.on("connection", function (socket) {
 
     socket.on('draw', function (line) {
         socket.broadcast.emit('draw', line);
-    })
+    });
 
+    socket.on("clearScreen", function(){
+        io.emit("clearScreen");
+    });
+
+    socket.on("fillScreen", function(colour){
+        io.emit("fillScreen", colour);
+    });
     // TODO: trigger next round when drawer left
     socket.on('disconnect',()=>{
         if(users[0]==socket){
@@ -115,7 +121,6 @@ io.on("connection", function (socket) {
             console.log('guesser disconnected');
             console.log(users.length);
         }
-       
     })
 });
 

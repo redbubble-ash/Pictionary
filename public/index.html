@@ -19,6 +19,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="main.js"></script>
+    
 
 
 </head>
@@ -37,32 +38,39 @@
             <div class="col-8">
 
                 <div id="sketch">
-                    <canvas id="paint"></canvas>
+                    <canvas id="drawArea"></canvas>
                 </div>
                 <hr>
 
                 <div id="settings">
-                    Colours
-                    <button class="painting" onclick="getColor('blue');">Blue</button>
-                    <button class="painting" onclick="getColor('red');">Red</button>
-                    <button onclick="getColor('green');">Green</button>
-                    <button onclick="getColor('white');">White</button>
-                    <button onclick="getColor('white');">Eraser</button>
+                    Colours:
+                    <button id="red">Red</button>
+                    <button id="orange">Orange</button>
+                    <button id="yellow"">Yellow</button>
+                    <button id="green">Green</button>
+                    <button id="blue">Blue</button>
+                    <button id="purple">Purple</button>
+                    <button id="brown">Brown</button>
+                    <button id="black">Black</button>
+                    <button id="white">White</button>
                 </div>
 
                 <div id="settings">
-                    Brush Size
-                    <button onclick="getSize('2');">Small</button>
-                    <button onclick="getSize('5');">Med</button>
-                    <button onclick="getSize('10');">Large</button>
-                    <button onclick="getSize('20');">X Large</button>
+                    Brush Size:
+                    <button id="xSmaller">X Small</button>
+                    <button id="small">Small</button>
+                    <button id="medium">Med</button>
+                    <button id="large">Large</button>
+                    <button id="xLarger">X Large</button>
                 </div>
 
                 <div id="settings">
-                    Clear Canvas
-                    <button onclick="clearCanvas();">Clear</button>
+                    Clear:
+                    <button id="clear">Clear</button>
+                    Fill:
+                    <button id="fill">Fill</button>
                 </div>
-                <script src="script.js"></script>
+               <!-- <script src="script.js"></script>-->
             </div>
 
             <div class="col-4" style="height:900px;">

@@ -1,6 +1,7 @@
-var socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
-var userName;
-var conversation = "";
+let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
+let userName;
+let conversation = "";
+
 
 
 // Login
@@ -81,18 +82,18 @@ $(document).ready(function () {
 
 
     // Canvas drawing area
-    var canvas = document.getElementById("paint");
-    var ctx = canvas.getContext("2d");
+    let canvas = document.getElementById("drawArea");
+    let ctx = canvas.getContext("2d");
+/* consider for deletion
+    //var sketch = document.getElementById("sketch");
+    //var sketch_style = getComputedStyle(sketch);
+    //var canDraw = true; // prevent user from drawing when false
+*/
+    canvas.width = window.innerWidth *  .63; // controls responsive resizing of drawing canvas, width
+    canvas.height = window.innerHeight * .8;
+    let startX, startY, endX, endY;
 
-    var sketch = document.getElementById("sketch");
-    var sketch_style = getComputedStyle(sketch);
-    // var canDraw=true; // prevent user from drawing when false
-    var drawer = false;
-    canvas.width = 500;
-    canvas.height = 250;
-    var startX, startY, endX, endY;
-
-    var mouse = {
+    let mouse = {
         x: 0,
         y: 0
     };
@@ -168,6 +169,65 @@ $(document).ready(function () {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
 
+     //this begins colour controls
+    let colour = "white";
+    document.getElementById("red").onclick = function() {colour = "red";};
+    document.getElementById("orange").onclick = function() {colour = "orange";};
+    document.getElementById("yellow").onclick = function() {colour = "yellow";};
+    document.getElementById("green").onclick = function() {colour = "green";};
+    document.getElementById("blue").onclick = function() {colour = "blue";};
+    document.getElementById("purple").onclick = function() {colour = "rebeccapurple";};
+    document.getElementById("brown").onclick = function() {colour = "sienna";};
+    document.getElementById("black").onclick = function() {colour = "black";};
+    document.getElementById("white").onclick = function() {colour = "white";};
+
+    //size changing
+    let lineSize = 2;
+    document.getElementById("xSmaller").onclick = function() {lineSize = 2;};
+    document.getElementById("small").onclick = function() {lineSize = 5;};
+    document.getElementById("medium").onclick = function() {lineSize = 10;};
+    document.getElementById("large").onclick = function() {lineSize = 20;};
+    document.getElementById("xLarger").onclick = function() {lineSize = 30;};
+
+    // canvas clear functions
+    document.getElementById("clear").onclick = function() {socket.emit("clearScreen", console.log("clear screen was sent"));};
+    function clearScreen(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        console.log("This screen was cleared")
+    }
+    socket.on("clearScreen", clearScreen);
+
+    // canvas fill function
+    document.getElementById("fill").onclick = function() {socket.emit("fillScreen", colour);};
+    socket.on("fillScreen", fillScreen);
+    function fillScreen(colour){
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = colour;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+
+    //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
+    disableDrawing();
+    socket.on("draw", draw);
+
+    /* consider chunk below for deletion
+    // function getColor(colour) {
+        //     if (canDraw) ctx.strokeStyle = colour;
+        //     else ctx.strokeStyle = "transparent";
+        // }
+        
+        // function getSize(size) {
+            //     ctx.lineWidth = size;
+            // }
+            
+            // function clearCanvas() {
+                //     ctx.clearRect(0, 0, 500, 250);
+                // }
+                //ctx.strokeStyle =
+                //ctx.strokeStyle = document.settings.colour[1].value;
+    */
     function draw(line) {
         ctx.strokeStyle = line.strokeStyle;
         ctx.lineWidth = line.lineWidth;
@@ -177,23 +237,44 @@ $(document).ready(function () {
         ctx.closePath();
         ctx.stroke();
     }
+    canvas.onmousedown = function (e) {
+        //   ctx.beginPath();
+        //   ctx.moveTo(mouse.x, mouse.y);
+        startX = mouse.x;
+        startY = mouse.y;
 
-    // function getColor(colour) {
-    //     if (canDraw) ctx.strokeStyle = colour;
-    //     else ctx.strokeStyle = "transparent";
-    // }
+        canvas.addEventListener("mousemove", onPaint, false);
+    };
 
-    function getSize(size) {
-        ctx.lineWidth = size;
-    }
+    canvas.onmouseup = function () {
+        canvas.removeEventListener("mousemove", onPaint, false);
+    };
 
-    function clearCanvas() {
-        ctx.clearRect(0, 0, 500, 250);
-    }
-    //ctx.strokeStyle =
-    //ctx.strokeStyle = document.settings.colour[1].value;
+    var onPaint = function () {
+        //   ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = colour; //allows color to change
+        ctx.lineWidth = lineSize;// allows size to change
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
 
-    
+        var line = {
+            from: {
+                x: startX,
+                y: startY
+            },
+            to: {
+                x: endX,
+                y: endY
+            },
+            strokeStyle: colour,
+            lineWidth: ctx.lineWidth
+        };
+        socket.emit("draw", line); //sends line through socket
+        startX = endX;
+        startY = endY;
+    };
 
     // check input and determine if it's the correct answer
     function checkAnswer() {
