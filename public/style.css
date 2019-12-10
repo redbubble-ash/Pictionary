@@ -8,12 +8,15 @@
   max-width: -webkit-fill-available !important;    
 }
 .row{
-  height:90%;
+  height: 400px;
+}
+#infoBars{
+  height:40px;
 }  
 body {
   font: 13px Helvetica, Arial;
   height: 100%;
-  display:block;
+  /* display:block; */
 }
 /* \/used for first popup box\/ */
 .hidden {
@@ -75,24 +78,33 @@ form {
 /*\/used for chat box\/ */
 form input {
   border: 2px solid black;
-  padding: 10px;
-  width: 70%;
-  margin-right: 0.5%;
-  margin-left:auto;    
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 5%;
+  width: 65%;
+  /* margin-right: 0.5%;
+  margin-left:auto;     */
 }
 form button {
-  width: 15%;
+  width: 20%;
   background: rgb(130, 224, 255);
   border: none;
   padding: 10px;
+}
+#messageContainer{
+  overflow: auto;
+  width: 100%;
+  height: 90%;
+  border: 2px solid black;
 }
 #messageInput{
   border-right: 1px solid black;
 }
 #messages {
+  list-style-type: none;
   height: 100%;
   width: 100%;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   display: table-cell;
   vertical-align: bottom; 
 }
@@ -102,13 +114,13 @@ form button {
   border-right: 2px solid black;
   border-left: 1px solid black;
 }
-#messages li {
-  padding: 5px 10px;
-}
-#messages li:nth-child(odd) {
-  background: #eee;
-}
 #messages {
-  margin-bottom: 40px;
+  width: 100%;
+  margin: 0%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+#messages p:nth-child(odd) {
+  background: #eee;
 }
 /*/\used for chat box/\ */

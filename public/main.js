@@ -71,16 +71,16 @@ $(document).ready(function () {
     $("#messagesForm").submit(function () {
         socket.emit("chat message", {
             userName: userName,
-            msg: $("#m").val()
+            msg: $("#messageInput").val()
         });
 
-        if ($("#m").val() === secretWord) {
+        if ($("#messageInput").val() === secretWord) {
             socket.emit("correct answer", {
                 userName: userName
             });
             //socket.emit("next round");
         }
-        $("#m").val("");
+        $("#messageInput").val("");
         return false;
     });
 
@@ -126,7 +126,7 @@ $(document).ready(function () {
     // })
 
     socket.on("hello", function (msg) {
-        $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
+        $("#messages").append($("<p>").text(msg.userName + ": " + msg.msg));
         window.scrollTo(0, -document.body.scrollHeight);
     });
     socket.on("correct answer", function (msg) {
@@ -158,8 +158,8 @@ $(document).ready(function () {
 
         console.log("draw on canvas");
         canvas.onmousemove = function (e) {
-            mouse.x = e.pageX - this.offsetLeft;
-            mouse.y = e.pageY - this.offsetTop;
+            mouse.x = e.pageX - $(this).offset().left;
+            mouse.y = e.pageY - $(this).offset().top;
             endX = mouse.x;
             endY = mouse.y;
         };
@@ -221,7 +221,7 @@ $(document).ready(function () {
     ctx.lineCap = "round";
 
     //this begins colour controls
-    let colour = "white";
+    let colour = "black";
     document.getElementById("red").onclick = function () {
         colour = "red";
     };

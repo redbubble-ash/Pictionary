@@ -31,7 +31,7 @@
         </form>
     </div>
     <div class="container-fluid">
-        <div class="row">
+        <div id="infoBars"class="row">
             <div class="col-2">
                 <div>Round # of #</div>
             </div>
@@ -42,7 +42,10 @@
         </div>
         <div class="row">
             <div class="col-2">
-                <div>Scoreboard area</div>
+                <ul id="scoreboard">
+                    <li>Player 1</li>
+                    <li>Player 2</li>
+                </ul>
             </div>
             <div class="col-6">
                 <div id="sketch">
@@ -81,7 +84,9 @@
             </div>
             
             <div class="col-3">
-                <ul id="messages"></ul>
+                <div id="messageContainer">
+                    <p id="messages"></p>
+                </div>
                 <form id="messagesForm" action="">
                     <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
                 </form>
