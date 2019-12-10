@@ -1,3 +1,4 @@
+$(document).ready(function() {
 let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
 let userName;
 let conversation = "";
@@ -25,7 +26,10 @@ function loginSucceed() {
     // };
 
     $("#newUser").html("Log in succeed: " + userName);
-    socket.emit("join", userName);
+    socket.emit("join", userName, function(past) {
+        past.history.forEach(line => draw(line));
+        console.log(past);
+      });
     console.log(userName + " has joined!");
     $(".grey-out").fadeOut(300);
     $(".user").fadeOut(300);
@@ -33,7 +37,7 @@ function loginSucceed() {
   });
 }
 
-$(document).ready(function() {
+
   loginSucceed();
   var users = [];
   //socket.on('userlist', userlist);
