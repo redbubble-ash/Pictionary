@@ -49,18 +49,18 @@ $(document).ready(function () {
     function timer() {
         count = count - 1;
         console.log("remainting time: " + count);
-        // if (count === 0) {
-        //     socket.emit("next round");
-        //     $("#timeOut").html("Out of time! &#128543;");
-        // } else if (count < 0) {
-        //     clearInterval(counter);
-        //     return;
-        // }
-        if (count < 0) {
-            clearInterval(counter);
+        if (count === 0) {
+            socket.emit("next round");
             $("#timeOut").html("Out of time! &#128543;");
+        } else if (count < 0) {
+            clearInterval(counter);
             return;
-        } 
+        }
+        // if (count < 0) {
+        //     clearInterval(counter);
+        //     $("#timeOut").html("Out of time! &#128543;");
+        //     return;
+        // } 
 
         socket.emit('timer', count );
         $("#timer").html("Time Remaining: " + count + " Seconds")
@@ -102,7 +102,7 @@ $(document).ready(function () {
             "_____";
 
         if (drawer) {
-            count = 30;
+            count = 45;
             // start the timer for 30 second
             counter = setInterval(timer, 1000); //run it every 1 second
         }
