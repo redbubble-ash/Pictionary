@@ -19,7 +19,7 @@ var canvas = [];
 var history = [];
 // var remainingTime;
 var roundStartTime;
-var roundTime = 20000;
+var roundTime = 15000;
 let roundEndTime;
 // let curTurnIdx = 0;
 
@@ -31,8 +31,8 @@ io.on("connection", function(socket) {
 
   socket.on("join", function(name,past) {
     socket.userName = name;
-
-
+    socket.roundScore = 0;
+    socket.totalScore = 0;
 
     // user automatically joins a room under their own name
     // socket.join(name);
@@ -107,6 +107,9 @@ io.on("connection", function(socket) {
 // })        
 
   socket.on("correct answer", function(msg) {
+    socket.roundScore += msg.roundScore;
+    socket.totalScore += msg.roundScore;
+
     io.emit("correct answer", msg);
   });
 
@@ -148,6 +151,13 @@ let generateSecretWord = function() {
 
 let startNextRound = function() {
   history = [];
+
+  io.emit('roundResults', {
+    userNames: users.map(x=>x.userName),
+    roundScores: users.map(x=>x.roundScore),
+    totalScores: users.map(x=>x.totalScore)
+  })
+
   io.emit('clearScreen');
   users[0].leave("drawer");
   users[0].join("guesser");
@@ -168,8 +178,8 @@ let startNextRound = function() {
     roundEndTime: roundEndTime
   });
 
-  console.log("start time: " + roundStartTime);
-  console.log('end time: ' + roundEndTime);
+  // console.log("start time: " + roundStartTime);
+  // console.log('end time: ' + roundEndTime);
 
 
   io.to("guesser").emit("gameStatus", {
@@ -178,6 +188,6 @@ let startNextRound = function() {
     roundEndTime:roundEndTime
   });
 
-  console.log("start time: " + roundStartTime);
-  console.log('end time: ' + roundEndTime);
+  // console.log("start time: " + roundStartTime);
+  // console.log('end time: ' + roundEndTime);
 };
