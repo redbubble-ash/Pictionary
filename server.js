@@ -124,6 +124,7 @@ io.on("connection", function(socket) {
   });
 
   socket.on("clearScreen", function() {
+      history = [];
     io.emit("clearScreen");
   });
 
