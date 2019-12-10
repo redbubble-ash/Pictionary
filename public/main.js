@@ -74,9 +74,11 @@ $(document).ready(function () {
             msg: $("#m").val()
         });
 
-        if ($("#m").val() === secretWord) {
+        if ($("#m").val() === secretWord && !guessed) {
+          guessed = true;
             socket.emit("correct answer", {
-                userName: userName
+                userName: userName,
+                roundScore: 50
             });
             //socket.emit("next round");
         }
@@ -136,6 +138,22 @@ $(document).ready(function () {
         window.scrollTo(0, -document.body.scrollHeight);
         socket.emit("take turns");
     });
+
+    socket.on('roundResults', function(results){
+      let names = results.userNames;
+      let roundScores = results.roundScores;
+      let totalScores = results.totalScores;
+
+      $('#roundresults').empty();
+
+      for(let i = 0; i < names.length;i++){
+        $("#roundresults").append($("<li>").text(names[i] + " round: " + roundScores[i]+", total: " + totalScores[i]));
+      }
+
+    })
+
+
+
 
     // Canvas drawing area
     let canvas = document.getElementById("drawArea");
