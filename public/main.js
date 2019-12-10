@@ -4,6 +4,8 @@ $(document).ready(function () {
     let conversation = "";
     let drawer;
     let secretWord;
+    let count;
+    let counter;
 
     // Login
     function loginSucceed() {
@@ -26,7 +28,7 @@ $(document).ready(function () {
             // };
 
             $("#newUser").html("Log in succeed: " + userName);
-            socket.emit("join", userName, function (past) {
+            socket.emit("join", userName, function (past, remaining) {
                 past.history.forEach(line => draw(line));
                 console.log(past);
             });
@@ -39,23 +41,31 @@ $(document).ready(function () {
 
 
     loginSucceed();
-    var count = 15;
-    // start the timer for 15 second
-    var counter = setInterval(timer, 1000); //run it every 1 second
-    $("#timer").html("Time Remaining: " + count + " Seconds");
-    
-    function timer(){
-        count = count-1;
-        if(count === 0){
-           $("#timeOut").html("Out of time! &#128543;");
-        }else if(count<0){
-            clearInterval(counter);
-            return;
-        }
-        $("#timer").html("Time Remaining: " + count + " Seconds")
-    }
+
+
     var users = [];
     //socket.on('userlist', userlist);
+
+    function timer() {
+        count = count - 1;
+        console.log("remainting time: " + count);
+        // if (count === 0) {
+        //     socket.emit("next round");
+        //     $("#timeOut").html("Out of time! &#128543;");
+        // } else if (count < 0) {
+        //     clearInterval(counter);
+        //     return;
+        // }
+        if (count < 0) {
+            clearInterval(counter);
+            $("#timeOut").html("Out of time! &#128543;");
+            return;
+        } 
+
+        socket.emit('timer', count );
+        $("#timer").html("Time Remaining: " + count + " Seconds")
+    }
+
 
     // Chat and guess area
     $("#messagesForm").submit(function () {
@@ -68,11 +78,19 @@ $(document).ready(function () {
             socket.emit("correct answer", {
                 userName: userName
             });
-            socket.emit("next round");
+            //socket.emit("next round");
         }
         $("#m").val("");
         return false;
     });
+
+    socket.on('timeRemaining', function(count2){
+        $("#timer").html("Time Remaining: " + count2 + " Seconds")
+        count = count2;
+        counter = setInterval(timer, 1000); //run it every 1 second
+
+    });
+
 
     socket.on("gameStatus", function (status) {
         drawer = status.drawer;
@@ -83,9 +101,24 @@ $(document).ready(function () {
             status.secretWord :
             "_____";
 
+        if (drawer) {
+            count = 30;
+            // start the timer for 30 second
+            counter = setInterval(timer, 1000); //run it every 1 second
+        }
+        // else{
+        //     socket.on('time',function(count1){
+        //         $("#timer").html("Time Remaining: " + count1 + " Seconds")
+        //         count = count1;
+        //         counter = setInterval(timer, 1000); //run it every 1 second
+        
+        //     });
+        // }
+
         startDrawing();
 
     });
+
 
     // socket.on('secretWord', function(secretWord){
     //     document.getElementById('secretword').innerHTML= secretWord;
@@ -122,6 +155,7 @@ $(document).ready(function () {
     };
 
     var startDrawing = function () {
+
         console.log("draw on canvas");
         canvas.onmousemove = function (e) {
             mouse.x = e.pageX - this.offsetLeft;
@@ -169,6 +203,7 @@ $(document).ready(function () {
             };
             if (drawer) {
                 socket.emit("draw", line);
+
             }
 
             startX = endX;
