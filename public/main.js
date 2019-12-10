@@ -63,7 +63,7 @@ $(document).ready(function () {
         // } 
 
         socket.emit('timer', count );
-        $("#timer").html("Time Remaining: " + count + " Seconds")
+        $("#timer").html(count + " Seconds")
     }
 
 
@@ -85,7 +85,7 @@ $(document).ready(function () {
     });
 
     socket.on('timeRemaining', function(count2){
-        $("#timer").html("Time Remaining: " + count2 + " Seconds")
+        $("#timer").html( count2 + " Seconds")
         count = count2;
         counter = setInterval(timer, 1000); //run it every 1 second
 
