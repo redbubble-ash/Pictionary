@@ -93,8 +93,8 @@ $(document).ready(function() {
     //var sketch_style = getComputedStyle(sketch);
     //var canDraw = true; // prevent user from drawing when false
 */
-  canvas.width = window.innerWidth * 0.63; // controls responsive resizing of drawing canvas, width
-  canvas.height = window.innerHeight * 0.8;
+  canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
+  canvas.height = document.getElementById("sketch").offsetHeight;
   let startX, startY, endX, endY;
 
   let mouse = {

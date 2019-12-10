@@ -30,20 +30,25 @@
             <p id="newUser"></p>
         </form>
     </div>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-
-            <div class="col-3">
-                <p>Scoreboard area</p>
+            <div class="col-2">
+                <div>Round # of #</div>
             </div>
-            
             <div class="col-6">
-                
+                <div id="timer">##</div>
+                <div id="secretword">Secret Wood</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <div>Scoreboard area</div>
+            </div>
+            <div class="col-6">
                 <div id="sketch">
                     <canvas id="drawArea"></canvas>
                 </div>
                 <hr>
-                
                 <div id="settings">
                     Colours:
                     <button id="red">Red</button>
@@ -78,16 +83,13 @@
             <div class="col-3">
                 <ul id="messages"></ul>
                 <form id="messagesForm" action="">
-                    <input id="m" autocomplete="off" /><button>Send</button>
+                    <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
                 </form>
             </div>
             
             </div>
         </div>
         
-    <div>
-        <ul id="secretword">Secret Word</ul>
-    </div>
 
 </body>
 

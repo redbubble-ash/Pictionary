@@ -1,19 +1,24 @@
 *{
+  /* border: 2px solid black; */
   margin: 0px;
   padding: 0px;
-  box-sizing: border-box;
+  box-sizing: content-box;
 }
+.container {
+  max-width: -webkit-fill-available !important;    
+}
+.row{
+  height:90%;
+}  
 body {
   font: 13px Helvetica, Arial;
   height: 100%;
   display:block;
 }
-
+/* \/used for first popup box\/ */
 .hidden {
   display: none;
-}
- 
-  
+} 
 .grey-out {
   position: fixed;
   top: 0px;
@@ -25,7 +30,6 @@ body {
   display: none;
   z-index: 900;
 }
-
 .user {
   position: relative;
   background-color: white;
@@ -36,9 +40,6 @@ body {
   top: 20%;
   margin: auto;
   border-radius: 6px;
-}
-#sketch {
-  border: 1px solid black;
 }
 #username {
   width: 90%;
@@ -51,23 +52,31 @@ body {
   height: 30px;
   background-color: #9BCD9B;
 }
-.container {
-  max-width: -webkit-fill-available !important;    
+/*/\used for login popup box/\ */
+/*\/used for canvas & controls\/ */
+#sketch {
+  border: 2px solid black;
+  height: 90%;
+  /* border: 2px solid black; */
 }
-.row{
-  height:1000px;
-}  
+
+/*/\used for canvas & controls/\ */
 form {
-  background: #000;
-  padding: 3px;
-  position: absolute;
+  /* background: #000; */
+  border: 3px;
   bottom: 0;
   width: 100%;    
 }
+#settings { 
+  display: block;
+  text-align:center;
+}
+/*/\used for canvas & controls/\ */
+/*\/used for chat box\/ */
 form input {
-  border: 0;
+  border: 2px solid black;
   padding: 10px;
-  width: 80%;
+  width: 70%;
   margin-right: 0.5%;
   margin-left:auto;    
 }
@@ -77,12 +86,21 @@ form button {
   border: none;
   padding: 10px;
 }
+#messageInput{
+  border-right: 1px solid black;
+}
 #messages {
-  height: 800px;
-  width: 550px;
+  height: 100%;
+  width: 100%;
   border: 1px solid #000;
   display: table-cell;
   vertical-align: bottom; 
+}
+#chatSend{
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  border-left: 1px solid black;
 }
 #messages li {
   padding: 5px 10px;
@@ -93,6 +111,4 @@ form button {
 #messages {
   margin-bottom: 40px;
 }
-#settings { display: block;
-  text-align:center
-}
+/*/\used for chat box/\ */
