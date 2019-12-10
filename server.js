@@ -16,6 +16,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 var users = [];
 var canvas = [];
+var history = [];
+var remainingTime;
 // let curTurnIdx = 0;
 
 var words = ["apple", "banana", "orange", "strawberry"];
@@ -24,8 +26,10 @@ var secretWord;
 io.on("connection", function(socket) {
   //io.emit('userlist', users);
 
-  socket.on("join", function(name) {
+  socket.on("join", function(name,past) {
     socket.userName = name;
+
+
 
     // user automatically joins a room under their own name
     // socket.join(name);
@@ -44,15 +48,17 @@ io.on("connection", function(socket) {
       console.log(secretWord);
       io.to(socket.id).emit("gameStatus", {
         secretWord: secretWord,
-        drawer: true
+        drawer: true,
       });
     } else {
       socket.join("guesser");
       console.log(name + " joined guesser");
       io.to(socket.id).emit("gameStatus", {
         secretWord: secretWord,
-        drawer: false
+        drawer: false,
       });
+      past({history});
+      io.to(socket.id).emit('timeRemaining', remainingTime);
     }
 
     // console.log(socket.rooms);
@@ -84,14 +90,24 @@ io.on("connection", function(socket) {
     // console.log()
   });
 
+  socket.on('timer',function(count){
+    remainingTime = count;
+    io.emit("timer", count);
+    console.log("timer remaining: "+ remainingTime);
+})        
+
   socket.on("correct answer", function(msg) {
     io.emit("correct answer", msg);
   });
 
   socket.on("next round", startNextRound);
 
+
   socket.on("draw", function(line) {
+
     socket.broadcast.emit("draw", line);
+    //store the drawing history
+	history.push(line);
   });
 
   socket.on("clearScreen", function() {
@@ -121,6 +137,8 @@ let generateSecretWord = function() {
 };
 
 let startNextRound = function() {
+  history = [];
+  io.emit('clearScreen');
   users[0].leave("drawer");
   users[0].join("guesser");
   users.push(users.shift());
