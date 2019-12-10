@@ -17,7 +17,10 @@ app.use(express.static(path.join(__dirname, "public")));
 var users = [];
 var canvas = [];
 var history = [];
-var remainingTime;
+// var remainingTime;
+var roundStartTime;
+var roundTime = 15000;
+let roundEndTime;
 // let curTurnIdx = 0;
 
 var words = ["apple", "banana", "orange", "strawberry"];
@@ -28,8 +31,8 @@ io.on("connection", function(socket) {
 
   socket.on("join", function(name,past) {
     socket.userName = name;
-
-
+    socket.roundScore = 0;
+    socket.totalScore = 0;
 
     // user automatically joins a room under their own name
     // socket.join(name);
@@ -44,11 +47,17 @@ io.on("connection", function(socket) {
       socket.join("drawer");
       // io.to(socket.id).emit('your turn');
       console.log(name + " joined drawer");
+      roundStartTime = new Date().getTime();
+      roundEndTime = roundStartTime + roundTime;
+      console.log("start time: " + roundStartTime);
+      console.log('end time: ' + roundEndTime);
       secretWord = generateSecretWord();
       console.log(secretWord);
       io.to(socket.id).emit("gameStatus", {
         secretWord: secretWord,
         drawer: true,
+        roundEndTime: roundEndTime
+
       });
     } else {
       socket.join("guesser");
@@ -56,9 +65,10 @@ io.on("connection", function(socket) {
       io.to(socket.id).emit("gameStatus", {
         secretWord: secretWord,
         drawer: false,
+        roundEndTime: roundEndTime
       });
       past({history});
-      io.to(socket.id).emit('timeRemaining', remainingTime);
+      // io.to(socket.id).emit('timeRemaining', remainingTime);
     }
 
     // console.log(socket.rooms);
@@ -90,13 +100,16 @@ io.on("connection", function(socket) {
     // console.log()
   });
 
-  socket.on('timer',function(count){
-    remainingTime = count;
-    io.emit("timer", count);
-    console.log("timer remaining: "+ remainingTime);
-})        
+//   socket.on('timer',function(count){
+//     remainingTime = count;
+//     io.emit("timer", count);
+//     console.log("timer remaining: "+ remainingTime);
+// })        
 
   socket.on("correct answer", function(msg) {
+    socket.roundScore += msg.roundScore;
+    socket.totalScore += msg.roundScore;
+
     io.emit("correct answer", msg);
   });
 
@@ -138,6 +151,13 @@ let generateSecretWord = function() {
 
 let startNextRound = function() {
   history = [];
+
+  io.emit('roundResults', {
+    userNames: users.map(x=>x.userName),
+    roundScores: users.map(x=>x.roundScore),
+    totalScores: users.map(x=>x.totalScore)
+  })
+
   io.emit('clearScreen');
   users[0].leave("drawer");
   users[0].join("guesser");
@@ -149,13 +169,25 @@ let startNextRound = function() {
   console.log("next round: " + users[0].userName + " is now the drawer");
   secretWord = generateSecretWord();
   console.log(secretWord);
+
+  roundStartTime = new Date().getTime();
+  roundEndTime = roundStartTime + roundTime;
   io.to("drawer").emit("gameStatus", {
     secretWord: secretWord,
-    drawer: true
+    drawer: true,
+    roundEndTime: roundEndTime
   });
+
+  // console.log("start time: " + roundStartTime);
+  // console.log('end time: ' + roundEndTime);
+
 
   io.to("guesser").emit("gameStatus", {
     secretWord: secretWord,
-    drawer: false
+    drawer: false,
+    roundEndTime:roundEndTime
   });
+
+  // console.log("start time: " + roundStartTime);
+  // console.log('end time: ' + roundEndTime);
 };
