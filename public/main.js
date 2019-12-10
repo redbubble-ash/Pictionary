@@ -4,11 +4,8 @@ $(document).ready(function () {
     let conversation = "";
     let drawer;
     let secretWord;
-    let guessed = false;
-    // let roundStartTime;
-    // let roundEndTime;
-    // let count;
-    // let counter;
+    let count;
+    let counter;
 
     // Login
     function loginSucceed() {
@@ -49,25 +46,25 @@ $(document).ready(function () {
     var users = [];
     //socket.on('userlist', userlist);
 
-    // function timer() {
-    //     count = count - 1;
-    //     console.log("remainting time: " + count);
-    //     if (count === 0) {
-    //         socket.emit("next round");
-    //         $("#timeOut").html("Out of time! &#128543;");
-    //     } else if (count < 0) {
-    //         clearInterval(counter);
-    //         return;
-    //     }
-    //     // if (count < 0) {
-    //     //     clearInterval(counter);
-    //     //     $("#timeOut").html("Out of time! &#128543;");
-    //     //     return;
-    //     // } 
+    function timer() {
+        count = count - 1;
+        console.log("remainting time: " + count);
+        if (count === 0) {
+            socket.emit("next round");
+            $("#timeOut").html("Out of time! &#128543;");
+        } else if (count < 0) {
+            clearInterval(counter);
+            return;
+        }
+        // if (count < 0) {
+        //     clearInterval(counter);
+        //     $("#timeOut").html("Out of time! &#128543;");
+        //     return;
+        // } 
 
-    //     socket.emit('timer', count );
-    //     $("#timer").html("Time Remaining: " + count + " Seconds")
-    // }
+        socket.emit('timer', count );
+        $("#timer").html("Time Remaining: " + count + " Seconds")
+    }
 
 
     // Chat and guess area
@@ -87,30 +84,28 @@ $(document).ready(function () {
         return false;
     });
 
-    // socket.on('timeRemaining', function(count2){
-    //     $("#timer").html("Time Remaining: " + count2 + " Seconds")
-    //     count = count2;
-    //     counter = setInterval(timer, 1000); //run it every 1 second
+    socket.on('timeRemaining', function(count2){
+        $("#timer").html("Time Remaining: " + count2 + " Seconds")
+        count = count2;
+        counter = setInterval(timer, 1000); //run it every 1 second
 
-    // });
+    });
 
 
     socket.on("gameStatus", function (status) {
         drawer = status.drawer;
         secretWord = status.secretWord;
-        roundEndTime = status.roundEndTime;
-   
 
         // enable/disable guess word
         document.getElementById("secretword").innerHTML = drawer ?
             status.secretWord :
             "_____";
 
-        // if (drawer) {
-        //     count = 45;
-        //     // start the timer for 30 second
-        //     counter = setInterval(timer, 1000); //run it every 1 second
-        // }
+        if (drawer) {
+            count = 45;
+            // start the timer for 30 second
+            counter = setInterval(timer, 1000); //run it every 1 second
+        }
         // else{
         //     socket.on('time',function(count1){
         //         $("#timer").html("Time Remaining: " + count1 + " Seconds")
@@ -119,26 +114,10 @@ $(document).ready(function () {
         
         //     });
         // }
-        // clearInterval(countDownTimer);
 
         startDrawing();
-        countDownTimer;
 
     });
-
-    function gameTimer(){
-      console.log("end time: " + roundEndTime);
-      let now = new Date().getTime();
-      let distance = roundEndTime - now;
-      let seconds = Math.floor(distance/1000);
-      $("#timer").html("Time Remaining: " + seconds + " Seconds");
-
-      if(distance <= 0 && drawer){
-        socket.emit('next round');
-      }
-    }
-    var countDownTimer = setInterval(gameTimer, 1000);
-    
 
 
     // socket.on('secretWord', function(secretWord){
