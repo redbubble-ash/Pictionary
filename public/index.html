@@ -36,8 +36,10 @@
                 <div>Round # of #</div>
             </div>
             <div class="col-6">
-                <div id="timer">##</div>
-                <div id="secretword">Secret Wood</div>
+                <div id="infoHolder">
+                    <div id="timer">##</div>
+                    <div id="secretword">Secret Wood</div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -52,17 +54,16 @@
                     <canvas id="drawArea"></canvas>
                 </div>
                 <hr>
-                <div id="settings">
-                    Colours:
-                    <button id="red">Red</button>
-                    <button id="orange">Orange</button>
-                    <button id="yellow"">Yellow</button>
-                    <button id="green">Green</button>
-                    <button id="blue">Blue</button>
-                    <button id="purple">Purple</button>
-                    <button id="brown">Brown</button>
-                    <button id="black">Black</button>
-                    <button id="white">White</button>
+                <div id="settings" class="btn-group-sm" role="group">
+                    <button id="red" class="btn btn-secondary" type="button">Red</button>
+                    <button id="orange" class="btn btn-secondary" type="button">Orange</button>
+                    <button id="yellow" class="btn btn-secondary" type="button">Yellow</button>
+                    <button id="green" class="btn btn-secondary" type="button">Green</button>
+                    <button id="blue" class="btn btn-secondary" type="button">Blue</button>
+                    <button id="purple" class="btn btn-secondary" type="button">Purple</button>
+                    <button id="brown" class="btn btn-secondary" type="button">Brown</button>
+                    <button id="black" class="btn btn-secondary" type="button">Black</button>
+                    <button id="white" class="btn btn-secondary" type="button">White</button>
                 </div>
                 
                 <div id="settings">
@@ -87,9 +88,11 @@
                 <div id="messageContainer">
                     <p id="messages"></p>
                 </div>
-                <form id="messagesForm" action="">
-                    <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
-                </form>
+                <div class="input-group">
+                    <form id="messagesForm" action="">
+                        <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
+                    </form>
+                </div>
             </div>
             
             </div>

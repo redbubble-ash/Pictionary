@@ -74,6 +74,38 @@ form {
   display: block;
   text-align:center;
 }
+#red{
+  background: red;
+}
+#orange{
+  background: orange;
+}
+#yellow{
+  background: yellow;
+  color: black;
+}
+#green{
+  background: green;
+}
+#blue{
+  background: blue;
+  color: white;
+}
+#purple{
+  background: rebeccapurple;
+}
+#brown{
+  background: sienna;
+}
+#black{
+  background: black;
+  color: white;
+}
+#white{
+  background: white;
+  color: black;
+  border: 1px solid black;
+}
 /*/\used for canvas & controls/\ */
 /*\/used for chat box\/ */
 form input {
