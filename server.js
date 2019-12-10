@@ -17,7 +17,10 @@ app.use(express.static(path.join(__dirname, "public")));
 var users = [];
 var canvas = [];
 var history = [];
-var remainingTime;
+// var remainingTime;
+var roundStartTime;
+var roundTime = 20000;
+let roundEndTime;
 // let curTurnIdx = 0;
 
 var words = ["apple", "banana", "orange", "strawberry"];
@@ -44,11 +47,17 @@ io.on("connection", function(socket) {
       socket.join("drawer");
       // io.to(socket.id).emit('your turn');
       console.log(name + " joined drawer");
+      roundStartTime = new Date().getTime();
+      roundEndTime = roundStartTime + roundTime;
+      console.log("start time: " + roundStartTime);
+      console.log('end time: ' + roundEndTime);
       secretWord = generateSecretWord();
       console.log(secretWord);
       io.to(socket.id).emit("gameStatus", {
         secretWord: secretWord,
         drawer: true,
+        roundEndTime: roundEndTime
+
       });
     } else {
       socket.join("guesser");
@@ -56,9 +65,10 @@ io.on("connection", function(socket) {
       io.to(socket.id).emit("gameStatus", {
         secretWord: secretWord,
         drawer: false,
+        roundEndTime: roundEndTime
       });
       past({history});
-      io.to(socket.id).emit('timeRemaining', remainingTime);
+      // io.to(socket.id).emit('timeRemaining', remainingTime);
     }
 
     // console.log(socket.rooms);
@@ -90,11 +100,11 @@ io.on("connection", function(socket) {
     // console.log()
   });
 
-  socket.on('timer',function(count){
-    remainingTime = count;
-    io.emit("timer", count);
-    console.log("timer remaining: "+ remainingTime);
-})        
+//   socket.on('timer',function(count){
+//     remainingTime = count;
+//     io.emit("timer", count);
+//     console.log("timer remaining: "+ remainingTime);
+// })        
 
   socket.on("correct answer", function(msg) {
     io.emit("correct answer", msg);
@@ -149,13 +159,25 @@ let startNextRound = function() {
   console.log("next round: " + users[0].userName + " is now the drawer");
   secretWord = generateSecretWord();
   console.log(secretWord);
+
+  roundStartTime = new Date().getTime();
+  roundEndTime = roundStartTime + roundTime;
   io.to("drawer").emit("gameStatus", {
     secretWord: secretWord,
-    drawer: true
+    drawer: true,
+    roundEndTime: roundEndTime
   });
+
+  console.log("start time: " + roundStartTime);
+  console.log('end time: ' + roundEndTime);
+
 
   io.to("guesser").emit("gameStatus", {
     secretWord: secretWord,
-    drawer: false
+    drawer: false,
+    roundEndTime:roundEndTime
   });
+
+  console.log("start time: " + roundStartTime);
+  console.log('end time: ' + roundEndTime);
 };
