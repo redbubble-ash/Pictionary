@@ -152,7 +152,6 @@ let generateSecretWord = function() {
 
 let startNextRound = function() {
   history = [];
-  socket.roundScore = 0;
 
   io.emit('roundResults', {
     userNames: users.map(x=>x.userName),
