@@ -38,7 +38,7 @@ $(document).ready(function() {
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, roomName, function(past) {
         past.forEach(line => draw(line));
-        console.log(past);
+        past.forEach(x=>console.log(x));
       });
       console.log(userName + " has joined!");
       $(".grey-out").fadeOut(300);
@@ -74,18 +74,32 @@ $(document).ready(function() {
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
+
+    if(drawer){
+      socket.emit("next round",roomName);
+    }
+
+
+
     socket.emit("chat message", {
       roomName: roomName,
       userName: userName,
       msg: $("#messageInput").val()
     });
-    
-    if ($("#messageInput").val() === secretWord && !guessed) {
+    let isAMatch = false;
+    let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
+    if(toBeEval.toLowerCase().search(secretWord)>= 0){ // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
+        isAMatch = true;
+    }
+
+    if (isAMatch && !guessed) {
       guessed = true;
       socket.emit("correct answer", {
         userName: userName,
         roundScore: 50
       });
+      isAMatch = false; // resets isAMatch to false
+      //socket.emit("next round");
     }
     $("#messageInput").val("");
     return false;
@@ -97,6 +111,7 @@ $(document).ready(function() {
     roomName = status.roomName;
     secretWord = status.secretWord;
     roundEndTime = status.roundEndTime;
+    guessed = false;
 
     // enable/disable guess word
 
@@ -110,7 +125,7 @@ $(document).ready(function() {
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
     document.getElementById("messageInput").disabled = true;
-    document.getElementById("chatSend").onclick = function(){socket.emit("next round")};
+    
     }
     if(!drawer){
     document.getElementById("chatSend").innerHTML = "send";
@@ -166,7 +181,7 @@ $(document).ready(function() {
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append("Time is up");
     for (let i = 0; i < names.length; i++) {
-      $("#roundresults").append(
+      $("#roundResults").append(
         $("<li>").text(
           names[i] + " round: " + roundScores[i] + ", total: " + totalScores[i]
         )

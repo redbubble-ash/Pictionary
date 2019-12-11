@@ -110,7 +110,7 @@ io.on("connection", function(socket) {
   // })
 
   socket.on("correct answer", function(msg) {
-    socket.roundScore += msg.roundScore;
+    socket.roundScore = msg.roundScore;
     socket.totalScore += msg.roundScore;
 
     io.to(socket.room).emit("correct answer", msg);
@@ -159,13 +159,18 @@ let generateSecretWord = function() {
 };
 
 let startNextRound = function(roomName) {
-  rooms[roomName].history = [];
+  if(rooms[roomName]!= undefined){
+    rooms[roomName].history = [];
 
-  // io.emit("roundResults", {
-  //   userNames: users.map(x => x.userName),
-  //   roundScores: users.map(x => x.roundScore),
-  //   totalScores: users.map(x => x.totalScore)
-  // });
+  }
+  
+
+  io.to(roomName).emit("roundResults", {
+    userNames: rooms[roomName].users.map(x => x.userName),
+    roundScores: rooms[roomName].users.map(x => x.roundScore),
+    totalScores: rooms[roomName].users.map(x => x.totalScore)
+  });
+
 
   // function sleep(milliseconds) {
   //   let timeStart = new Date().getTime();
