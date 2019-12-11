@@ -76,7 +76,7 @@ io.on("connection", function(socket) {
 
     // console.log(socket.rooms);
 
-    // update all clients with tche list of users
+    // update all clients with the list of users
     // io.emit('userlist', users);
   });
 
