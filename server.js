@@ -26,7 +26,7 @@ let roundEndTime;
 
 // let curTurnIdx = 0;
 
-var words = ["apple", "banana", "orange", "strawberry"];
+var words = ["apple", "banana", "orange", "strawberry", "kiwi", "star fruit"];
 var secretWord;
 
 io.on("connection", function(socket) {
