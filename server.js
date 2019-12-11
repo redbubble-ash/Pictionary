@@ -19,7 +19,7 @@ var canvas = [];
 var history = [];
 // var remainingTime;
 var roundStartTime;
-var roundTime = 15000;
+var roundTime = 30000; //make timer 60,000
 let roundEndTime;
 // let curTurnIdx = 0;
 

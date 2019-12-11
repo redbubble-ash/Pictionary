@@ -101,11 +101,19 @@ $(document).ready(function() {
     roundEndTime = status.roundEndTime;
 
     // enable/disable guess word
-    document.getElementById("secretword").innerHTML = drawer
-      ? status.secretWord
-      : "_ _ _ _ _";
+    document.getElementById("secretword").innerHTML = drawer ? status.secretWord: "_ _ _ _ _";
 
-      document.getElementById("chatSend").innerHTML = "Give up turn?";
+    if(drawer){
+    document.getElementById("chatSend").innerHTML = "Give up turn?";
+    document.getElementById("messageInput").value = "I give up and cant draw this."
+    document.getElementById("messageInput").disabled = true;
+    document.getElementById("chatSend").onclick = function(){socket.emit("next round")};
+    }
+    if(!drawer){
+    document.getElementById("chatSend").innerHTML = "send";
+    document.getElementById("messageInput").value = "";
+    document.getElementById("messageInput").disabled = false;
+    }
 
     // if (drawer) {
     //     count = 45;
