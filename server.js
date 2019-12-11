@@ -159,6 +159,18 @@ let startNextRound = function() {
     totalScores: users.map(x=>x.totalScore)
   })
 
+  // function sleep(milliseconds) { 
+  //   let timeStart = new Date().getTime(); 
+  //   while (true) { 
+  //   let elapsedTime = new Date().getTime() - timeStart; 
+  //   if (elapsedTime > milliseconds) { 
+  //     break; 
+  //   } 
+  //   } 
+  // } 
+  
+  // sleep(5000);
+
   io.emit('clearScreen');
   users[0].leave("drawer");
   users[0].join("guesser");

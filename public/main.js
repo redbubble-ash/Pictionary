@@ -5,6 +5,8 @@ $(document).ready(function() {
   let drawer;
   let secretWord;
   let guessed = false;
+
+ 
   // let roundStartTime;
   // let roundEndTime;
   // let count;
@@ -31,7 +33,7 @@ $(document).ready(function() {
       // };
 
       $("#newUser").html("Log in succeed: " + userName);
-      socket.emit("join", userName, function(past, remaining) {
+      socket.emit("join", userName, function(past) {
         past.history.forEach(line => draw(line));
         console.log(past);
       });
@@ -127,8 +129,9 @@ $(document).ready(function() {
     let now = new Date().getTime();
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
-    $("#timer").html("Time Remaining: " + seconds + " Seconds");
 
+    $("#timer").html("Time Remaining: " + seconds + " Seconds");
+   
     if (distance <= 0 && drawer) {
       socket.emit("next round");
     }
@@ -153,6 +156,7 @@ $(document).ready(function() {
   });
 
   socket.on("roundResults", function(results) {
+    $("#timer").hide();
     let names = results.userNames;
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
@@ -162,18 +166,7 @@ $(document).ready(function() {
     $("#timesUp").empty();
 
     // popUp window to display score board
-    // var interval = setInterval(() => {
-    //   $("#scoreBoard").popup("open", { history: false });
-    //   scoreBoard;
-    //   var intervalClose = setInterval(function() {
-    //     $("#scoreBoard").popup("close");
-    //     clearInterval(intervalClose);
-    //   }, 5000);
-    //   clearInterval(interval);
-    // }, 1);
-
-    // $("#scoreBoard").fadeIn("slow");
-
+    $("#scoreBoard").fadeIn("slow");
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append("Time is up");
     for (let i = 0; i < names.length; i++) {
@@ -183,11 +176,13 @@ $(document).ready(function() {
         )
       );
     }
+    setTimeout(() => {
+      $("#scoreBoard").fadeOut("slow");
+    }, 5000);
 
-    
-    // setTimeout(() => {
-    //   $("#scoreBoard").fadeIn("slow");
-    // }, 5000);
+    setTimeout(() => {
+      $("#timer").show();
+    }, 5000);
   });
 
   // Canvas drawing area
