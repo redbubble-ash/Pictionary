@@ -14,13 +14,14 @@ server.listen(port, () => {
 // Routing, serve html
 app.use(express.static(path.join(__dirname, "public")));
 
+var rooms = {};
 var users = [];
 var canvas = [];
 var history = [];
 // var remainingTime;
 var roundStartTime;
-var roundTime = 15000;
-let roundEndTime;
+var roundTime = 50000;
+// let roundEndTime;
 // let curTurnIdx = 0;
 
 var words = ["apple", "banana", "orange", "strawberry"];
@@ -29,45 +30,45 @@ var secretWord;
 io.on("connection", function(socket) {
   //io.emit('userlist', users);
 
-  socket.on("join", function(name,past) {
+  socket.on("join", function(name, room, past) {
     socket.userName = name;
     socket.roundScore = 0;
     socket.totalScore = 0;
+    socket.room = room;
 
-    // user automatically joins a room under their own name
-    // socket.join(name);
-    console.log(socket.userName + " has joined. ID: " + socket.id);
+    if (!rooms[room]) {
+      console.log("room doesn't exist");
+      rooms[room] = {
+        roomName: room,
+        users: [],
+        history: [],
+        secretWord: "",
+        roundEndTime: ""
+      };
+    }
+    rooms[room].users.push(socket);
+    socket.join(room);
 
-    // save the name of the user to an array called users
-    users.push(socket);
-    // console.log(users);
-    console.log(users.indexOf(socket));
+    if (rooms[room].users.length == 1) {
+      rooms[room].roundEndTime = new Date().getTime() + roundTime;
+      rooms[room].secretWord = generateSecretWord();
 
-    if (users.length == 1) {
-      socket.join("drawer");
-      // io.to(socket.id).emit('your turn');
-      console.log(name + " joined drawer");
-      roundStartTime = new Date().getTime();
-      roundEndTime = roundStartTime + roundTime;
-      console.log("start time: " + roundStartTime);
-      console.log('end time: ' + roundEndTime);
-      secretWord = generateSecretWord();
-      console.log(secretWord);
+      console.log(rooms[room].secretWord);
+      console.log("round end time" + rooms[room].roundEndTime);
       io.to(socket.id).emit("gameStatus", {
-        secretWord: secretWord,
-        drawer: true,
-        roundEndTime: roundEndTime
-
+        roomName: rooms[room].roomName,
+        secretWord: rooms[room].secretWord,
+        roundEndTime: rooms[room].roundEndTime,
+        drawer: true
       });
     } else {
-      socket.join("guesser");
-      console.log(name + " joined guesser");
       io.to(socket.id).emit("gameStatus", {
-        secretWord: secretWord,
-        drawer: false,
-        roundEndTime: roundEndTime
+        roomName: rooms[room].roomName,
+        secretWord: rooms[room].secretWord,
+        roundEndTime: rooms[room].roundEndTime,
+        drawer: false
       });
-      past({history});
+      past(rooms[room].history);
       // io.to(socket.id).emit('timeRemaining', remainingTime);
     }
 
@@ -78,7 +79,7 @@ io.on("connection", function(socket) {
   });
 
   socket.on("chat message", function(msg) {
-    io.emit("hello", msg);
+    io.to(msg.roomName).emit("hello", msg);
 
     // io.to('guesser').emit('hello', msg);
     // users[curTurnIdx].leave('drawer');
@@ -100,32 +101,30 @@ io.on("connection", function(socket) {
     // console.log()
   });
 
-//   socket.on('timer',function(count){
-//     remainingTime = count;
-//     io.emit("timer", count);
-//     console.log("timer remaining: "+ remainingTime);
-// })        
+  //   socket.on('timer',function(count){
+  //     remainingTime = count;
+  //     io.emit("timer", count);
+  //     console.log("timer remaining: "+ remainingTime);
+  // })
 
   socket.on("correct answer", function(msg) {
     socket.roundScore += msg.roundScore;
     socket.totalScore += msg.roundScore;
 
-    io.emit("correct answer", msg);
+    io.to(socket.room).emit("correct answer", msg);
   });
 
   socket.on("next round", startNextRound);
 
-
   socket.on("draw", function(line) {
-
-    socket.broadcast.emit("draw", line);
+    socket.to(socket.room).broadcast.emit("draw", line);
     //store the drawing history
-	history.push(line);
+    rooms[socket.room].history.push(line);
   });
 
   socket.on("clearScreen", function() {
-      history = [];
-    io.emit("clearScreen");
+    rooms[socket.room].history = [];
+    io.to(socket.room).emit("clearScreen");
   });
 
   socket.on("fillScreen", function(colour) {
@@ -133,15 +132,22 @@ io.on("connection", function(socket) {
   });
   // TODO: trigger next round when drawer left
   socket.on("disconnect", () => {
-    if (users[0] == socket) {
-      startNextRound();
-      users.pop();
+    if (rooms[socket.room].users[0] == socket) {
+      if (rooms[socket.room].users.length == 1) {
+        delete rooms[socket.room];
+      } else {
+        startNextRound(socket.room);
+        rooms[socket.room].users.pop();
+      }
       console.log("drawer disconnected");
-      console.log(users.length);
+      // console.log(users.length);
     } else {
-      users.splice(users.indexOf(socket), 1);
+      rooms[socket.room].users.splice(
+        rooms[socket.room].users.indexOf(socket),
+        1
+      );
       console.log("guesser disconnected");
-      console.log(users.length);
+      // console.log(users.length);
     }
   });
 });
@@ -150,57 +156,54 @@ let generateSecretWord = function() {
   return words[Math.floor(Math.random() * words.length)];
 };
 
-let startNextRound = function() {
-  history = [];
+let startNextRound = function(roomName) {
+  rooms[roomName].history = [];
 
-  io.emit('roundResults', {
-    userNames: users.map(x=>x.userName),
-    roundScores: users.map(x=>x.roundScore),
-    totalScores: users.map(x=>x.totalScore)
-  })
+  // io.emit("roundResults", {
+  //   userNames: users.map(x => x.userName),
+  //   roundScores: users.map(x => x.roundScore),
+  //   totalScores: users.map(x => x.totalScore)
+  // });
 
-  // function sleep(milliseconds) { 
-  //   let timeStart = new Date().getTime(); 
-  //   while (true) { 
-  //   let elapsedTime = new Date().getTime() - timeStart; 
-  //   if (elapsedTime > milliseconds) { 
-  //     break; 
-  //   } 
-  //   } 
-  // } 
-  
+  // function sleep(milliseconds) {
+  //   let timeStart = new Date().getTime();
+  //   while (true) {
+  //   let elapsedTime = new Date().getTime() - timeStart;
+  //   if (elapsedTime > milliseconds) {
+  //     break;
+  //   }
+  //   }
+  // }
+
   // sleep(5000);
 
-  io.emit('clearScreen');
-  users[0].leave("drawer");
-  users[0].join("guesser");
-  users.push(users.shift());
+  io.to(roomName).emit("clearScreen");
+  rooms[roomName].users.push(rooms[roomName].users.shift());
   // curTurnIdx = (curTurnIdx+1)%users.length;
-  users[0].leave("guesser");
-  users[0].join("drawer");
+  console.log(
+    "next round: " + rooms[roomName].users[0].userName + " is now the drawer"
+  );
+  rooms[roomName].secretWord = generateSecretWord();
 
-  console.log("next round: " + users[0].userName + " is now the drawer");
-  secretWord = generateSecretWord();
-  console.log(secretWord);
+  rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
 
-  roundStartTime = new Date().getTime();
-  roundEndTime = roundStartTime + roundTime;
-  io.to("drawer").emit("gameStatus", {
-    secretWord: secretWord,
-    drawer: true,
-    roundEndTime: roundEndTime
-  });
+  console.log("round end time" + rooms[roomName].roundEndTime);
 
-  // console.log("start time: " + roundStartTime);
-  // console.log('end time: ' + roundEndTime);
-
-
-  io.to("guesser").emit("gameStatus", {
-    secretWord: secretWord,
-    drawer: false,
-    roundEndTime:roundEndTime
-  });
-
-  // console.log("start time: " + roundStartTime);
-  // console.log('end time: ' + roundEndTime);
+  for (let i = 0; i < rooms[roomName].users.length; i++) {
+    if (i == 0) {
+      io.to(rooms[roomName].users[i].id).emit("gameStatus", {
+        roomName: roomName,
+        secretWord: rooms[roomName].secretWord,
+        drawer: true,
+        roundEndTime: rooms[roomName].roundEndTime
+      });
+    } else {
+      io.to(rooms[roomName].users[i].id).emit("gameStatus", {
+        roomName: roomName,
+        secretWord: rooms[roomName].secretWord,
+        drawer: false,
+        roundEndTime: rooms[roomName].roundEndTime
+      });
+    }
+  }
 };
