@@ -69,12 +69,12 @@ body {
   height: 30px;
   background-color: #9BCD9B;
 }
-form {
-  /* background: #000; */
+/* form {
+  background: #000;
   border: 3px;
   bottom: 0;
   width: 100%;    
-}
+} */
 /*/\used for login popup box/\ */
 /*\/used for canvas & controls\/ */
 #sketch {
@@ -169,3 +169,42 @@ form button {
   background: #eee;
 }
 /*/\used for chat box/\ */
+
+/* Popup box BEGIN */
+.hover_bkgr_fricc{
+  background:rgba(0,0,0,.4);
+  cursor:pointer;
+  display:none;
+  height:100%;
+  position:fixed;
+  text-align:center;
+  top:0;
+  width:100%;
+  z-index:10000;
+}
+.hover_bkgr_fricc .helper{
+  display:inline-block;
+  height:100%;
+  vertical-align:middle;
+}
+.hover_bkgr_fricc > div {
+  background-color: #fff;
+  box-shadow: 10px 10px 60px #555;
+  display: inline-block;
+  height: auto;
+  max-width: 551px;
+  min-height: 100px;
+  vertical-align: middle;
+  width: 60%;
+  position: relative;
+  border-radius: 8px;
+  padding: 15px 5%;
+}
+.trigger_popup_fricc {
+  cursor: pointer;
+  font-size: 20px;
+  margin: 20px;
+  display: inline-block;
+  font-weight: bold;
+}
+/* Popup box BEGIN */
