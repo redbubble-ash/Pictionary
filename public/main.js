@@ -77,17 +77,17 @@ $(document).ready(function() {
     socket.emit("chat message", {
       roomName: roomName,
       userName: userName,
-      msg: $("#m").val()
+      msg: $("#messageInput").val()
     });
-
-    if ($("#m").val() === secretWord && !guessed) {
+    
+    if ($("#messageInput").val() === secretWord && !guessed) {
       guessed = true;
       socket.emit("correct answer", {
         userName: userName,
         roundScore: 50
       });
     }
-    $("#m").val("");
+    $("#messageInput").val("");
     return false;
   });
 
@@ -99,9 +99,24 @@ $(document).ready(function() {
     roundEndTime = status.roundEndTime;
 
     // enable/disable guess word
-    document.getElementById("secretword").innerHTML = drawer
-      ? secretWord
-      : "_____";
+
+    document.getElementById("secretword").innerHTML = drawer ? status.secretWord: dashMaker(secretWord);
+
+    function dashMaker(secretWord){
+        let dashString = "_ ".repeat(secretWord.length);
+        return dashString;
+    }
+    if(drawer){
+    document.getElementById("chatSend").innerHTML = "Give up turn?";
+    document.getElementById("messageInput").value = "I give up and cant draw this."
+    document.getElementById("messageInput").disabled = true;
+    document.getElementById("chatSend").onclick = function(){socket.emit("next round")};
+    }
+    if(!drawer){
+    document.getElementById("chatSend").innerHTML = "send";
+    document.getElementById("messageInput").value = "";
+    document.getElementById("messageInput").disabled = false;
+    }
 
     startDrawing();
     countDownTimer;
@@ -113,7 +128,8 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-    $("#timer").html("Time Remaining: " + seconds + " Seconds");
+
+    $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
       socket.emit("next round",roomName);
@@ -173,8 +189,8 @@ $(document).ready(function() {
   //var sketch_style = getComputedStyle(sketch);
   //var canDraw = true; // prevent user from drawing when false
 */
-  canvas.width = window.innerWidth * 0.63; // controls responsive resizing of drawing canvas, width
-  canvas.height = window.innerHeight * 0.8;
+  canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
+  canvas.height = document.getElementById("sketch").offsetHeight;
   let startX, startY, endX, endY;
 
   let mouse = {
@@ -185,8 +201,8 @@ $(document).ready(function() {
   var startDrawing = function() {
     console.log("draw on canvas");
     canvas.onmousemove = function(e) {
-      mouse.x = e.pageX - this.offsetLeft;
-      mouse.y = e.pageY - this.offsetTop;
+      mouse.x = e.pageX - $(this).offset().left;
+      mouse.y = e.pageY - $(this).offset().top;
       endX = mouse.x;
       endY = mouse.y;
     };
