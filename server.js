@@ -124,6 +124,7 @@ io.on("connection", function(socket) {
   });
 
   socket.on("clearScreen", function() {
+      history = [];
     io.emit("clearScreen");
   });
 
@@ -157,6 +158,18 @@ let startNextRound = function() {
     roundScores: users.map(x=>x.roundScore),
     totalScores: users.map(x=>x.totalScore)
   })
+
+  // function sleep(milliseconds) { 
+  //   let timeStart = new Date().getTime(); 
+  //   while (true) { 
+  //   let elapsedTime = new Date().getTime() - timeStart; 
+  //   if (elapsedTime > milliseconds) { 
+  //     break; 
+  //   } 
+  //   } 
+  // } 
+  
+  // sleep(5000);
 
   io.emit('clearScreen');
   users[0].leave("drawer");
