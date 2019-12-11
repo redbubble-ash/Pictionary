@@ -3,7 +3,7 @@ var app = express();
 var path = require("path");
 var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
-var port = 3000;
+var port = process.env.PORT ||3000 ;
 
 let main = "./public/main.js";
 
