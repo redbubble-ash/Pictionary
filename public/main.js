@@ -113,7 +113,7 @@ $(document).ready(function() {
         let dashString = "_ ".repeat(secretWord.length);
         return dashString;
     }
-    if(drawer){
+    if(drawer){ 
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
     document.getElementById("messageInput").disabled = true;
@@ -229,7 +229,6 @@ $(document).ready(function() {
     };
 
     var onPaint = function() {
-      //   ctx.lineTo(mouse.x, mouse.y);
       if (drawer) {
         ctx.strokeStyle = colour;
         ctx.lineWidth = lineSize;
@@ -262,7 +261,6 @@ $(document).ready(function() {
 
   /* Mouse Capturing Work */
 
-  // disableDrawing();
   socket.on("draw", draw);
 
   ctx.lineJoin = "round";
@@ -300,21 +298,11 @@ $(document).ready(function() {
 
   //size changing
   let lineSize = 2;
-  document.getElementById("xSmaller").onclick = function() {
-    lineSize = 2;
-  };
-  document.getElementById("small").onclick = function() {
-    lineSize = 5;
-  };
-  document.getElementById("medium").onclick = function() {
-    lineSize = 10;
-  };
-  document.getElementById("large").onclick = function() {
-    lineSize = 20;
-  };
-  document.getElementById("xLarger").onclick = function() {
-    lineSize = 30;
-  };
+  document.getElementById("xSmaller").onclick = function() {lineSize = 2;};
+  document.getElementById("small").onclick = function() {lineSize = 5;};
+  document.getElementById("medium").onclick = function() {lineSize = 10;};
+  document.getElementById("large").onclick = function() {lineSize = 20;};
+  document.getElementById("xLarger").onclick = function() {lineSize = 30;};
 
   // canvas clear functions
   document.getElementById("clear").onclick = function() {
@@ -340,26 +328,9 @@ $(document).ready(function() {
     ctx.globalCompositeOperation = "source-over";
   }
 
-  //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
   disableDrawing();
   socket.on("draw", draw);
 
-  /* consider chunk below for deletion
-    // function getColor(colour) {
-        //     if (canDraw) ctx.strokeStyle = colour;
-        //     else ctx.strokeStyle = "transparent";
-        // }
-        
-        // function getSize(size) {
-            //     ctx.lineWidth = size;
-            // }
-            
-            // function clearCanvas() {
-                //     ctx.clearRect(0, 0, 500, 250);
-                // }
-                //ctx.strokeStyle =
-                //ctx.strokeStyle = document.settings.colour[1].value;
-    */
   function draw(line) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
@@ -383,7 +354,6 @@ $(document).ready(function() {
   };
 
   var onPaint = function() {
-    //   ctx.lineTo(mouse.x, mouse.y);
     ctx.strokeStyle = colour; //allows color to change
     ctx.lineWidth = lineSize; // allows size to change
     ctx.beginPath();
@@ -409,10 +379,10 @@ $(document).ready(function() {
   };
 
   // check input and determine if it's the correct answer
-  function checkAnswer() {
-    if (document.getElementById("answer").value == secretWord)
-      document.getElementById("result").innerHTML = "Correct";
-  }
+//   function checkAnswer() {
+//     if (document.getElementById("answer").value == secretWord)
+//       document.getElementById("result").innerHTML = "Correct";
+//   }
 
   // disable buttons when it's not user's turn to draw
   function disableDrawing() {
