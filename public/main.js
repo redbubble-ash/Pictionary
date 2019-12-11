@@ -38,7 +38,7 @@ $(document).ready(function() {
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, roomName, function(past) {
         past.forEach(line => draw(line));
-        console.log(past);
+        past.forEach(x=>console.log(x));
       });
       console.log(userName + " has joined!");
       $(".grey-out").fadeOut(300);
@@ -74,6 +74,13 @@ $(document).ready(function() {
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
+
+    if(drawer){
+      socket.emit("next round",roomName);
+    }
+
+
+
     socket.emit("chat message", {
       roomName: roomName,
       userName: userName,
@@ -97,6 +104,7 @@ $(document).ready(function() {
     roomName = status.roomName;
     secretWord = status.secretWord;
     roundEndTime = status.roundEndTime;
+    guessed = false;
 
     // enable/disable guess word
 
@@ -110,7 +118,7 @@ $(document).ready(function() {
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
     document.getElementById("messageInput").disabled = true;
-    document.getElementById("chatSend").onclick = function(){socket.emit("next round")};
+    
     }
     if(!drawer){
     document.getElementById("chatSend").innerHTML = "send";
@@ -166,7 +174,7 @@ $(document).ready(function() {
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append("Time is up");
     for (let i = 0; i < names.length; i++) {
-      $("#roundresults").append(
+      $("#roundResults").append(
         $("<li>").text(
           names[i] + " round: " + roundScores[i] + ", total: " + totalScores[i]
         )
