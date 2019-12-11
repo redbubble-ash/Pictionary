@@ -4,9 +4,9 @@ $(document).ready(function() {
   let conversation = "";
   let drawer;
   let secretWord;
+  let roomName;
   let guessed = false;
 
- 
   // let roundStartTime;
   // let roundEndTime;
   // let count;
@@ -21,6 +21,9 @@ $(document).ready(function() {
       userName = $("#userName")
         .val()
         .trim();
+      let roomName = $("#roomName")
+        .val()
+        .trim();
       // if (userName == "") {
       //     return false
       // };
@@ -33,9 +36,9 @@ $(document).ready(function() {
       // };
 
       $("#newUser").html("Log in succeed: " + userName);
-      socket.emit("join", userName, function(past) {
-        past.history.forEach(line => draw(line));
-        console.log("past" +past);
+      socket.emit("join", userName, roomName, function(past) {
+        past.forEach(line => draw(line));
+        console.log(past);
       });
       console.log(userName + " has joined!");
       $(".grey-out").fadeOut(300);
@@ -72,6 +75,7 @@ $(document).ready(function() {
   // Chat and guess area
   $("#messagesForm").submit(function() {
     socket.emit("chat message", {
+      roomName: roomName,
       userName: userName,
       msg: $("#messageInput").val()
     });
@@ -82,25 +86,20 @@ $(document).ready(function() {
         userName: userName,
         roundScore: 50
       });
-      //socket.emit("next round");
     }
     $("#messageInput").val("");
     return false;
   });
 
-  // socket.on('timeRemaining', function(count2){
-  //     $("#timer").html("Time Remaining: " + count2 + " Seconds")
-  //     count = count2;
-  //     counter = setInterval(timer, 1000); //run it every 1 second
-
-  // });
 
   socket.on("gameStatus", function(status) {
     drawer = status.drawer;
+    roomName = status.roomName;
     secretWord = status.secretWord;
     roundEndTime = status.roundEndTime;
 
     // enable/disable guess word
+
     document.getElementById("secretword").innerHTML = drawer ? status.secretWord: dashMaker(secretWord);
 
     function dashMaker(secretWord){
@@ -119,21 +118,6 @@ $(document).ready(function() {
     document.getElementById("messageInput").disabled = false;
     }
 
-    // if (drawer) {
-    //     count = 45;
-    //     // start the timer for 30 second
-    //     counter = setInterval(timer, 1000); //run it every 1 second
-    // }
-    // else{
-    //     socket.on('time',function(count1){
-    //         $("#timer").html("Time Remaining: " + count1 + " Seconds")
-    //         count = count1;
-    //         counter = setInterval(timer, 1000); //run it every 1 second
-
-    //     });
-    // }
-    // clearInterval(countDownTimer);
-
     startDrawing();
     countDownTimer;
   });
@@ -144,18 +128,15 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
+
     $("#timer").html(seconds + " Seconds");
-   
+
     if (distance <= 0 && drawer) {
-      socket.emit("next round");
+      socket.emit("next round",roomName);
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
 
-  // socket.on('secretWord', function(secretWord){
-  //     document.getElementById('secretword').innerHTML= secretWord;
-
-  // })
 
   socket.on("hello", function(msg) {
     $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
@@ -166,7 +147,7 @@ $(document).ready(function() {
       $("<li>").text(msg.userName + " has the correct answer!")
     );
     window.scrollTo(0, -document.body.scrollHeight);
-    socket.emit("take turns");
+    // socket.emit("take turns");
   });
 
   socket.on("roundResults", function(results) {
@@ -180,7 +161,7 @@ $(document).ready(function() {
     $("#timesUp").empty();
 
     // popUp window to display score board
-    $('.hover_bkgr_fricc').show();
+    $(".hover_bkgr_fricc").show();
     //$("#scoreBoard").fadeIn("slow");
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append("Time is up");
@@ -192,7 +173,7 @@ $(document).ready(function() {
       );
     }
     setTimeout(() => {
-      $('.hover_bkgr_fricc').fadeOut("slow");
+      $(".hover_bkgr_fricc").fadeOut("slow");
     }, 5000);
 
     setTimeout(() => {
