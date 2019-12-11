@@ -79,12 +79,13 @@ form {
 /*\/used for canvas & controls\/ */
 #sketch {
   border: 2px solid black;
-  height: 90%;
+  height: 85%;
   /* border: 2px solid black; */
 }
 #settings { 
   display: block;
   text-align:center;
+  
 }
 #red{
   background: red;
