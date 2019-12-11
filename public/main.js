@@ -73,10 +73,10 @@ $(document).ready(function() {
   $("#messagesForm").submit(function() {
     socket.emit("chat message", {
       userName: userName,
-      msg: $("#m").val()
+      msg: $("#messageInput").val()
     });
 
-    if ($("#m").val() === secretWord && !guessed) {
+    if ($("#messageInput").val() === secretWord && !guessed) {
       guessed = true;
       socket.emit("correct answer", {
         userName: userName,
@@ -84,7 +84,7 @@ $(document).ready(function() {
       });
       //socket.emit("next round");
     }
-    $("#m").val("");
+    $("#messageInput").val("");
     return false;
   });
 

@@ -145,26 +145,26 @@ form button {
 #messageInput{
   border-right: 1px solid black;
 }
-#messages {
+/* #messages {
   list-style-type: none;
   height: 100%;
   width: 100%;
-  /* border: 1px solid #000; */
+  border: 1px solid #000;
   display: table-cell;
   vertical-align: bottom; 
-}
+} */
 #chatSend{
   border-bottom: 2px solid black;
   border-top: 2px solid black;
   border-right: 2px solid black;
   border-left: 1px solid black;
 }
-#messages {
+/* #messages {
   width: 100%;
   margin: 0%;
   padding-top: 5px;
   padding-bottom: 5px;
-}
+} */
 #messages p:nth-child(odd) {
   background: #eee;
 }
