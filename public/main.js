@@ -79,13 +79,20 @@ $(document).ready(function() {
       userName: userName,
       msg: $("#messageInput").val()
     });
-    
-    if ($("#messageInput").val() === secretWord && !guessed) {
+    let isAMatch = false;
+    let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
+    if(toBeEval.toLowerCase().search(secretWord)>= 0){ // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
+        isAMatch = true;
+    }
+
+    if (isAMatch && !guessed) {
       guessed = true;
       socket.emit("correct answer", {
         userName: userName,
         roundScore: 50
       });
+      isAMatch = false; // resets isAMatch to false
+      //socket.emit("next round");
     }
     $("#messageInput").val("");
     return false;
