@@ -166,7 +166,8 @@ $(document).ready(function() {
     $("#timesUp").empty();
 
     // popUp window to display score board
-    $("#scoreBoard").fadeIn("slow");
+    $('.hover_bkgr_fricc').show();
+    //$("#scoreBoard").fadeIn("slow");
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append("Time is up");
     for (let i = 0; i < names.length; i++) {
@@ -177,7 +178,7 @@ $(document).ready(function() {
       );
     }
     setTimeout(() => {
-      $("#scoreBoard").fadeOut("slow");
+      $('.hover_bkgr_fricc').fadeOut("slow");
     }, 5000);
 
     setTimeout(() => {
