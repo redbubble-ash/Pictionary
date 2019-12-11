@@ -208,3 +208,6 @@ form button {
   font-weight: bold;
 }
 /* Popup box BEGIN */
+#scoreHolder{
+  border: 2px solid black;
+}
