@@ -35,7 +35,7 @@ $(document).ready(function() {
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, function(past) {
         past.history.forEach(line => draw(line));
-        console.log(past);
+        console.log("past" +past);
       });
       console.log(userName + " has joined!");
       $(".grey-out").fadeOut(300);
