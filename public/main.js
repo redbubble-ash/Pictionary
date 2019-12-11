@@ -103,7 +103,9 @@ $(document).ready(function() {
     // enable/disable guess word
     document.getElementById("secretword").innerHTML = drawer
       ? status.secretWord
-      : "_____";
+      : "_ _ _ _ _";
+
+      document.getElementById("chatSend").innerHTML = "Give up turn?";
 
     // if (drawer) {
     //     count = 45;
@@ -130,7 +132,7 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-    $("#timer").html("Time Remaining: " + seconds + " Seconds");
+    $("#timer").html(seconds + " Seconds");
    
     if (distance <= 0 && drawer) {
       socket.emit("next round");
@@ -194,8 +196,8 @@ $(document).ready(function() {
   //var sketch_style = getComputedStyle(sketch);
   //var canDraw = true; // prevent user from drawing when false
 */
-  canvas.width = window.innerWidth * 0.63; // controls responsive resizing of drawing canvas, width
-  canvas.height = window.innerHeight * 0.8;
+  canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
+  canvas.height = document.getElementById("sketch").offsetHeight;
   let startX, startY, endX, endY;
 
   let mouse = {
@@ -206,8 +208,8 @@ $(document).ready(function() {
   var startDrawing = function() {
     console.log("draw on canvas");
     canvas.onmousemove = function(e) {
-      mouse.x = e.pageX - this.offsetLeft;
-      mouse.y = e.pageY - this.offsetTop;
+      mouse.x = e.pageX - $(this).offset().left;
+      mouse.y = e.pageY - $(this).offset().top;
       endX = mouse.x;
       endY = mouse.y;
     };
