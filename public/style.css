@@ -20,6 +20,7 @@
   margin-left: 25px;
 } 
 #secretword{
+  letter-spacing: 2px;
   width: 20%;
   margin-left: auto;
   margin-right: auto;
@@ -69,12 +70,6 @@ body {
   height: 30px;
   background-color: #9BCD9B;
 }
-/* form {
-  background: #000;
-  border: 3px;
-  bottom: 0;
-  width: 100%;    
-} */
 /*/\used for login popup box/\ */
 /*\/used for canvas & controls\/ */
 #sketch {

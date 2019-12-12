@@ -7,11 +7,6 @@ $(document).ready(function() {
   let roomName;
   let guessed = false;
 
-  // let roundStartTime;
-  // let roundEndTime;
-  // let count;
-  // let counter;
-
   // Login
   function loginSucceed() {
     $(".grey-out").fadeIn(500);
@@ -49,29 +44,6 @@ $(document).ready(function() {
 
   loginSucceed();
 
-  var users = [];
-  //socket.on('userlist', userlist);
-
-  // function timer() {
-  //     count = count - 1;
-  //     console.log("remainting time: " + count);
-  //     if (count === 0) {
-  //         socket.emit("next round");
-  //         $("#timeOut").html("Out of time! &#128543;");
-  //     } else if (count < 0) {
-  //         clearInterval(counter);
-  //         return;
-  //     }
-  //     // if (count < 0) {
-  //     //     clearInterval(counter);
-  //     //     $("#timeOut").html("Out of time! &#128543;");
-  //     //     return;
-  //     // }
-
-  //     socket.emit('timer', count );
-  //     $("#timer").html("Time Remaining: " + count + " Seconds")
-  // }
-
   // Chat and guess area
   $("#messagesForm").submit(function() {
 
@@ -104,24 +76,52 @@ $(document).ready(function() {
     $("#messageInput").val("");
     return false;
   });
+  
+  function dashMaker(secretWord){
+    return secretWord.replace(/[a-zA-Z]/g, "_");
+  } 
 
+  let newHint = "";
+  function hintMaker(word, seconds){
+    let hint = dashMaker(word);
+    const index1 = Math.floor(Math.random() * hint.length); 
+    const index2 = noMatch12();
+    const index3 = noMatch123();
 
+    function noMatch12(){
+      temp = Math.floor(Math.random() * hint.length);
+      if(temp === index1){
+        noMatch12();
+      }
+      return temp;
+    }
+    function noMatch123(){
+      temp = Math.floor(Math.random() * hint.length);
+      if(temp === index1 || temp === index2){
+        noMatch123();
+      }
+      return temp;
+    }
+
+    if(seconds > 60){
+      newHint = hint;
+    }else if (seconds === 60){
+      newHint = hint.substring(0,index1) + word[index1] + hint.substring(index1 + 1);
+    }else if (seconds === 30 && word.length > 4){
+      newHint = newHint.substring(0,index2) + word[index2] + newHint.substring(index2 + 1);
+    }else if(seconds === 10 && word.length > 3){
+      newHint = newHint.substring(0,index3) + word[index3] + newHint.substring(index3 + 1);
+    }
+    return newHint;
+  }
   socket.on("gameStatus", function(status) {
     drawer = status.drawer;
     roomName = status.roomName;
     secretWord = status.secretWord;
     roundEndTime = status.roundEndTime;
     guessed = false;
-
-    // enable/disable guess word
-
-    document.getElementById("secretword").innerHTML = drawer ? status.secretWord: dashMaker(secretWord);
-
-    function dashMaker(secretWord){
-        let dashString = "_ ".repeat(secretWord.length);
-        return dashString;
-    }
-    if(drawer){
+    
+    if(drawer){ 
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
     document.getElementById("messageInput").disabled = true;
@@ -138,12 +138,12 @@ $(document).ready(function() {
   });
 
   function gameTimer() {
-    console.log("end time: " + roundEndTime);
+    //console.log("end time: " + roundEndTime);
     let now = new Date().getTime();
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-
+    document.getElementById("secretword").innerHTML = drawer ? secretWord: hintMaker(secretWord,seconds);
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
@@ -235,7 +235,6 @@ $(document).ready(function() {
     };
 
     var onPaint = function() {
-      //   ctx.lineTo(mouse.x, mouse.y);
       if (drawer) {
         ctx.strokeStyle = colour;
         ctx.lineWidth = lineSize;
@@ -268,7 +267,6 @@ $(document).ready(function() {
 
   /* Mouse Capturing Work */
 
-  // disableDrawing();
   socket.on("draw", draw);
 
   ctx.lineJoin = "round";
@@ -306,21 +304,11 @@ $(document).ready(function() {
 
   //size changing
   let lineSize = 2;
-  document.getElementById("xSmaller").onclick = function() {
-    lineSize = 2;
-  };
-  document.getElementById("small").onclick = function() {
-    lineSize = 5;
-  };
-  document.getElementById("medium").onclick = function() {
-    lineSize = 10;
-  };
-  document.getElementById("large").onclick = function() {
-    lineSize = 20;
-  };
-  document.getElementById("xLarger").onclick = function() {
-    lineSize = 30;
-  };
+  document.getElementById("xSmaller").onclick = function() {lineSize = 2;};
+  document.getElementById("small").onclick = function() {lineSize = 5;};
+  document.getElementById("medium").onclick = function() {lineSize = 10;};
+  document.getElementById("large").onclick = function() {lineSize = 20;};
+  document.getElementById("xLarger").onclick = function() {lineSize = 30;};
 
   // canvas clear functions
   document.getElementById("clear").onclick = function() {
@@ -346,26 +334,9 @@ $(document).ready(function() {
     ctx.globalCompositeOperation = "source-over";
   }
 
-  //ctx.strokeStyle = canDraw ? console.log(colour) : "transparent";
   disableDrawing();
   socket.on("draw", draw);
 
-  /* consider chunk below for deletion
-    // function getColor(colour) {
-        //     if (canDraw) ctx.strokeStyle = colour;
-        //     else ctx.strokeStyle = "transparent";
-        // }
-        
-        // function getSize(size) {
-            //     ctx.lineWidth = size;
-            // }
-            
-            // function clearCanvas() {
-                //     ctx.clearRect(0, 0, 500, 250);
-                // }
-                //ctx.strokeStyle =
-                //ctx.strokeStyle = document.settings.colour[1].value;
-    */
   function draw(line) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
@@ -389,7 +360,6 @@ $(document).ready(function() {
   };
 
   var onPaint = function() {
-    //   ctx.lineTo(mouse.x, mouse.y);
     ctx.strokeStyle = colour; //allows color to change
     ctx.lineWidth = lineSize; // allows size to change
     ctx.beginPath();
@@ -413,12 +383,6 @@ $(document).ready(function() {
     startX = endX;
     startY = endY;
   };
-
-  // check input and determine if it's the correct answer
-  function checkAnswer() {
-    if (document.getElementById("answer").value == secretWord)
-      document.getElementById("result").innerHTML = "Correct";
-  }
 
   // disable buttons when it's not user's turn to draw
   function disableDrawing() {
