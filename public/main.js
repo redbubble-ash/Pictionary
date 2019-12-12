@@ -171,13 +171,11 @@ $(document).ready(function() {
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
 
-    $("#roundresults").empty();
+    $("#roundResults").empty();
     $("#secretWord").empty();
     $("#timesUp").empty();
 
-    // popUp window to display score board
     $(".hover_bkgr_fricc").show();
-    //$("#scoreBoard").fadeIn("slow");
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append("Time is up");
     for (let i = 0; i < names.length; i++) {
