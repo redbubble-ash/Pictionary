@@ -38,7 +38,7 @@ $(document).ready(function() {
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, roomName, function(past) {
         past.forEach(line => draw(line));
-        past.forEach(x=>console.log(x));
+        past.forEach(x => console.log(x));
       });
       console.log(userName + " has joined!");
       $(".grey-out").fadeOut(300);
@@ -74,12 +74,9 @@ $(document).ready(function() {
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
-
-    if(drawer){
-      socket.emit("next round",roomName);
+    if (drawer) {
+      socket.emit("next round", roomName);
     }
-
-
 
     socket.emit("chat message", {
       roomName: roomName,
@@ -88,8 +85,9 @@ $(document).ready(function() {
     });
     let isAMatch = false;
     let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
-    if(toBeEval.toLowerCase().search(secretWord)>= 0){ // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
-        isAMatch = true;
+    if (toBeEval.toLowerCase().search(secretWord) >= 0) {
+      // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
+      isAMatch = true;
     }
 
     if (isAMatch && !guessed) {
@@ -105,7 +103,6 @@ $(document).ready(function() {
     return false;
   });
 
-
   socket.on("gameStatus", function(status) {
     drawer = status.drawer;
     roomName = status.roomName;
@@ -115,22 +112,24 @@ $(document).ready(function() {
 
     // enable/disable guess word
 
-    document.getElementById("secretword").innerHTML = drawer ? status.secretWord: dashMaker(secretWord);
+    document.getElementById("secretword").innerHTML = drawer
+      ? status.secretWord
+      : dashMaker(secretWord);
 
-    function dashMaker(secretWord){
-        let dashString = "_ ".repeat(secretWord.length);
-        return dashString;
+    function dashMaker(secretWord) {
+      let dashString = "_ ".repeat(secretWord.length);
+      return dashString;
     }
-    if(drawer){
-    document.getElementById("chatSend").innerHTML = "Give up turn?";
-    document.getElementById("messageInput").value = "I give up and cant draw this."
-    document.getElementById("messageInput").disabled = true;
-    
+    if (drawer) {
+      document.getElementById("chatSend").innerHTML = "Give up turn?";
+      document.getElementById("messageInput").value =
+        "I give up and cant draw this.";
+      document.getElementById("messageInput").disabled = true;
     }
-    if(!drawer){
-    document.getElementById("chatSend").innerHTML = "send";
-    document.getElementById("messageInput").value = "";
-    document.getElementById("messageInput").disabled = false;
+    if (!drawer) {
+      document.getElementById("chatSend").innerHTML = "send";
+      document.getElementById("messageInput").value = "";
+      document.getElementById("messageInput").disabled = false;
     }
 
     startDrawing();
@@ -143,15 +142,13 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
-      socket.emit("next round",roomName);
+      socket.emit("next round", roomName);
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
-
 
   socket.on("hello", function(msg) {
     $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
@@ -163,7 +160,6 @@ $(document).ready(function() {
     );
     window.scrollTo(0, -document.body.scrollHeight);
     // socket.emit("take turns");
-
   });
 
   socket.on("roundResults", function(results) {
@@ -195,31 +191,27 @@ $(document).ready(function() {
       $("#timer").show();
     }, 5000);
 
-        //update the score board    
-        let scores =[];
-        for(let i = 0; i<names.length; i++){
-          scores.push(totalScores[i]);
-          scores = scores.sort((a,b) => b-a);
+    //update the score board
+    let scores = [];
+    for (let i = 0; i < names.length; i++) {
+      scores.push(totalScores[i]);
+      scores = scores.sort((a, b) => b - a);
+    }
 
-        }
+    console.log("scores: " + scores);
+    for (let i = 0; i < names.length; i++) {
+      function findScore(score) {
+        return score === totalScores[i];
+      }
+      let rank = scores.findIndex(findScore);
+      rank++;
+      //console.log("Player: "+names[i]+"RANK "+rank)
+      let $name = $("<p>" + names[i] + "</p>");
+      $nameScore = $name.append($("<p>" + " Total: " + totalScores[i] + "</p>"));
+      $("#roundresults").append($nameScore);
 
-        console.log("scores: "+scores);
-        for(let i = 0; i<names.length; i++){
-          function findScore(score){
-            return score === totalScores[i]
-          }
-          let rank = scores.findIndex(findScore);
-          rank ++;
-          console.log("Player: "+names[i]+"RANK "+rank)
-    
-            $("#roundresults").append(
-            '<li>' +'<b> #'+rank+'</b> '+names[i]+' Total: '+totalScores[i]+'</li>'
-            )
-        }
-    
-    
-    
-
+      // $("#roundresults").append("<li>" + "<b> #" + rank + "</b> " + $nameScore);
+    }
   });
 
   // Canvas drawing area
