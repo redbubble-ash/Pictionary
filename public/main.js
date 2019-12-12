@@ -203,7 +203,9 @@ $(document).ready(function() {
   //var canDraw = true; // prevent user from drawing when false
 */
   canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
-  canvas.height = document.getElementById("sketch").offsetHeight;
+  canvas.height = document.getElementById("sketch").offsetHeight; 
+  // canvas.style.width = "800px";
+  // canvas.style.height = "600px";
   let startX, startY, endX, endY;
 
   let mouse = {
