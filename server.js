@@ -21,7 +21,7 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 20000; //make timer 60,000
+var roundTime = 30000; //make timer 95,000 before release
 let roundEndTime;
 
 // let curTurnIdx = 0;
@@ -82,32 +82,7 @@ io.on("connection", function(socket) {
 
   socket.on("chat message", function(msg) {
     io.to(msg.roomName).emit("hello", msg);
-
-    // io.to('guesser').emit('hello', msg);
-    // users[curTurnIdx].leave('drawer');
-    // console.log(users[curTurnIdx].userName + "left drawer");
-    // users[curTurnIdx].join('guesser');
-    // console.log(users[curTurnIdx].userName + "join guesser");
-    // users[curTurnIdx+1].leave('guesser');
-    // console.log(users[curTurnIdx].userName + "left guesser");
-    // users[curTurnIdx+1].join('drawer');
-    // console.log(users[curTurnIdx+1].userName + "join drawer");
-    // if(users[curTurnIdx]==socket){
-    //     socket.leave('drawer');
-    //     console.log('left drawer');
-    //     socket.join('guesser');
-    //     console.log('join guesser');
-    // }
-
-    // socket.join('drawer');
-    // console.log()
   });
-
-  //   socket.on('timer',function(count){
-  //     remainingTime = count;
-  //     io.emit("timer", count);
-  //     console.log("timer remaining: "+ remainingTime);
-  // })
 
   socket.on("correct answer", function(msg) {
     socket.roundScore = msg.roundScore;
@@ -170,19 +145,6 @@ let startNextRound = function(roomName) {
     roundScores: rooms[roomName].users.map(x => x.roundScore),
     totalScores: rooms[roomName].users.map(x => x.totalScore)
   });
-
-
-  // function sleep(milliseconds) {
-  //   let timeStart = new Date().getTime();
-  //   while (true) {
-  //   let elapsedTime = new Date().getTime() - timeStart;
-  //   if (elapsedTime > milliseconds) {
-  //     break;
-  //   }
-  //   }
-  // }
-
-  // sleep(5000);
 
   io.to(roomName).emit("clearScreen");
   rooms[roomName].users.push(rooms[roomName].users.shift());
