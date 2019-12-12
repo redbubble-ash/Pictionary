@@ -163,6 +163,7 @@ $(document).ready(function() {
     );
     window.scrollTo(0, -document.body.scrollHeight);
     // socket.emit("take turns");
+
   });
 
   socket.on("roundResults", function(results) {
@@ -174,6 +175,7 @@ $(document).ready(function() {
     $("#roundResults").empty();
     $("#secretWord").empty();
     $("#timesUp").empty();
+    $("#roundresults").empty();
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
@@ -192,6 +194,32 @@ $(document).ready(function() {
     setTimeout(() => {
       $("#timer").show();
     }, 5000);
+
+        //update the score board    
+        let scores =[];
+        for(let i = 0; i<names.length; i++){
+          scores.push(totalScores[i]);
+          scores = scores.sort((a,b) => b-a);
+
+        }
+
+        console.log("scores: "+scores);
+        for(let i = 0; i<names.length; i++){
+          function findScore(score){
+            return score === totalScores[i]
+          }
+          let rank = scores.findIndex(findScore);
+          rank ++;
+          console.log("Player: "+names[i]+"RANK "+rank)
+    
+            $("#roundresults").append(
+            '<li>' +'<b> #'+rank+'</b> '+names[i]+' Total: '+totalScores[i]+'</li>'
+            )
+        }
+    
+    
+    
+
   });
 
   // Canvas drawing area
