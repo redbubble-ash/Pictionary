@@ -21,7 +21,7 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 30000; //make timer 95,000 before release
+var roundTime = 95000; //make timer 95,000 before release
 let roundEndTime;
 
 // let curTurnIdx = 0;

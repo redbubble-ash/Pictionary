@@ -233,6 +233,9 @@ $(document).ready(function() {
     canvas.onmouseup = function() {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
+    canvas.onmouseout = function() {
+      canvas.removeEventListener("mousemove", onPaint, false);
+    };
 
     var onPaint = function() {
       if (drawer) {
