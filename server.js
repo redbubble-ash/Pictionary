@@ -21,9 +21,8 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 95000; //make timer 95,000 before release
+var roundTime = 15000; //make timer 95,000 before release
 let roundEndTime;
-
 // let curTurnIdx = 0;
 
 var words = ["apple", "banana", "orange", "strawberry", "kiwi", "star fruit", "antidisestablishmentarianism"];
@@ -58,6 +57,11 @@ io.on("connection", function(socket) {
 
       console.log(rooms[room].secretWord);
       console.log("round end time" + rooms[room].roundEndTime);
+
+      // io.to(socket.room).emit("newPlayer",{
+      //   userName: socket.userName,
+      //   playerTotal: rooms[roomName].users.length
+      // })
 
 
       io.to(socket.id).emit("gameStatus", {
@@ -118,7 +122,7 @@ io.on("connection", function(socket) {
       if (rooms[socket.room].users.length == 1) {
         delete rooms[socket.room];
       } else {
-        startNextRound(socket.room);
+        startNextRound(socket.room, "Drawer Left!");
         rooms[socket.room].users.pop();
       }
       console.log("drawer disconnected");
@@ -138,7 +142,7 @@ let generateSecretWord = function() {
   return words[Math.floor(Math.random() * words.length)];
 };
 
-let startNextRound = function(roomName) {
+let startNextRound = function(roomName, reason) {
   if(rooms[roomName]!= undefined){
     rooms[roomName].history = [];
 
@@ -148,8 +152,11 @@ let startNextRound = function(roomName) {
   io.to(roomName).emit("roundResults", {
     userNames: rooms[roomName].users.map(x => x.userName),
     roundScores: rooms[roomName].users.map(x => x.roundScore),
-    totalScores: rooms[roomName].users.map(x => x.totalScore)
+    totalScores: rooms[roomName].users.map(x => x.totalScore),
+    reason: reason
   });
+
+  console.log("REASON IS " + reason);
 
   io.to(roomName).emit("clearScreen");
   rooms[roomName].users.push(rooms[roomName].users.shift());
@@ -169,7 +176,7 @@ let startNextRound = function(roomName) {
         roomName: roomName,
         secretWord: rooms[roomName].secretWord,
         drawer: true,
-        icon: socket.icon,
+        //icon: socket.icon,
         roundEndTime: rooms[roomName].roundEndTime
       });
     } else {
@@ -177,7 +184,7 @@ let startNextRound = function(roomName) {
         roomName: roomName,
         secretWord: rooms[roomName].secretWord,
         drawer: false,
-        icon: socket.icon,
+        //icon: socket.icon,
         roundEndTime: rooms[roomName].roundEndTime
       });
     }
