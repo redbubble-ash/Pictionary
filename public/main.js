@@ -6,12 +6,23 @@ $(document).ready(function() {
   let secretWord;
   let roomName;
   let guessed = false;
+  let icon;
+  let reason;
 
   // Login
   function loginSucceed() {
     // $(".game").toggle();
     $(".grey-out").fadeIn(500);
-    
+
+    $('#room').on('change', function() {
+      if(this.value==='custom'){
+        $("#roomName").css('visibility','visible');
+      }
+      else{
+        $("#roomName").css('visibility','hidden');
+      }
+    });
+
 
     $(".user").submit(function() {
       event.preventDefault();
@@ -42,9 +53,13 @@ $(document).ready(function() {
         past.forEach(x => console.log(x));
       });
       console.log(userName + " has joined!");
-      $("body").css({"background-image":"url(" + "/images/bkgbees.jpg" + ")", "background-size":"initial","background-repeat":"repeat"})
+      $("body").css({
+        "background-image": "url(" + "/images/bkgbees.jpg" + ")",
+        "background-size": "initial",
+        "background-repeat": "repeat"
+      });
       $(".grey-out").fadeOut(300);
-      $(".game").css('visibility', 'visible')
+      $(".game").css("visibility", "visible");
       // $(".user").fadeOut(300);
       //$('input.guess-input').focus();
     });
@@ -55,7 +70,8 @@ $(document).ready(function() {
   // Chat and guess area
   $("#messagesForm").submit(function() {
     if (drawer) {
-      socket.emit("next round", roomName);
+      reason = "Drawer Gave up!";
+      socket.emit("next round", roomName, reason);
     }
 
     socket.emit("chat message", {
@@ -82,41 +98,48 @@ $(document).ready(function() {
     $("#messageInput").val("");
     return false;
   });
-  
-  function dashMaker(secretWord){
+
+  function dashMaker(secretWord) {
     return secretWord.replace(/[a-zA-Z]/g, "_");
-  } 
+  }
 
   let newHint = "";
-  function hintMaker(word, seconds){
+  function hintMaker(word, seconds) {
     let hint = dashMaker(word);
-    const index1 = Math.floor(Math.random() * hint.length); 
+    const index1 = Math.floor(Math.random() * hint.length);
     const index2 = noMatch12();
     const index3 = noMatch123();
 
-    function noMatch12(){
+    function noMatch12() {
       temp = Math.floor(Math.random() * hint.length);
-      if(temp === index1){
+      if (temp === index1) {
         noMatch12();
       }
       return temp;
     }
-    function noMatch123(){
+    function noMatch123() {
       temp = Math.floor(Math.random() * hint.length);
-      if(temp === index1 || temp === index2){
+      if (temp === index1 || temp === index2) {
         noMatch123();
       }
       return temp;
     }
 
-    if(seconds > 60){
+    if (seconds > 60) {
       newHint = hint;
-    }else if (seconds === 60){
-      newHint = hint.substring(0,index1) + word[index1] + hint.substring(index1 + 1);
-    }else if (seconds === 30 && word.length > 4){
-      newHint = newHint.substring(0,index2) + word[index2] + newHint.substring(index2 + 1);
-    }else if(seconds === 10 && word.length > 3){
-      newHint = newHint.substring(0,index3) + word[index3] + newHint.substring(index3 + 1);
+    } else if (seconds === 60) {
+      newHint =
+        hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
+    } else if (seconds === 30 && word.length > 4) {
+      newHint =
+        newHint.substring(0, index2) +
+        word[index2] +
+        newHint.substring(index2 + 1);
+    } else if (seconds === 10 && word.length > 3) {
+      newHint =
+        newHint.substring(0, index3) +
+        word[index3] +
+        newHint.substring(index3 + 1);
     }
     return newHint;
   }
@@ -126,13 +149,17 @@ $(document).ready(function() {
     roomName = status.roomName;
     secretWord = status.secretWord;
     roundEndTime = status.roundEndTime;
+    icon = status.icon;
     guessed = false;
+
+    $('#currentRoom').text("Room: " + roomName);
+
     
     if(drawer){ 
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
     document.getElementById("messageInput").style.display = "none";
-    
+
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
@@ -150,11 +177,14 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-    document.getElementById("secretword").innerHTML = drawer ? secretWord: hintMaker(secretWord,seconds);
+    document.getElementById("secretword").innerHTML = drawer
+      ? secretWord
+      : hintMaker(secretWord, seconds);
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
-      socket.emit("next round", roomName);
+      reason = "Time's up!";
+      socket.emit("next round", roomName, reason);
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
@@ -176,6 +206,8 @@ $(document).ready(function() {
     let names = results.userNames;
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
+    let reasonNextRound = results.reason;
+
 
     $("#roundResults").empty();
     $("#secretWord").empty();
@@ -184,7 +216,8 @@ $(document).ready(function() {
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
-    $("#timesUp").append("Time is up");
+    console.log('REASON IS ' + reasonNextRound);
+    $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
       $("#roundResults").append(
         $("<li>").text(
@@ -200,28 +233,42 @@ $(document).ready(function() {
       $("#timer").show();
     }, 5000);
 
- //update the score board
- let scores = [];
- for (let i = 0; i < names.length; i++) {
-   scores.push(totalScores[i]);
-   scores = scores.sort((a, b) => b - a);
- }
+    //update the score board
+    let scores = [];
+    for (let i = 0; i < names.length; i++) {
+      scores.push(totalScores[i]);
+      scores = scores.sort((a, b) => b - a);
+    }
 
- console.log("scores: " + scores);
- for (let i = 0; i < names.length; i++) {
-   function findScore(score) {
-     return score === totalScores[i];
-   }
-   let rank = scores.findIndex(findScore);
-   rank++;
-   //console.log("Player: "+names[i]+"RANK "+rank)
-   let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
-   let $nameScore = $name.append($("<p style='text-align: center'>" + " Total: " + totalScores[i] + "</p>"));
-   let $scoreList =$("<div>");
-   $scoreList.append("<strong style='float:left; font-size:large;text-align: center'>" + "# "+ rank + "</strong>");
-   $scoreList.append($nameScore);
-   $("#roundresults").append($scoreList);
- }  });
+    console.log("scores: " + scores);
+    for (let i = 0; i < names.length; i++) {
+      function findScore(score) {
+        return score === totalScores[i];
+      }
+      let rank = scores.findIndex(findScore);
+      rank++;
+      //console.log("Player: "+names[i]+"RANK "+rank)
+      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+      let $nameScore = $name.append(
+        $(
+          "<p style='text-align: center'>" +
+            " Total: " +
+            totalScores[i] +
+            "</p>"
+        )
+      );
+      let $scoreList = $("<div>");
+      $scoreList.append(
+        "<strong style='float:left; font-size:large;text-align: center'>" +
+          "# " +
+          rank +
+          "</strong>"
+      );
+      $scoreList.append($nameScore);
+      $("#roundresults").append($scoreList);
+      $("#roundInfo").text("Round " + results.round);
+    }
+  });
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
@@ -348,11 +395,21 @@ $(document).ready(function() {
 
   //size changing
   let lineSize = 2;
-  document.getElementById("xSmaller").onclick = function() {lineSize = 2;};
-  document.getElementById("small").onclick = function() {lineSize = 5;};
-  document.getElementById("medium").onclick = function() {lineSize = 10;};
-  document.getElementById("large").onclick = function() {lineSize = 20;};
-  document.getElementById("xLarger").onclick = function() {lineSize = 30;};
+  document.getElementById("xSmaller").onclick = function() {
+    lineSize = 2;
+  };
+  document.getElementById("small").onclick = function() {
+    lineSize = 5;
+  };
+  document.getElementById("medium").onclick = function() {
+    lineSize = 10;
+  };
+  document.getElementById("large").onclick = function() {
+    lineSize = 20;
+  };
+  document.getElementById("xLarger").onclick = function() {
+    lineSize = 30;
+  };
 
   // canvas clear functions
   document.getElementById("clear").onclick = function() {

@@ -30,7 +30,7 @@
     <div class="grey-out hidden">
 
         <form class="user">
-            <img src = "/images/logo4.png" class="img-fluid" alt="pictionary">
+            <img src = "/images/db.png" class="img-fluid" alt="pictionary">
             <!-- <label for="username">Nickname</label> -->
             <input id="userName" type="text" placeholder="Nickname" maxlength="14" autofocus>
             <!-- <label for="room">Room</label> -->
@@ -39,7 +39,8 @@
                 <option value = "food">Food</option>
                 <option value = "custom">Custom</option>
             </select>
-            <input id="roomName" type="text" placeholder="Room" maxlength="14" autofocus>
+            <input id="roomName" type="text" placeholder="Room" maxlength="14" autofocus style="visibility:hidden;"/>
+
             <button type="submit" id="login-button">Join a game!</button>
             <p id="newUser"></p>
         </form>
@@ -50,7 +51,7 @@
             <div class="container-fluid">
                     <div id="infoBars"class="row">
                         <div id="round"class="col-2">
-                            <h5 id="roundInfo">Round # of #</h5>
+                            <h5 id="roundInfo">Round 1</h5>
                         </div>
                         <div class="col-6">
                             <div id="infoHolder" class="row">
@@ -59,6 +60,9 @@
                                 <h2 id="secretword">SecretWord</h2>
                                 <!-- <div id="secretword">Secret Wood</div> -->
                             </div>
+                        </div>
+                        <div class="col-3">
+                            <h3 id="currentRoom"></h3>
                         </div>
                     </div>
                     <div class="row">
