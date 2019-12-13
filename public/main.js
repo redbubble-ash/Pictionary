@@ -226,15 +226,25 @@ $(document).ready(function() {
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
-  /* consider for deletion
-  //var sketch = document.getElementById("sketch");
-  //var sketch_style = getComputedStyle(sketch);
-  //var canDraw = true; // prevent user from drawing when false
-*/
-  canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
-  canvas.height = document.getElementById("sketch").offsetHeight; 
-  // canvas.style.width = "800px";
-  // canvas.style.height = "600px";
+  // canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
+  // canvas.height = document.getElementById("sketch").offsetHeight; 
+
+  // let width = ctx.canvas.clientWidth // controls responsive resizing of drawing canvas, width
+  // let height = ctx.canvas.clientHeight; 
+  // canvas.style.width = "640px";
+  // canvas.style.height = "480px";
+
+  console.log(window.innerWidth); 
+  if(window.innerWidth >= 1300){
+    console.log("Hey I am large")
+    canvas.width = 800;
+    ctx.canvas.height = 600;
+  } else{
+    console.log("Hey I am medium")
+    canvas.width = 640;
+    canvas.height = 480;
+  }
+  
   let startX, startY, endX, endY;
 
   let mouse = {
