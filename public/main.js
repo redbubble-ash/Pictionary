@@ -206,11 +206,14 @@ $(document).ready(function() {
       let rank = scores.findIndex(findScore);
       rank++;
       //console.log("Player: "+names[i]+"RANK "+rank)
-      let $name = $("<p>" + names[i] + "</p>");
-      $nameScore = $name.append($("<p>" + " Total: " + totalScores[i] + "</p>"));
-      $("#roundresults").append($nameScore);
-
-      // $("#roundresults").append("<li>" + "<b> #" + rank + "</b> " + $nameScore);
+      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+      let $nameScore = $name.append($("<p style='text-align: center'>" + " Total: " + totalScores[i] + "</p>"));
+      let $scoreList =$("<div>");
+      $scoreList.append("<strong style='float:left; font-size:large;text-align: center'>" + "# "+ rank + "</strong>");
+      $scoreList.append($nameScore);
+      $("#roundresults").append($scoreList);
+    //   $scoreList.append("<b> #" + rank + "</b> ");
+    //   $scoreList.append($nameScore);
     }
   });
 
