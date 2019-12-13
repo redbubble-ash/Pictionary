@@ -152,6 +152,8 @@ $(document).ready(function() {
     icon = status.icon;
     guessed = false;
 
+    $('#currentRoom').text("Room: " + roomName);
+
     
     if(drawer){ 
     document.getElementById("chatSend").innerHTML = "Give up turn?";
