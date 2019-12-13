@@ -130,13 +130,13 @@ $(document).ready(function() {
     if(drawer){ 
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
-    document.getElementById("messageInput").disabled = true;
+    document.getElementById("messageInput").style.display = "none";
     
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
       document.getElementById("messageInput").value = "";
-      document.getElementById("messageInput").disabled = false;
+      document.getElementById("messageInput").style.display = "block";
     }
 
     startDrawing();
