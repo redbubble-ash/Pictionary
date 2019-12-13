@@ -200,28 +200,30 @@ $(document).ready(function() {
       $("#timer").show();
     }, 5000);
 
-    //update the score board
-    let scores = [];
-    for (let i = 0; i < names.length; i++) {
-      scores.push(totalScores[i]);
-      scores = scores.sort((a, b) => b - a);
-    }
+ //update the score board
+ let scores = [];
+ for (let i = 0; i < names.length; i++) {
+   scores.push(totalScores[i]);
+   scores = scores.sort((a, b) => b - a);
+ }
 
-    console.log("scores: " + scores);
-    for (let i = 0; i < names.length; i++) {
-      function findScore(score) {
-        return score === totalScores[i];
-      }
-      let rank = scores.findIndex(findScore);
-      rank++;
-      //console.log("Player: "+names[i]+"RANK "+rank)
-      let $name = $("<p>" + names[i] + "</p>");
-      $nameScore = $name.append($("<p>" + " Total: " + totalScores[i] + "</p>"));
-      $("#roundresults").append($nameScore);
-
-      // $("#roundresults").append("<li>" + "<b> #" + rank + "</b> " + $nameScore);
-    }
-  });
+ console.log("scores: " + scores);
+ for (let i = 0; i < names.length; i++) {
+   function findScore(score) {
+     return score === totalScores[i];
+   }
+   let rank = scores.findIndex(findScore);
+   rank++;
+   //console.log("Player: "+names[i]+"RANK "+rank)
+   let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+   let $nameScore = $name.append($("<p style='text-align: center'>" + " Total: " + totalScores[i] + "</p>"));
+   let $scoreList =$("<div>");
+   $scoreList.append("<strong style='float:left; font-size:large;text-align: center'>" + "# "+ rank + "</strong>");
+   $scoreList.append($nameScore);
+   $("#roundresults").append($scoreList);
+ //   $scoreList.append("<b> #" + rank + "</b> ");
+ //   $scoreList.append($nameScore);
+ }  });
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
