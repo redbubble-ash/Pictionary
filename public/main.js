@@ -6,6 +6,7 @@ $(document).ready(function() {
   let secretWord;
   let roomName;
   let guessed = false;
+  let icon;
 
   // Login
   function loginSucceed() {
@@ -126,6 +127,7 @@ $(document).ready(function() {
     roomName = status.roomName;
     secretWord = status.secretWord;
     roundEndTime = status.roundEndTime;
+    icon = status.icon;
     guessed = false;
     
     if(drawer){ 
