@@ -37,6 +37,7 @@ io.on("connection", function(socket) {
     socket.roundScore = 0;
     socket.totalScore = 0;
     socket.room = room;
+    socket.icon = "/images/flower1.png";
 
     if (!rooms[room]) {
       console.log("room doesn't exist");
@@ -57,10 +58,13 @@ io.on("connection", function(socket) {
 
       console.log(rooms[room].secretWord);
       console.log("round end time" + rooms[room].roundEndTime);
+
+
       io.to(socket.id).emit("gameStatus", {
         roomName: rooms[room].roomName,
         secretWord: rooms[room].secretWord,
         roundEndTime: rooms[room].roundEndTime,
+        icon: socket.icon,
         drawer: true
       });
     } else {
@@ -68,6 +72,7 @@ io.on("connection", function(socket) {
         roomName: rooms[room].roomName,
         secretWord: rooms[room].secretWord,
         roundEndTime: rooms[room].roundEndTime,
+        icon: socket.icon,
         drawer: false
       });
       past(rooms[room].history);
@@ -164,6 +169,7 @@ let startNextRound = function(roomName) {
         roomName: roomName,
         secretWord: rooms[roomName].secretWord,
         drawer: true,
+        icon: socket.icon,
         roundEndTime: rooms[roomName].roundEndTime
       });
     } else {
@@ -171,6 +177,7 @@ let startNextRound = function(roomName) {
         roomName: roomName,
         secretWord: rooms[roomName].secretWord,
         drawer: false,
+        icon: socket.icon,
         roundEndTime: rooms[roomName].roundEndTime
       });
     }
