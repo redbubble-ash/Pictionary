@@ -259,7 +259,7 @@ $(document).ready(function() {
             "</p>"
         )
       );
-      let $scoreList = $("<div>");
+      let $scoreList = $("<div style='display = flex; align-items: center'>");
       $scoreList.append(
         "<strong style='float:left; font-size:large;text-align: center'>" +
           "# " +
@@ -267,10 +267,10 @@ $(document).ready(function() {
           "</strong>"
       );
       $scoreList.append($nameScore);
+      let $icon = $("<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/"+playerIcons[i]+"' alt='player icon'></img></p>");
+      $scoreList.append($icon);
       $("#roundresults").append($scoreList);
-      $("#roundresults").append("<img src='./images/icon/"+playerIcons[i]+"' alt='player icon'></img>")
-      //$("#roundresults").append("<img src='./images/icon/flower8.png' alt='player icon'></img>")
-      console.log("PLAYERS ICON IS" + playerIcons[i]);
+      //console.log("PLAYERS ICON IS" + playerIcons[i]);
     }
   });
 
