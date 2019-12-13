@@ -150,16 +150,17 @@ $(document).ready(function() {
     icon = status.icon;
     guessed = false;
 
-    if (drawer) {
-      document.getElementById("chatSend").innerHTML = "Give up turn?";
-      document.getElementById("messageInput").value =
-        "I give up and cant draw this.";
-      document.getElementById("messageInput").disabled = true;
+    
+    if(drawer){ 
+    document.getElementById("chatSend").innerHTML = "Give up turn?";
+    document.getElementById("messageInput").value = "I give up and cant draw this."
+    document.getElementById("messageInput").style.display = "none";
+
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
       document.getElementById("messageInput").value = "";
-      document.getElementById("messageInput").disabled = false;
+      document.getElementById("messageInput").style.display = "block";
     }
 
     startDrawing();
@@ -269,7 +270,9 @@ $(document).ready(function() {
   //var canDraw = true; // prevent user from drawing when false
 */
   canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
-  canvas.height = document.getElementById("sketch").offsetHeight;
+  canvas.height = document.getElementById("sketch").offsetHeight; 
+  // canvas.style.width = "800px";
+  // canvas.style.height = "600px";
   let startX, startY, endX, endY;
 
   let mouse = {
@@ -297,6 +300,9 @@ $(document).ready(function() {
     };
 
     canvas.onmouseup = function() {
+      canvas.removeEventListener("mousemove", onPaint, false);
+    };
+    canvas.onmouseout = function() {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
 
