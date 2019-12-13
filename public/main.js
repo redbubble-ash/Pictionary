@@ -208,6 +208,7 @@ $(document).ready(function() {
     let totalScores = results.totalScores;
     let reasonNextRound = results.reason;
 
+
     $("#roundResults").empty();
     $("#secretWord").empty();
     $("#timesUp").empty();
@@ -265,6 +266,7 @@ $(document).ready(function() {
       );
       $scoreList.append($nameScore);
       $("#roundresults").append($scoreList);
+      $("#roundInfo").text("Round " + results.round);
     }
   });
 
