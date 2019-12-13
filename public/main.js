@@ -14,16 +14,22 @@ $(document).ready(function() {
 
   // Login
   function loginSucceed() {
+    // $(".game").toggle();
     $(".grey-out").fadeIn(500);
-    $(".user").fadeIn(500);
+    
+
     $(".user").submit(function() {
       event.preventDefault();
       userName = $("#userName")
         .val()
         .trim();
-      let roomName = $("#roomName")
-        .val()
-        .trim();
+      let roomName = $("#room :selected").val();
+      if (roomName == "custom") {
+        roomName = $("#roomName")
+          .val()
+          .trim();
+      }
+
       // if (userName == "") {
       //     return false
       // };
@@ -38,11 +44,13 @@ $(document).ready(function() {
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, roomName, function(past) {
         past.forEach(line => draw(line));
-        past.forEach(x=>console.log(x));
+        past.forEach(x => console.log(x));
       });
       console.log(userName + " has joined!");
+      $("body").css({"background-image":"url(" + "/images/bkgbees.jpg" + ")", "background-size":"initial","background-repeat":"repeat"})
       $(".grey-out").fadeOut(300);
-      $(".user").fadeOut(300);
+      $(".game").css('visibility', 'visible')
+      // $(".user").fadeOut(300);
       //$('input.guess-input').focus();
     });
   }
@@ -74,19 +82,16 @@ $(document).ready(function() {
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
-
-    if(drawer){
-      socket.emit("next round",roomName);
+    if (drawer) {
+      socket.emit("next round", roomName);
     }
-
-
 
     socket.emit("chat message", {
       roomName: roomName,
       userName: userName,
       msg: $("#messageInput").val()
     });
-    
+
     if ($("#messageInput").val() === secretWord && !guessed) {
       guessed = true;
       socket.emit("correct answer", {
@@ -98,8 +103,8 @@ $(document).ready(function() {
     return false;
   });
 
-
   socket.on("gameStatus", function(status) {
+    console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu
     drawer = status.drawer;
     roomName = status.roomName;
     secretWord = status.secretWord;
@@ -108,22 +113,24 @@ $(document).ready(function() {
 
     // enable/disable guess word
 
-    document.getElementById("secretword").innerHTML = drawer ? status.secretWord: dashMaker(secretWord);
+    document.getElementById("secretword").innerHTML = drawer
+      ? status.secretWord
+      : dashMaker(secretWord);
 
-    function dashMaker(secretWord){
-        let dashString = "_ ".repeat(secretWord.length);
-        return dashString;
+    function dashMaker(secretWord) {
+      let dashString = "_ ".repeat(secretWord.length);
+      return dashString;
     }
-    if(drawer){
-    document.getElementById("chatSend").innerHTML = "Give up turn?";
-    document.getElementById("messageInput").value = "I give up and cant draw this."
-    document.getElementById("messageInput").disabled = true;
-    
+    if (drawer) {
+      document.getElementById("chatSend").innerHTML = "Give up turn?";
+      document.getElementById("messageInput").value =
+        "I give up and cant draw this.";
+      document.getElementById("messageInput").disabled = true;
     }
-    if(!drawer){
-    document.getElementById("chatSend").innerHTML = "send";
-    document.getElementById("messageInput").value = "";
-    document.getElementById("messageInput").disabled = false;
+    if (!drawer) {
+      document.getElementById("chatSend").innerHTML = "send";
+      document.getElementById("messageInput").value = "";
+      document.getElementById("messageInput").disabled = false;
     }
 
     startDrawing();
@@ -136,15 +143,13 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
-      socket.emit("next round",roomName);
+      socket.emit("next round", roomName);
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
-
 
   socket.on("hello", function(msg) {
     $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
