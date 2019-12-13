@@ -65,8 +65,9 @@ $(document).ready(function() {
     });
     let isAMatch = false;
     let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
-    if(toBeEval.toLowerCase().search(secretWord)>= 0){ // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
-        isAMatch = true;
+    if (toBeEval.toLowerCase().search(secretWord) >= 0) {
+      // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
+      isAMatch = true;
     }
 
     if (isAMatch && !guessed) {
@@ -179,6 +180,7 @@ $(document).ready(function() {
     $("#roundResults").empty();
     $("#secretWord").empty();
     $("#timesUp").empty();
+    $("#roundresults").empty();
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
@@ -197,7 +199,29 @@ $(document).ready(function() {
     setTimeout(() => {
       $("#timer").show();
     }, 5000);
-  });
+
+ //update the score board
+ let scores = [];
+ for (let i = 0; i < names.length; i++) {
+   scores.push(totalScores[i]);
+   scores = scores.sort((a, b) => b - a);
+ }
+
+ console.log("scores: " + scores);
+ for (let i = 0; i < names.length; i++) {
+   function findScore(score) {
+     return score === totalScores[i];
+   }
+   let rank = scores.findIndex(findScore);
+   rank++;
+   //console.log("Player: "+names[i]+"RANK "+rank)
+   let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+   let $nameScore = $name.append($("<p style='text-align: center'>" + " Total: " + totalScores[i] + "</p>"));
+   let $scoreList =$("<div>");
+   $scoreList.append("<strong style='float:left; font-size:large;text-align: center'>" + "# "+ rank + "</strong>");
+   $scoreList.append($nameScore);
+   $("#roundresults").append($scoreList);
+ }  });
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");

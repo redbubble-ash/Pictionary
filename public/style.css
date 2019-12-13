@@ -215,6 +215,11 @@ form button {
 }
 /*/\used for chat box/\ */
 
+/*score board*/
+#roundresults div:nth-child(odd) {
+  background: #eee;
+}
+
 /* Popup box BEGIN */
 .hover_bkgr_fricc{
   background:rgba(0,0,0,.4);
