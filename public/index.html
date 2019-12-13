@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pictionary</title>
 
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300,500" rel="stylesheet">    
+    
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     
@@ -25,115 +28,137 @@
 
 <body>
     <div class="grey-out hidden">
-        <form class="user"><label for="username">Enter a nickname </label>
+
+        <form class="user">
+            <img src = "/images/logo4.png" class="img-fluid" alt="pictionary">
+            <!-- <label for="username">Nickname</label> -->
             <input id="userName" type="text" placeholder="Nickname" maxlength="14" autofocus>
+            <!-- <label for="room">Room</label> -->
+            <select id="room">
+                <option value = "animal">Animal</option>
+                <option value = "food">Food</option>
+                <option value = "custom">Custom</option>
+            </select>
             <input id="roomName" type="text" placeholder="Room" maxlength="14" autofocus>
-            <button type="submit" id="login-button">Submit</button>
+            <button type="submit" id="login-button">Join a game!</button>
             <p id="newUser"></p>
         </form>
     </div>
 
-    <div>
-        <img src = "/images/051-bee.png" alt="bee" width="50"
-        height="50">
-    </div>
 
-
-
-    <div class="container-fluid">
-        <div id="infoBars"class="row">
-            <div id="round"class="col-2">
-                <div id="roundInfo">Round # of #</div>
-            </div>
-            <div class="col-6">
-                <div id="infoHolder" class="row">
-                    <div id="timer">##</div>
-                    <div id="secretword">Secret Wood</div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id="scoreHolder"class="col-2">
-                <ul id="scoreboard">
-                    <ul id="roundresults"></ul>
-                    <li>Player 1</li>
-                    <li>Player 2</li>
-                </ul>
-            </div>
-            <div class="col-6">
-                <div id="sketch">
-                    <canvas id="drawArea"></canvas>
-                </div>
-                <!-- <hr> -->
-                <div id="settings" class="btn-group-sm" role="group">
-                    <button id="red" class="btn btn-secondary" type="button">Red</button>
-                    <button id="orange" class="btn btn-secondary" type="button">Orange</button>
-                    <button id="yellow" class="btn btn-secondary" type="button">Yellow</button>
-                    <button id="green" class="btn btn-secondary" type="button">Green</button>
-                    <button id="blue" class="btn btn-secondary" type="button">Blue</button>
-                    <button id="purple" class="btn btn-secondary" type="button">Purple</button>
-                    <button id="brown" class="btn btn-secondary" type="button">Brown</button>
-                    <button id="black" class="btn btn-secondary" type="button">Black</button>
-                    <button id="white" class="btn btn-secondary" type="button">White</button>
-                </div>
-                <div id="settings" class="btn-group btn-group-toggle btn-group-sm" data-toggle="buttons">
-                    <label class="btn btn-secondary active">
-                      <input type="radio" name="options" id="xSmaller" checked> X Small
-                    </label>
-                    <label class="btn btn-secondary">
-                      <input type="radio" name="options" id="small"> Small
-                    </label>                        
-                    <label class="btn btn-secondary">
-                      <input type="radio" name="options" id="medium"> Med
-                    </label>
-                    <label class="btn btn-secondary">
-                        <input type="radio" name="options" id="large"> Large
-                    </label>
-                    <label class="btn btn-secondary">
-                        <input type="radio" name="options" id="xLarger"> X Large
-                    </label>
-                </div>
-
-                
-                <div id="settings">
-                    Clear:
-                    <button id="clear">Clear</button>
-                    Fill:
-                    <button id="fill">Fill</button>
-                </div>
-                <!-- <script src="script.js"></script>-->
-            </div>
+    <div class = "game">
+            <div class="container-fluid">
+                    <div id="infoBars"class="row">
+                        <div id="round"class="col-2">
+                            <h5 id="roundInfo">Round # of #</h5>
+                        </div>
+                        <div class="col-6">
+                            <div id="infoHolder" class="row">
+                                <img id="hourglass" src = "/images/hourglass.png" alt="timer" width = '30' height = '30'>
+                                <h5 id="timer">##</h5>
+                                <h2 id="secretword">SecretWord</h2>
+                                <!-- <div id="secretword">Secret Wood</div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="scoreHolder"class="col-2">
+                            <ul id="scoreboard">
+                                <ul id="roundresults"></ul>
+                                <li>Player 1</li>
+                                <li>Player 2</li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <div id="sketch">
+                                <canvas id="drawArea"></canvas>
+                            </div>
+                            <!-- <hr> -->
+                            <div id="settings" class="btn-group-sm" role="group">
+                                <button id="red" class="btn btn-secondary" type="button">Red</button>
+                                <button id="orange" class="btn btn-secondary" type="button">Orange</button>
+                                <button id="yellow" class="btn btn-secondary" type="button">Yellow</button>
+                                <button id="green" class="btn btn-secondary" type="button">Green</button>
+                                <button id="blue" class="btn btn-secondary" type="button">Blue</button>
+                                <button id="purple" class="btn btn-secondary" type="button">Purple</button>
+                                <button id="brown" class="btn btn-secondary" type="button">Brown</button>
+                                <button id="black" class="btn btn-secondary" type="button">Black</button>
+                                <button id="white" class="btn btn-secondary" type="button">White</button>
+                            </div>
+                            <div id="settings" class="btn-group btn-group-toggle btn-group-sm" data-toggle="buttons">
+                                <label class="btn btn-secondary active">
+                                  <input type="radio" name="options" id="xSmaller" checked> X Small
+                                </label>
+                                <label class="btn btn-secondary">
+                                  <input type="radio" name="options" id="small"> Small
+                                </label>                        
+                                <label class="btn btn-secondary">
+                                  <input type="radio" name="options" id="medium"> Med
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="large"> Large
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="xLarger"> X Large
+                                </label>
+                            </div>
             
-            <div class="col-3">
-                <div id="messageContainer">
-                    <p id="messages"></p>
+            <!-- 
+                            <div id="settings">
+                                Brush Size:
+                                <button id="xSmaller">X Small</button>
+                                <button id="small">Small</button>
+                                <button id="medium">Med</button>
+                                <button id="large">Large</button>
+                                <button id="xLarger">X Large</button>
+                            </div> -->
+                            
+                            <div id="settings">
+                                Clear:
+                                <button id="clear">Clear</button>
+                                Fill:
+                                <button id="fill">Fill</button>
+                            </div>
+                            <!-- <script src="script.js"></script>-->
+                        </div>
+                        
+                        <div class="col-3">
+                            <div id="messageContainer">
+                                <p id="messages"></p>
+                            </div>
+                            <div class="input-group">
+                                <form id="messagesForm" action="">
+                                    <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        </div>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <form id="messagesForm" action="">
-                        <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
-                    </form>
-                </div>
-            </div>
             
-            </div>
-        </div>
+                <div>
+                    <h4 id="timer"></h4>
+                    <p id="timeOut"></p>
+                </div>
+            
+            <!-- check out below -->
+            
+                <div class="hover_bkgr_fricc" id="scoreBoard">
+                    <span class="helper"></span>
+                    <div>
+                            <h2 id="secretWord"></h2>
+                            <h4 id="timesUp"></h4>
+                            <ul id="roundResults"></ul>
+                    </div>
+                </div>
+            
+
+
     </div>
 
-    <div>
-        <h4 id="timer"></h4>
-        <p id="timeOut"></p>
-    </div>
 
-<!-- check out below -->
 
-    <div class="hover_bkgr_fricc" id="scoreBoard">
-        <span class="helper"></span>
-        <div>
-                <h2 id="secretWord"></h2>
-                <h4 id="timesUp"></h4>
-                <ul id="roundResults"></ul>
-        </div>
-    </div>
 
 </body>
 
