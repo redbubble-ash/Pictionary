@@ -146,7 +146,7 @@ let generateSecretWord = function() {
 let startNextRound = function(roomName, reason) {
   if(rooms[roomName]!= undefined){
     rooms[roomName].history = [];
-
+    rooms[roomName].round++;
   }
   
 
@@ -154,7 +154,8 @@ let startNextRound = function(roomName, reason) {
     userNames: rooms[roomName].users.map(x => x.userName),
     roundScores: rooms[roomName].users.map(x => x.roundScore),
     totalScores: rooms[roomName].users.map(x => x.totalScore),
-    reason: reason
+    reason: reason,
+    round: rooms[roomName].round
   });
 
   console.log("REASON IS " + reason);
@@ -165,6 +166,9 @@ let startNextRound = function(roomName, reason) {
   console.log(
     "next round: " + rooms[roomName].users[0].userName + " is now the drawer"
   );
+  
+  
+  
   rooms[roomName].secretWord = generateSecretWord();
 
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
