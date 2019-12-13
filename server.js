@@ -25,27 +25,38 @@ var roundTime = 15000; //make timer 95,000 before release
 let roundEndTime;
 // let curTurnIdx = 0;
 
+//Generate a random Icon images to the player
+//var playerIcon="";
+const iconFolder = './public/images/icon';
+const fs = require('fs');
+const iconFiles = fs.readdirSync(iconFolder)
+
+
+
 var words = ["apple", "banana", "orange", "strawberry", "kiwi", "star fruit", "antidisestablishmentarianism"];
+
 var secretWord;
 
 io.on("connection", function(socket) {
   //io.emit('userlist', users);
-
+  let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
+  console.log(playerIcon);
   socket.on("join", function(name, room, past) {
     socket.userName = name;
     socket.roundScore = 0;
     socket.totalScore = 0;
     socket.room = room;
-    socket.icon = "/images/flower1.png";
+    socket.icon = playerIcon;
 
     if (!rooms[room]) {
-      console.log("room doesn't exist");
+      console.log("room exists");
       rooms[room] = {
         roomName: room,
         users: [],
         history: [],
         secretWord: "",
-        roundEndTime: ""
+        roundEndTime: "",
+        icon: []
       };
     }
     rooms[room].users.push(socket);
@@ -68,7 +79,7 @@ io.on("connection", function(socket) {
         roomName: rooms[room].roomName,
         secretWord: rooms[room].secretWord,
         roundEndTime: rooms[room].roundEndTime,
-        icon: socket.icon,
+        icon: rooms[room].icon,
         drawer: true
       });
     } else {
@@ -76,7 +87,7 @@ io.on("connection", function(socket) {
         roomName: rooms[room].roomName,
         secretWord: rooms[room].secretWord,
         roundEndTime: rooms[room].roundEndTime,
-        icon: socket.icon,
+        icon: rooms[room].icon,
         drawer: false
       });
       past(rooms[room].history);
@@ -153,6 +164,7 @@ let startNextRound = function(roomName, reason) {
     userNames: rooms[roomName].users.map(x => x.userName),
     roundScores: rooms[roomName].users.map(x => x.roundScore),
     totalScores: rooms[roomName].users.map(x => x.totalScore),
+    icons: rooms[roomName].users.map(x => x.icon),
     reason: reason
   });
 
@@ -176,7 +188,7 @@ let startNextRound = function(roomName, reason) {
         roomName: roomName,
         secretWord: rooms[roomName].secretWord,
         drawer: true,
-        //icon: socket.icon,
+        icon: rooms[roomName].icon,
         roundEndTime: rooms[roomName].roundEndTime
       });
     } else {
@@ -184,7 +196,7 @@ let startNextRound = function(roomName, reason) {
         roomName: roomName,
         secretWord: rooms[roomName].secretWord,
         drawer: false,
-        //icon: socket.icon,
+        icon: rooms[roomName].icon,
         roundEndTime: rooms[roomName].roundEndTime
       });
     }

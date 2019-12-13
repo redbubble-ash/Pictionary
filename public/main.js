@@ -1,3 +1,5 @@
+
+
 $(document).ready(function() {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
@@ -6,23 +8,21 @@ $(document).ready(function() {
   let secretWord;
   let roomName;
   let guessed = false;
-  let icon;
   let reason;
+  let icon;
 
   // Login
   function loginSucceed() {
     // $(".game").toggle();
     $(".grey-out").fadeIn(500);
 
-    $('#room').on('change', function() {
-      if(this.value==='custom'){
-        $("#roomName").css('visibility','visible');
-      }
-      else{
-        $("#roomName").css('visibility','hidden');
+    $("#room").on("change", function() {
+      if (this.value === "custom") {
+        $("#roomName").css("visibility", "visible");
+      } else {
+        $("#roomName").css("visibility", "hidden");
       }
     });
-
 
     $(".user").submit(function() {
       event.preventDefault();
@@ -35,6 +35,8 @@ $(document).ready(function() {
           .val()
           .trim();
       }
+
+
 
       // if (userName == "") {
       //     return false
@@ -152,12 +154,13 @@ $(document).ready(function() {
     icon = status.icon;
     guessed = false;
 
-    
-    if(drawer){ 
-    document.getElementById("chatSend").innerHTML = "Give up turn?";
-    document.getElementById("messageInput").value = "I give up and cant draw this."
-    document.getElementById("messageInput").style.display = "none";
+    console.log("PLAYERS IMAGE IS " +icon);
 
+    if (drawer) {
+      document.getElementById("chatSend").innerHTML = "Give up turn?";
+      document.getElementById("messageInput").value =
+        "I give up and cant draw this.";
+      document.getElementById("messageInput").style.display = "none";
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
@@ -205,6 +208,7 @@ $(document).ready(function() {
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
     let reasonNextRound = results.reason;
+    let playerIcons = results.icons
 
     $("#roundResults").empty();
     $("#secretWord").empty();
@@ -213,7 +217,7 @@ $(document).ready(function() {
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
-    console.log('REASON IS ' + reasonNextRound);
+    console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
       $("#roundResults").append(
@@ -221,6 +225,7 @@ $(document).ready(function() {
           names[i] + " round: " + roundScores[i] + ", total: " + totalScores[i]
         )
       );
+
     }
     setTimeout(() => {
       $(".hover_bkgr_fricc").fadeOut("slow");
@@ -263,6 +268,9 @@ $(document).ready(function() {
       );
       $scoreList.append($nameScore);
       $("#roundresults").append($scoreList);
+      $("#roundresults").append("<img src='./images/icon/"+playerIcons[i]+"' alt='player icon'></img>")
+      //$("#roundresults").append("<img src='./images/icon/flower8.png' alt='player icon'></img>")
+      console.log("PLAYERS ICON IS" + playerIcons[i]);
     }
   });
 
@@ -275,7 +283,7 @@ $(document).ready(function() {
   //var canDraw = true; // prevent user from drawing when false
 */
   canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
-  canvas.height = document.getElementById("sketch").offsetHeight; 
+  canvas.height = document.getElementById("sketch").offsetHeight;
   // canvas.style.width = "800px";
   // canvas.style.height = "600px";
   let startX, startY, endX, endY;
