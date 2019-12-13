@@ -110,6 +110,7 @@ input[type=text], select {
 }
 
 #room{
+  font:inherit;
   width: 100%;
   padding: 5px 5px;
   margin: 8px 0;
