@@ -7,6 +7,7 @@ $(document).ready(function() {
   let roomName;
   let guessed = false;
   let icon;
+  let reason;
 
   // Login
   function loginSucceed() {
@@ -69,7 +70,8 @@ $(document).ready(function() {
   // Chat and guess area
   $("#messagesForm").submit(function() {
     if (drawer) {
-      socket.emit("next round", roomName);
+      reason = "Drawer Gave up!";
+      socket.emit("next round", roomName, reason);
     }
 
     socket.emit("chat message", {
@@ -179,7 +181,8 @@ $(document).ready(function() {
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
-      socket.emit("next round", roomName);
+      reason = "Time's up!";
+      socket.emit("next round", roomName, reason);
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
@@ -201,6 +204,7 @@ $(document).ready(function() {
     let names = results.userNames;
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
+    let reasonNextRound = results.reason;
 
     $("#roundResults").empty();
     $("#secretWord").empty();
@@ -209,7 +213,8 @@ $(document).ready(function() {
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
-    $("#timesUp").append("Time is up");
+    console.log('REASON IS ' + reasonNextRound);
+    $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
       $("#roundResults").append(
         $("<li>").text(
