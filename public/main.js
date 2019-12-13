@@ -221,8 +221,6 @@ $(document).ready(function() {
    $scoreList.append("<strong style='float:left; font-size:large;text-align: center'>" + "# "+ rank + "</strong>");
    $scoreList.append($nameScore);
    $("#roundresults").append($scoreList);
- //   $scoreList.append("<b> #" + rank + "</b> ");
- //   $scoreList.append($nameScore);
  }  });
 
   // Canvas drawing area

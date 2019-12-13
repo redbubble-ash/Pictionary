@@ -216,7 +216,7 @@ form button {
 /*/\used for chat box/\ */
 
 /*score board*/
-#roundresults p:nth-child(odd) {
+#roundresults div:nth-child(odd) {
   background: #eee;
 }
 
