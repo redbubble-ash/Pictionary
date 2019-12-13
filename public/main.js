@@ -273,15 +273,18 @@ $(document).ready(function() {
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
-  /* consider for deletion
-  //var sketch = document.getElementById("sketch");
-  //var sketch_style = getComputedStyle(sketch);
-  //var canDraw = true; // prevent user from drawing when false
-*/
-  canvas.width = document.getElementById("sketch").offsetWidth; // controls responsive resizing of drawing canvas, width
-  canvas.height = document.getElementById("sketch").offsetHeight; 
-  // canvas.style.width = "800px";
-  // canvas.style.height = "600px";
+
+  console.log(window.innerWidth); 
+  if(window.innerWidth >= 1300){
+    console.log("Hey I am large")
+    canvas.width = 800;
+    canvas.height = 600;
+  } else{
+    console.log("Hey I am medium")
+    canvas.width = 640;
+    canvas.height = 480;
+  }
+  
   let startX, startY, endX, endY;
 
   let mouse = {
@@ -338,7 +341,7 @@ $(document).ready(function() {
         lineWidth: lineSize
       };
       if (drawer) {
-        socket.emit("draw", line);
+        socket.emit("draw", line, canvas.width);
       }
 
       startX = endX;
@@ -426,14 +429,24 @@ $(document).ready(function() {
   }
 
   disableDrawing();
-  socket.on("draw", draw);
+  socket.on("draw", draw, originalWidth);
 
-  function draw(line) {
+  function draw(line, originalWidth) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
+    let scaleFactor = 1;
+    if(canvas.width !== originalWidth){
+      if(originalWidth === 800 && canvas.width === 640){
+        scaleFactor = .8;
+        console.log(`big down to small OW: ${originalWidth}, CW: ${canvas.width}`)
+      } else if(originalWidth === 640 && canvas.width === 800){
+        scaleFactor = 1.25;
+        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`)
+      }
+    }
     ctx.beginPath();
-    ctx.moveTo(line.from.x, line.from.y);
-    ctx.lineTo(line.to.x, line.to.y);
+    ctx.moveTo((line.from.x * scaleFactor), (line.from.y * scaleFactor));
+    ctx.lineTo((line.to.x * scaleFactor), (line.to.y * scaleFactor));
     ctx.closePath();
     ctx.stroke();
   }
