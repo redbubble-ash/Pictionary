@@ -21,7 +21,7 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 15000; //make timer 95,000 before release
+var roundTime = 150000; //make timer 95,000 before release
 let roundEndTime;
 // let curTurnIdx = 0;
 
@@ -45,7 +45,8 @@ io.on("connection", function(socket) {
         users: [],
         history: [],
         secretWord: "",
-        roundEndTime: ""
+        roundEndTime: "",
+        round: 1
       };
     }
     rooms[room].users.push(socket);
