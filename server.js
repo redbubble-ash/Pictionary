@@ -21,7 +21,7 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 15000; //make timer 95,000 before release
+var roundTime = 150000; //make timer 95,000 before release
 let roundEndTime;
 // let curTurnIdx = 0;
 
@@ -33,9 +33,11 @@ const iconFiles = fs.readdirSync(iconFolder)
 
 
 
-var words = ["apple", "banana", "orange", "strawberry", "kiwi", "star fruit", "antidisestablishmentarianism"];
-
-var secretWord;
+var secretWord = {
+  animal : ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn"],
+  food:["apple","banana","strawberry","lollipop","pumpkin","pizza"],
+  random:["rainbow","toothpaste","mermaid","computer"]
+}
 
 io.on("connection", function(socket) {
   //io.emit('userlist', users);
@@ -56,7 +58,8 @@ io.on("connection", function(socket) {
         history: [],
         secretWord: "",
         roundEndTime: "",
-        icon: []
+        icon: [],
+        round: 1
       };
     }
     rooms[room].users.push(socket);
@@ -64,7 +67,7 @@ io.on("connection", function(socket) {
 
     if (rooms[room].users.length == 1) {
       rooms[room].roundEndTime = new Date().getTime() + roundTime;
-      rooms[room].secretWord = generateSecretWord();
+      rooms[room].secretWord = generateSecretWord(room);
 
       console.log(rooms[room].secretWord);
       console.log("round end time" + rooms[room].roundEndTime);
@@ -113,8 +116,8 @@ io.on("connection", function(socket) {
 
   socket.on("next round", startNextRound);
 
-  socket.on("draw", function(line) {
-    socket.to(socket.room).broadcast.emit("draw", line);
+  socket.on("draw", function(line, originalWidth) {
+    socket.to(socket.room).broadcast.emit("draw", line, originalWidth);
     //store the drawing history
     rooms[socket.room].history.push(line);
   });
@@ -149,14 +152,18 @@ io.on("connection", function(socket) {
   });
 });
 
-let generateSecretWord = function() {
+let generateSecretWord = function(room) {
+  let words;
+  if(room=='animal'||room=='food')words = secretWord[room];
+  else words = secretWord.random;
+
   return words[Math.floor(Math.random() * words.length)];
 };
 
 let startNextRound = function(roomName, reason) {
   if(rooms[roomName]!= undefined){
     rooms[roomName].history = [];
-
+    rooms[roomName].round++;
   }
   
 
@@ -165,7 +172,8 @@ let startNextRound = function(roomName, reason) {
     roundScores: rooms[roomName].users.map(x => x.roundScore),
     totalScores: rooms[roomName].users.map(x => x.totalScore),
     icons: rooms[roomName].users.map(x => x.icon),
-    reason: reason
+    reason: reason,
+    round: rooms[roomName].round
   });
 
   console.log("REASON IS " + reason);
@@ -176,7 +184,10 @@ let startNextRound = function(roomName, reason) {
   console.log(
     "next round: " + rooms[roomName].users[0].userName + " is now the drawer"
   );
-  rooms[roomName].secretWord = generateSecretWord();
+  
+  
+  
+  rooms[roomName].secretWord = generateSecretWord(roomName);
 
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
 

@@ -30,7 +30,7 @@
     <div class="grey-out hidden">
 
         <form class="user">
-            <img src = "/images/logo4.png" class="img-fluid" alt="pictionary">
+            <img src = "/images/db.png" class="img-fluid" alt="pictionary">
             <!-- <label for="username">Nickname</label> -->
             <input id="userName" type="text" placeholder="Nickname" maxlength="14" autofocus>
             <!-- <label for="room">Room</label> -->
@@ -51,7 +51,7 @@
             <div class="container-fluid">
                     <div id="infoBars"class="row">
                         <div id="round"class="col-2">
-                            <h5 id="roundInfo">Round # of #</h5>
+                            <h5 id="roundInfo">Round 1</h5>
                         </div>
                         <div class="col-6">
                             <div id="infoHolder" class="row">
@@ -61,6 +61,9 @@
                                 <!-- <div id="secretword">Secret Wood</div> -->
                             </div>
                         </div>
+                        <div class="col-3">
+                            <h3 id="currentRoom"></h3>
+                        </div>
                     </div>
                     <div class="row">
                         <div id="scoreHolder"class="col-2">
@@ -68,10 +71,8 @@
                                 <ul id="roundresults"></ul>
                             </ul>
                         </div>
-                        <div class="col-6">
-                            <div id="sketch">
-                                <canvas id="drawArea"></canvas>
-                            </div>
+                        <div class="col-lg-6 col-md-6">
+                            <canvas id="drawArea"></canvas>
                             <!-- <hr> -->
                             <div id="settings" class="btn-group-sm" role="group">
                                 <button id="red" class="btn btn-secondary" type="button">Red</button>
