@@ -25,8 +25,12 @@ var roundTime = 150000; //make timer 95,000 before release
 let roundEndTime;
 // let curTurnIdx = 0;
 
-var words = ["apple", "banana", "orange", "strawberry", "kiwi", "star fruit", "antidisestablishmentarianism"];
-var secretWord;
+// var words = ["apple", "banana", "orange", "strawberry", "kiwi", "star fruit", "antidisestablishmentarianism"];
+var secretWord = {
+  animal : ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn"],
+  food:["apple","banana","strawberry","lollipop","pumpkin","pizza"],
+  random:["rainbow","toothpaste","mermaid","computer"]
+}
 
 io.on("connection", function(socket) {
   //io.emit('userlist', users);
@@ -54,7 +58,7 @@ io.on("connection", function(socket) {
 
     if (rooms[room].users.length == 1) {
       rooms[room].roundEndTime = new Date().getTime() + roundTime;
-      rooms[room].secretWord = generateSecretWord();
+      rooms[room].secretWord = generateSecretWord(room);
 
       console.log(rooms[room].secretWord);
       console.log("round end time" + rooms[room].roundEndTime);
@@ -139,7 +143,11 @@ io.on("connection", function(socket) {
   });
 });
 
-let generateSecretWord = function() {
+let generateSecretWord = function(room) {
+  let words;
+  if(room=='animal'||room=='food')words = secretWord[room];
+  else words = secretWord.random;
+
   return words[Math.floor(Math.random() * words.length)];
 };
 
@@ -169,7 +177,7 @@ let startNextRound = function(roomName, reason) {
   
   
   
-  rooms[roomName].secretWord = generateSecretWord();
+  rooms[roomName].secretWord = generateSecretWord(roomName);
 
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
 
