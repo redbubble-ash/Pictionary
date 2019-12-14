@@ -117,7 +117,6 @@ $(document).ready(function() {
       );
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
-      $("#roundInfo").text("Round " + results.round);
     }
   }
 
