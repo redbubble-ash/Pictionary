@@ -60,59 +60,7 @@ $(document).ready(function() {
       $(".game").css("visibility", "visible");
 
     //update the score board when a new player joined the game
-      socket.on("newPlayer", function(results) {
-        //console.log("NEWPLAYER CONNECTED!!!!!!!!!");
-        let names = results.userNames;
-        let totalScores = results.totalScores;
-        let playerIcons = results.icons;
-
-        $("#roundResults").empty();
-        $("#timesUp").empty();
-        $("#roundresults").empty();
-
-        //update the score board
-        let scores = [];
-        for (let i = 0; i < names.length; i++) {
-          scores.push(totalScores[i]);
-          scores = scores.sort((a, b) => b - a);
-        }
-
-        for (let i = 0; i < names.length; i++) {
-          function findScore(score) {
-            return score === totalScores[i];
-          }
-          let rank = scores.findIndex(findScore);
-          //console.log("NEWPLAYER " + names);
-          rank++;
-          let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
-          let $nameScore = $name.append(
-            $(
-              "<p style='text-align: center'>" +
-                " Total: " +
-                totalScores[i] +
-                "</p>"
-            )
-          );
-          let $scoreList = $(
-            "<div style='display = flex; align-items: center'>"
-          );
-          $scoreList.append(
-            "<strong style='float:left; font-size:large;text-align: center'>" +
-              "# " +
-              rank +
-              "</strong>"
-          );
-          $scoreList.append($nameScore);
-          let $icon = $(
-            "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
-              playerIcons[i] +
-              "' alt='player icon'></img></p>"
-          );
-          $scoreList.append($icon);
-          $("#roundresults").append($scoreList);
-          $("#roundInfo").text("Round " + results.round);
-        }
-      });
+      socket.on("newPlayer", scoreBoardDisplay);
 
       // $(".user").fadeOut(300);
       //$('input.guess-input').focus();
@@ -120,6 +68,58 @@ $(document).ready(function() {
   }
 
   loginSucceed();
+
+  const scoreBoardDisplay = function(results) {
+    let names = results.userNames;
+    let totalScores = results.totalScores;
+    let playerIcons = results.icons;
+
+    $("#roundResults").empty();
+    $("#timesUp").empty();
+    $("#roundresults").empty();
+
+    //update the score board
+    let scores = [];
+    for (let i = 0; i < names.length; i++) {
+      scores.push(totalScores[i]);
+      scores = scores.sort((a, b) => b - a);
+    }
+
+    for (let i = 0; i < names.length; i++) {
+      function findScore(score) {
+        return score === totalScores[i];
+      }
+      let rank = scores.findIndex(findScore);
+      rank++;
+      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+      let $nameScore = $name.append(
+        $(
+          "<p style='text-align: center'>" +
+            " Total: " +
+            totalScores[i] +
+            "</p>"
+        )
+      );
+      let $scoreList = $(
+        "<div style='display = flex; align-items: center'>"
+      );
+      $scoreList.append(
+        "<strong style='float:left; font-size:large;text-align: center'>" +
+          "# " +
+          rank +
+          "</strong>"
+      );
+      $scoreList.append($nameScore);
+      let $icon = $(
+        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'></img></p>"
+      );
+      $scoreList.append($icon);
+      $("#roundresults").append($scoreList);
+      $("#roundInfo").text("Round " + results.round);
+    }
+  }
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
@@ -331,59 +331,7 @@ $(document).ready(function() {
   });
 
     //update the score board when guesser left the game
-    socket.on("guesserLeft", function(results) {
-      console.log("GUESSERLEFT CONNECTED!!!!!!!!!");
-      let names = results.userNames;
-      let totalScores = results.totalScores;
-      let playerIcons = results.icons;
-  
-      $("#roundResults").empty();
-      $("#timesUp").empty();
-      $("#roundresults").empty();
-  
-      //update the score board
-      let scores = [];
-      for (let i = 0; i < names.length; i++) {
-        scores.push(totalScores[i]);
-        scores = scores.sort((a, b) => b - a);
-      }
-  
-      for (let i = 0; i < names.length; i++) {
-        function findScore(score) {
-          return score === totalScores[i];
-        }
-        let rank = scores.findIndex(findScore);
-        console.log("GUSSER LEFT " + names);
-        rank++;
-        let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
-        let $nameScore = $name.append(
-          $(
-            "<p style='text-align: center'>" +
-              " Total: " +
-              totalScores[i] +
-              "</p>"
-          )
-        );
-        let $scoreList = $(
-          "<div style='display = flex; align-items: center'>"
-        );
-        $scoreList.append(
-          "<strong style='float:left; font-size:large;text-align: center'>" +
-            "# " +
-            rank +
-            "</strong>"
-        );
-        $scoreList.append($nameScore);
-        let $icon = $(
-          "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
-            playerIcons[i] +
-            "' alt='player icon'></img></p>"
-        );
-        $scoreList.append($icon);
-        $("#roundresults").append($scoreList);
-        $("#roundInfo").text("Round " + results.round);
-      }
-    });
+    socket.on("guesserLeft", scoreBoardDisplay);
   
 
   // Canvas drawing area
