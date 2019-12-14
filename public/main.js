@@ -6,23 +6,21 @@ $(document).ready(function() {
   let secretWord;
   let roomName;
   let guessed = false;
-  let icon;
   let reason;
+  let icon;
 
   // Login
   function loginSucceed() {
     // $(".game").toggle();
     $(".grey-out").fadeIn(500);
 
-    $('#room').on('change', function() {
-      if(this.value==='custom'){
-        $("#roomName").css('visibility','visible');
-      }
-      else{
-        $("#roomName").css('visibility','hidden');
+    $("#room").on("change", function() {
+      if (this.value === "custom") {
+        $("#roomName").css("visibility", "visible");
+      } else {
+        $("#roomName").css("visibility", "hidden");
       }
     });
-
 
     $(".user").submit(function() {
       event.preventDefault();
@@ -60,12 +58,67 @@ $(document).ready(function() {
       });
       $(".grey-out").fadeOut(300);
       $(".game").css("visibility", "visible");
+
+    //update the score board when a new player joined the game
+      socket.on("newPlayer", scoreBoardDisplay);
+
       // $(".user").fadeOut(300);
       //$('input.guess-input').focus();
     });
   }
 
   loginSucceed();
+
+  const scoreBoardDisplay = function(results) {
+    let names = results.userNames;
+    let totalScores = results.totalScores;
+    let playerIcons = results.icons;
+
+    $("#roundResults").empty();
+    $("#timesUp").empty();
+    $("#roundresults").empty();
+
+    //update the score board
+    let scores = [];
+    for (let i = 0; i < names.length; i++) {
+      scores.push(totalScores[i]);
+      scores = scores.sort((a, b) => b - a);
+    }
+
+    for (let i = 0; i < names.length; i++) {
+      function findScore(score) {
+        return score === totalScores[i];
+      }
+      let rank = scores.findIndex(findScore);
+      rank++;
+      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+      let $nameScore = $name.append(
+        $(
+          "<p style='text-align: center'>" +
+            " Total: " +
+            totalScores[i] +
+            "</p>"
+        )
+      );
+      let $scoreList = $(
+        "<div style='display = flex; align-items: center'>"
+      );
+      $scoreList.append(
+        "<strong style='float:left; font-size:large;text-align: center'>" +
+          "# " +
+          rank +
+          "</strong>"
+      );
+      $scoreList.append($nameScore);
+      let $icon = $(
+        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'></img></p>"
+      );
+      $scoreList.append($icon);
+      $("#roundresults").append($scoreList);
+    }
+  }
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
@@ -152,14 +205,13 @@ $(document).ready(function() {
     icon = status.icon;
     guessed = false;
 
-    $('#currentRoom').text("Room: " + roomName);
+    $("#currentRoom").text("Room: " + roomName);
 
-    
-    if(drawer){ 
-    document.getElementById("chatSend").innerHTML = "Give up turn?";
-    document.getElementById("messageInput").value = "I give up and cant draw this."
-    document.getElementById("messageInput").style.display = "none";
-
+    if (drawer) {
+      document.getElementById("chatSend").innerHTML = "Give up turn?";
+      document.getElementById("messageInput").value =
+        "I give up and cant draw this.";
+      document.getElementById("messageInput").style.display = "none";
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
@@ -207,7 +259,7 @@ $(document).ready(function() {
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
     let reasonNextRound = results.reason;
-
+    let playerIcons = results.icons;
 
     $("#roundResults").empty();
     $("#secretWord").empty();
@@ -216,7 +268,7 @@ $(document).ready(function() {
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
-    console.log('REASON IS ' + reasonNextRound);
+    console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
       $("#roundResults").append(
@@ -257,7 +309,7 @@ $(document).ready(function() {
             "</p>"
         )
       );
-      let $scoreList = $("<div>");
+      let $scoreList = $("<div style='display = flex; align-items: center'>");
       $scoreList.append(
         "<strong style='float:left; font-size:large;text-align: center'>" +
           "# " +
@@ -265,26 +317,37 @@ $(document).ready(function() {
           "</strong>"
       );
       $scoreList.append($nameScore);
+      let $icon = $(
+        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'></img></p>"
+      );
+      $scoreList.append($icon);
       $("#roundresults").append($scoreList);
+      //console.log("PLAYERS ICON IS" + playerIcons[i]);
       $("#roundInfo").text("Round " + results.round);
     }
   });
+
+    //update the score board when guesser left the game
+    socket.on("guesserLeft", scoreBoardDisplay);
+  
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
 
-  console.log(window.innerWidth); 
-  if(window.innerWidth >= 1300){
-    console.log("Hey I am large")
+  console.log(window.innerWidth);
+  if (window.innerWidth >= 1300) {
+    console.log("Hey I am large");
     canvas.width = 800;
     canvas.height = 600;
-  } else{
-    console.log("Hey I am medium")
+  } else {
+    console.log("Hey I am medium");
     canvas.width = 640;
     canvas.height = 480;
   }
-  
+
   let startX, startY, endX, endY;
 
   let mouse = {
@@ -435,18 +498,20 @@ $(document).ready(function() {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
     let scaleFactor = 1;
-    if(canvas.width !== originalWidth){
-      if(originalWidth === 800 && canvas.width === 640){
-        scaleFactor = .8;
-        console.log(`big down to small OW: ${originalWidth}, CW: ${canvas.width}`)
-      } else if(originalWidth === 640 && canvas.width === 800){
+    if (canvas.width !== originalWidth) {
+      if (originalWidth === 800 && canvas.width === 640) {
+        scaleFactor = 0.8;
+        console.log(
+          `big down to small OW: ${originalWidth}, CW: ${canvas.width}`
+        );
+      } else if (originalWidth === 640 && canvas.width === 800) {
         scaleFactor = 1.25;
-        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`)
+        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`);
       }
     }
     ctx.beginPath();
-    ctx.moveTo((line.from.x * scaleFactor), (line.from.y * scaleFactor));
-    ctx.lineTo((line.to.x * scaleFactor), (line.to.y * scaleFactor));
+    ctx.moveTo(line.from.x * scaleFactor, line.from.y * scaleFactor);
+    ctx.lineTo(line.to.x * scaleFactor, line.to.y * scaleFactor);
     ctx.closePath();
     ctx.stroke();
   }
@@ -495,4 +560,6 @@ $(document).ready(function() {
       buttons[i].setAttribute("disabled", "disabled");
     }
   }
+
+
 });
