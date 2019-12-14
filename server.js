@@ -21,7 +21,7 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 150000; //make timer 95,000 before release
+var roundTime = 95000; //make timer 95,000 before release
 let roundEndTime;
 // let curTurnIdx = 0;
 
@@ -57,7 +57,7 @@ io.on("connection", function(socket) {
     socket.join(room);
 
     if (rooms[room].users.length == 1) {
-      rooms[room].roundEndTime = new Date().getTime() + roundTime;
+      rooms[room].roundEndTime = new Date().getTime() + 90000;
       rooms[room].secretWord = generateSecretWord(room);
 
       console.log(rooms[room].secretWord);

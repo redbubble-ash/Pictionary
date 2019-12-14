@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Pictionary</title>
+    <title>Drawing Bee</title>
 
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,500" rel="stylesheet">    
@@ -56,8 +56,8 @@
                         <div class="col-6">
                             <div id="infoHolder" class="row">
                                 <img id="hourglass" src = "/images/hourglass.png" alt="timer" width = '30' height = '30'>
-                                <h5 id="timer">##</h5>
-                                <h2 id="secretword">SecretWord</h2>
+                                <h5 id="timer"></h5>
+                                <h2 id="secretword"></h2>
                                 <!-- <div id="secretword">Secret Wood</div> -->
                             </div>
                         </div>
@@ -74,57 +74,61 @@
                         <div class="col-lg-6 col-md-6">
                             <canvas id="drawArea"></canvas>
                             <!-- <hr> -->
-                            <div id="settings" class="btn-group-sm" role="group">
-                                <button id="red" class="btn btn-secondary" type="button">Red</button>
-                                <button id="orange" class="btn btn-secondary" type="button">Orange</button>
-                                <button id="yellow" class="btn btn-secondary" type="button">Yellow</button>
-                                <button id="green" class="btn btn-secondary" type="button">Green</button>
-                                <button id="blue" class="btn btn-secondary" type="button">Blue</button>
-                                <button id="purple" class="btn btn-secondary" type="button">Purple</button>
-                                <button id="brown" class="btn btn-secondary" type="button">Brown</button>
-                                <button id="black" class="btn btn-secondary" type="button">Black</button>
-                                <button id="white" class="btn btn-secondary" type="button">White</button>
+                            <div id="drawingtools">
+                                    <div id="settings" class="btn-group-sm" role="group">
+                                            <button id="red" class="btn btn-secondary" type="button">Red</button>
+                                            <button id="orange" class="btn btn-secondary" type="button">Orange</button>
+                                            <button id="yellow" class="btn btn-secondary" type="button">Yellow</button>
+                                            <button id="green" class="btn btn-secondary" type="button">Green</button>
+                                            <button id="blue" class="btn btn-secondary" type="button">Blue</button>
+                                            <button id="purple" class="btn btn-secondary" type="button">Purple</button>
+                                            <button id="brown" class="btn btn-secondary" type="button">Brown</button>
+                                            <button id="black" class="btn btn-secondary" type="button">Black</button>
+                                            <button id="white" class="btn btn-secondary" type="button">White</button>
+                                        </div>
+                                        <div id="settings" class="btn-group btn-group-toggle btn-group-sm" data-toggle="buttons">
+                                            <label class="btn btn-secondary active">
+                                              <input type="radio" name="options" id="xSmaller" checked> X Small
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                              <input type="radio" name="options" id="small"> Small
+                                            </label>                        
+                                            <label class="btn btn-secondary">
+                                              <input type="radio" name="options" id="medium"> Med
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                                <input type="radio" name="options" id="large"> Large
+                                            </label>
+                                            <label class="btn btn-secondary">
+                                                <input type="radio" name="options" id="xLarger"> X Large
+                                            </label>
+                                        </div>
+                        
+                        <!-- 
+                                        <div id="settings">
+                                            Brush Size:
+                                            <button id="xSmaller">X Small</button>
+                                            <button id="small">Small</button>
+                                            <button id="medium">Med</button>
+                                            <button id="large">Large</button>
+                                            <button id="xLarger">X Large</button>
+                                        </div> -->
+                                        
+                                        <div id="settings">
+                                            Clear:
+                                            <button id="clear">Clear</button>
+                                            Fill:
+                                            <button id="fill">Fill</button>
+                                        </div>
+
                             </div>
-                            <div id="settings" class="btn-group btn-group-toggle btn-group-sm" data-toggle="buttons">
-                                <label class="btn btn-secondary active">
-                                  <input type="radio" name="options" id="xSmaller" checked> X Small
-                                </label>
-                                <label class="btn btn-secondary">
-                                  <input type="radio" name="options" id="small"> Small
-                                </label>                        
-                                <label class="btn btn-secondary">
-                                  <input type="radio" name="options" id="medium"> Med
-                                </label>
-                                <label class="btn btn-secondary">
-                                    <input type="radio" name="options" id="large"> Large
-                                </label>
-                                <label class="btn btn-secondary">
-                                    <input type="radio" name="options" id="xLarger"> X Large
-                                </label>
-                            </div>
-            
-            <!-- 
-                            <div id="settings">
-                                Brush Size:
-                                <button id="xSmaller">X Small</button>
-                                <button id="small">Small</button>
-                                <button id="medium">Med</button>
-                                <button id="large">Large</button>
-                                <button id="xLarger">X Large</button>
-                            </div> -->
                             
-                            <div id="settings">
-                                Clear:
-                                <button id="clear">Clear</button>
-                                Fill:
-                                <button id="fill">Fill</button>
-                            </div>
                             <!-- <script src="script.js"></script>-->
                         </div>
                         
                         <div class="col-3">
                             <div id="messageContainer">
-                                <p id="messages"></p>
+                                <div id="messages" ></div>
                             </div>
                             <div class="input-group">
                                 <form id="messagesForm" action="">

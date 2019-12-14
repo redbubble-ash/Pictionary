@@ -159,12 +159,14 @@ $(document).ready(function() {
     document.getElementById("chatSend").innerHTML = "Give up turn?";
     document.getElementById("messageInput").value = "I give up and cant draw this."
     document.getElementById("messageInput").style.display = "none";
+    $("#drawingtools").css('visibility','visible');
 
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
       document.getElementById("messageInput").value = "";
       document.getElementById("messageInput").style.display = "block";
+      $("#drawingtools").css('visibility','hidden');
     }
 
     startDrawing();
@@ -190,14 +192,19 @@ $(document).ready(function() {
   var countDownTimer = setInterval(gameTimer, 1000);
 
   socket.on("hello", function(msg) {
-    $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
-    window.scrollTo(0, -document.body.scrollHeight);
+    $("#messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
+
+    $('#messages').scrollTop = ('#messages').get(0).scrollHeight;
+
+    // window.scrollTo(0, -document.body.scrollHeight);
   });
   socket.on("correct answer", function(msg) {
     $("#messages").append(
-      $("<li>").text(msg.userName + " has the correct answer!")
+      $("<ul>").text(msg.userName + " has the correct answer!")
     );
-    window.scrollTo(0, -document.body.scrollHeight);
+    $('#messages').scrollTop = $('#messages').get(0).scrollHeight;
+
+    // window.scrollTo(0, -document.body.scrollHeight);
     // socket.emit("take turns");
   });
 

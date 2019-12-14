@@ -192,30 +192,60 @@ form button {
   border: none;
   padding: 10px;
 }
+/* #messageContainer{
+  overflow: auto;
+  width: 100%;
+  height: 500px;
+  border: 2px solid #4A525A;
+  background-color: #F7EADA;
+  
+} */
+#messageInput{
+  border-right: 1px solid #4A525A;
+  vertical-align: bottom;
+}
+/* #messages {
+  position:absolute;
+  overflow:none;
+  height: 100%;
+  width: 100%;
+  bottom:0;
+  /* display: table-cell;
+  vertical-align: bottom; */
+  /* text-align: left; */
+  /* max-height: inherit;
+} */ 
+
 #messageContainer{
   overflow: auto;
   width: 100%;
-  height: 90%;
+  height: 500px;
   border: 2px solid #4A525A;
   background-color: #F7EADA;
+    position: relative;
 }
-#messageInput{
-  border-right: 1px solid #4A525A;
+
+#messages {
+  position: absolute;
+  overflow-y:auto;
+  width: 498px;
+
+bottom: 0;   
+text-align: left; 
+max-height: 500px;
 }
-/* #messages {
-  list-style-type: none;
-  height: 100%;
-  width: 100%;
-  border: 1px solid #000;
-  display: table-cell;
-  vertical-align: bottom; 
-} */
+
 #chatSend{
   border-bottom: 2px solid black;
   border-top: 2px solid black;
   border-right: 2px solid black;
   border-left: 1px solid black;
 }
+
+ul{
+  vertical-align: bottom;
+}
+
 /* #messages {
   width: 100%;
   margin: 0%;
