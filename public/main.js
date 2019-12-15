@@ -257,20 +257,17 @@ $(document).ready(function() {
   var countDownTimer = setInterval(gameTimer, 1000);
 
   socket.on("hello", function(msg) {
-    $("#messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
+    $(".messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
 
-    $('#messages').scrollTop = ('#messages').get(0).scrollHeight;
+    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
 
-    // window.scrollTo(0, -document.body.scrollHeight);
   });
   socket.on("correct answer", function(msg) {
-    $("#messages").append(
+    $(".messages").append(
       $("<ul>").text(msg.userName + " has the correct answer!")
     );
-    $('#messages').scrollTop = $('#messages').get(0).scrollHeight;
+    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
 
-    // window.scrollTo(0, -document.body.scrollHeight);
-    // socket.emit("take turns");
   });
 
   socket.on("roundResults", function(results) {
