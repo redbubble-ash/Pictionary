@@ -130,16 +130,20 @@ $(document).ready(function() {
       socket.emit("next round", roomName, reason);
     }
 
-    socket.emit("chat message", {
-      roomName: roomName,
-      userName: userName,
-      msg: $("#messageInput").val()
-    });
+    
     let isAMatch = false;
     let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
     if (toBeEval.toLowerCase().search(secretWord) >= 0) {
       // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
       isAMatch = true;
+    }
+
+    if(!isAMatch){
+      socket.emit("chat message", {
+        roomName: roomName,
+        userName: userName,
+        msg: $("#messageInput").val()
+      });
     }
 
     if (isAMatch && !guessed) {
