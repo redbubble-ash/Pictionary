@@ -215,11 +215,19 @@ $(document).ready(function() {
       document.getElementById("messageInput").value =
         "I give up and cant draw this.";
       document.getElementById("messageInput").style.display = "none";
+      let artButtons = document.getElementsByClassName("drawTools");
+      for(let i = 0; i < artButtons.length; i++){
+        artButtons[i].style.visibility = "visible";
+      }
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
       document.getElementById("messageInput").value = "";
       document.getElementById("messageInput").style.display = "block";
+      let artButtons = document.getElementsByClassName("drawTools");
+      for(let i = 0; i < artButtons.length; i++){
+        artButtons[i].style.visibility = "hidden";
+      }
     }
 
     startDrawing();
