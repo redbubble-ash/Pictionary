@@ -18,7 +18,7 @@ body {
  }
 
  html {
-  box-sizing: border-box;
+  box-sizing: border-box; /* do not change this, this will affect the canvas -RM*/
 }
 body{
   text-align: center;
