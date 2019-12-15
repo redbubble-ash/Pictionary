@@ -273,11 +273,12 @@ $(document).ready(function() {
     console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
-      $("#roundResults").append(
-        $("<li>").text(
-          names[i] + " round: " + roundScores[i] + ", total: " + totalScores[i]
-        )
-      );
+      let $roundScore = $("<p style='color:red'>" +"+  " + roundScores[i] + "</p>");
+      let $playerName = $("<p style='color:blue; float:left'>" +"        "+names[i] + "                        " +"</p>");
+      let $playerList = $("<div style ='font-weight: bold; font-size:x-large'>");
+      $("#roundResults").append($playerList);
+      $playerList.append($playerName);
+      $playerList.append($roundScore);
     }
     setTimeout(() => {
       $(".hover_bkgr_fricc").fadeOut("slow");
@@ -302,25 +303,25 @@ $(document).ready(function() {
       let rank = scores.findIndex(findScore);
       rank++;
       //console.log("Player: "+names[i]+"RANK "+rank)
-      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+      let $name = $("<p style='float:left'>" + names[i] + "</p>");
       let $nameScore = $name.append(
         $(
-          "<p style='text-align: center'>" +
+          "<p>" +
             " Total: " +
             totalScores[i] +
             "</p>"
         )
       );
-      let $scoreList = $("<div style='display = flex; align-items: center'>");
+      let $scoreList = $("<div style='display = flex'>");
       $scoreList.append(
-        "<strong style='float:left; font-size:large;text-align: center'>" +
+        "<strong style='float:left; font-size:large'>" +
           "# " +
           rank +
           "</strong>"
       );
       $scoreList.append($nameScore);
       let $icon = $(
-        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+        "<p><img style='width = '30' height = '30'' src='./images/icon/" +
           playerIcons[i] +
           "' alt='player icon'></img></p>"
       );
