@@ -109,6 +109,11 @@ io.on("connection", function(socket) {
       round: rooms[room].round
     });
 
+
+    io.to(socket.room).emit("playerChange",socket.userName,"joined");
+
+ 
+
     // console.log(socket.rooms);
 
     // update all clients with the list of users
@@ -160,6 +165,7 @@ io.on("connection", function(socket) {
         1
       );
 
+
       //update the score board when guesser left the game
       io.to(socket.room).emit("guesserLeft", {
         userNames: rooms[socket.room].users.map(x => x.userName),
@@ -171,6 +177,8 @@ io.on("connection", function(socket) {
       console.log("guesser disconnected");
       // console.log(users.length);
     }
+
+    io.to(socket.room).emit("playerChange",socket.userName,"left");
   });
 });
 
