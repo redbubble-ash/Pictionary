@@ -75,7 +75,7 @@ io.on("connection", function(socket) {
     socket.join(room);
 
     if (rooms[room].users.length == 1) {
-      rooms[room].roundEndTime = new Date().getTime() + roundTime;
+      rooms[room].roundEndTime = new Date().getTime() + 90000;
       rooms[room].secretWord = generateSecretWord(room);
 
       console.log(rooms[room].secretWord);
