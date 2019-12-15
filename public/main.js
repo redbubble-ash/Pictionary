@@ -464,6 +464,9 @@ $(document).ready(function() {
   document.getElementById("white").onclick = function() {
     colour = "white";
   };
+  document.getElementById("dimGray").onclick = function() {
+    colour = "dimgray";
+  };
 
   //size changing
   let lineSize = 2;
