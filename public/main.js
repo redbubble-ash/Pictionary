@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
   let conversation = "";
@@ -9,12 +9,13 @@ $(document).ready(function() {
   let reason;
   let icon;
 
+
   // Login
   function loginSucceed() {
     // $(".game").toggle();
     $(".grey-out").fadeIn(500);
 
-    $("#room").on("change", function() {
+    $("#room").on("change", function () {
       if (this.value === "custom") {
         $("#roomName").css("visibility", "visible");
       } else {
@@ -22,7 +23,7 @@ $(document).ready(function() {
       }
     });
 
-    $(".user").submit(function() {
+    $(".user").submit(function () {
       event.preventDefault();
       userName = $("#userName")
         .val()
@@ -46,7 +47,7 @@ $(document).ready(function() {
       // };
 
       $("#newUser").html("Log in succeed: " + userName);
-      socket.emit("join", userName, roomName, function(past) {
+      socket.emit("join", userName, roomName, function (past) {
         past.forEach(line => draw(line));
         past.forEach(x => console.log(x));
       });
@@ -59,7 +60,7 @@ $(document).ready(function() {
       $(".grey-out").fadeOut(300);
       $(".game").css("visibility", "visible");
 
-    //update the score board when a new player joined the game
+      //update the score board when a new player joined the game
       socket.on("newPlayer", scoreBoardDisplay);
 
       // $(".user").fadeOut(300);
@@ -69,7 +70,7 @@ $(document).ready(function() {
 
   loginSucceed();
 
-  const scoreBoardDisplay = function(results) {
+  const scoreBoardDisplay = function (results) {
     let names = results.userNames;
     let totalScores = results.totalScores;
     let playerIcons = results.icons;
@@ -95,13 +96,21 @@ $(document).ready(function() {
       let $scoreList = $(
         "<div style='display = flex; align-items: center; font-weight:bold'>"
       );
-      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>"+ "# " +rank +"&nbsp;&nbsp;&nbsp"+"</span>"+ "<span style='color:blue'>" + names[i] +"</span>"+"&nbsp;&nbsp;&nbsp"+"<span style='color:red'>Total: "+totalScores[i]+"</span></p>"
-      );
-      let $icon = $(
-        "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
+      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>" + "# " + rank + "&nbsp;&nbsp;&nbsp" + "</span>" + "<span style='color:blue'>" + names[i] + "</span>" + "&nbsp;&nbsp;&nbsp" + "<span style='color:red'>Total: " + totalScores[i] + "</span></p>");
+      let $icon;
+      if(i===0){
+        $icon = $(
+          "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'>"+ "&nbsp;&nbsp"+"</img><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/051-bee.png'  alt='drawer icon'></img></p>"
+        );
+        }else{
+        $icon = $(
+          "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
           playerIcons[i] +
           "' alt='player icon'></img></p>"
-      );
+        );
+        }
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
       $("#roundInfo").text("Round " + gameRound);
@@ -109,7 +118,7 @@ $(document).ready(function() {
   }
 
   // Chat and guess area
-  $("#messagesForm").submit(function() {
+  $("#messagesForm").submit(function () {
     if (drawer) {
       reason = "Drawer Gave up!";
       socket.emit("next round", roomName, reason);
@@ -145,6 +154,7 @@ $(document).ready(function() {
   }
 
   let newHint = "";
+
   function hintMaker(word, seconds) {
     let hint = dashMaker(word);
     const index1 = Math.floor(Math.random() * hint.length);
@@ -158,6 +168,7 @@ $(document).ready(function() {
       }
       return temp;
     }
+
     function noMatch123() {
       temp = Math.floor(Math.random() * hint.length);
       if (temp === index1 || temp === index2) {
@@ -184,7 +195,7 @@ $(document).ready(function() {
     }
     return newHint;
   }
-  socket.on("gameStatus", function(status) {
+  socket.on("gameStatus", function (status) {
     console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu
     drawer = status.drawer;
     roomName = status.roomName;
@@ -217,9 +228,9 @@ $(document).ready(function() {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-    document.getElementById("secretword").innerHTML = drawer
-      ? secretWord
-      : hintMaker(secretWord, seconds);
+    document.getElementById("secretword").innerHTML = drawer ?
+      secretWord :
+      hintMaker(secretWord, seconds);
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
@@ -229,11 +240,11 @@ $(document).ready(function() {
   }
   var countDownTimer = setInterval(gameTimer, 1000);
 
-  socket.on("hello", function(msg) {
+  socket.on("hello", function (msg) {
     $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
     window.scrollTo(0, -document.body.scrollHeight);
   });
-  socket.on("correct answer", function(msg) {
+  socket.on("correct answer", function (msg) {
     $("#messages").append(
       $("<li>").text(msg.userName + " has the correct answer!")
     );
@@ -241,7 +252,7 @@ $(document).ready(function() {
     // socket.emit("take turns");
   });
 
-  socket.on("roundResults", function(results) {
+  socket.on("roundResults", function (results) {
     $("#timer").hide();
     let names = results.userNames;
     let roundScores = results.roundScores;
@@ -255,15 +266,15 @@ $(document).ready(function() {
     $("#secretWord").empty();
     $("#timesUp").empty();
     $("#roundresults").empty();
-    
+
     //Popup window
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
     console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
-      let $roundScore = $("<p style='color:red'>" +"+  " + roundScores[i] + "</p>");
-      let $playerName = $("<p style='color:blue; float:left'>" +"        "+names[i] + "                        " +"</p>");
+      let $roundScore = $("<p style='color:red'>" + "+  " + roundScores[i] + "</p>");
+      let $playerName = $("<p style='color:blue; float:left'>" + "        " + names[i] + "                        " + "</p>");
       let $playerList = $("<div style ='font-weight: bold; font-size:x-large'>");
       $("#roundResults").append($playerList);
       $playerList.append($playerName);
@@ -278,7 +289,7 @@ $(document).ready(function() {
     }, 5000);
 
 
-    
+
     //update the score board
     let scores = [];
     for (let i = 0; i < names.length; i++) {
@@ -295,22 +306,30 @@ $(document).ready(function() {
       let $scoreList = $(
         "<div style='display = flex; align-items: center; font-weight:bold'>"
       );
-      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>"+ "# " +rank +"&nbsp;&nbsp;&nbsp"+"</span>"+ "<span style='color:blue'>" + names[i] +"</span>"+"&nbsp;&nbsp;&nbsp"+"<span style='color:red'>Total: "+totalScores[i]+"</span></p>"
-      );
-      let $icon = $(
-        "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
+      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>" + "# " + rank + "&nbsp;&nbsp;&nbsp" + "</span>" + "<span style='color:blue'>" + names[i] + "</span>" + "&nbsp;&nbsp;&nbsp" + "<span style='color:red'>Total: " + totalScores[i] + "</span></p>");
+      let $icon;
+      if(i===0){
+        $icon = $(
+          "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'>"+ "&nbsp;&nbsp"+"</img><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/051-bee.png'  alt='drawer icon'></img></p>"
+        );
+        }else{
+        $icon = $(
+          "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
           playerIcons[i] +
           "' alt='player icon'></img></p>"
-      );
+        );
+        }
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
       $("#roundInfo").text("Round " + gameRound);
     }
   });
 
-    //update the score board when guesser left the game
-    socket.on("guesserLeft", scoreBoardDisplay);
-  
+  //update the score board when guesser left the game
+  socket.on("guesserLeft", scoreBoardDisplay);
+
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
@@ -334,9 +353,9 @@ $(document).ready(function() {
     y: 0
   };
 
-  var startDrawing = function() {
+  var startDrawing = function () {
     console.log("draw on canvas");
-    canvas.onmousemove = function(e) {
+    canvas.onmousemove = function (e) {
       mouse.x = e.pageX - $(this).offset().left;
       mouse.y = e.pageY - $(this).offset().top;
       endX = mouse.x;
@@ -344,7 +363,7 @@ $(document).ready(function() {
     };
 
     /* Drawing on Paint App */
-    canvas.onmousedown = function(e) {
+    canvas.onmousedown = function (e) {
       //   ctx.beginPath();
       //   ctx.moveTo(mouse.x, mouse.y);
       startX = mouse.x;
@@ -353,14 +372,14 @@ $(document).ready(function() {
       canvas.addEventListener("mousemove", onPaint, false);
     };
 
-    canvas.onmouseup = function() {
+    canvas.onmouseup = function () {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
-    canvas.onmouseout = function() {
+    canvas.onmouseout = function () {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
 
-    var onPaint = function() {
+    var onPaint = function () {
       if (drawer) {
         ctx.strokeStyle = colour;
         ctx.lineWidth = lineSize;
@@ -400,54 +419,54 @@ $(document).ready(function() {
 
   //this begins colour controls
   let colour = "white";
-  document.getElementById("red").onclick = function() {
+  document.getElementById("red").onclick = function () {
     colour = "red";
   };
-  document.getElementById("orange").onclick = function() {
+  document.getElementById("orange").onclick = function () {
     colour = "orange";
   };
-  document.getElementById("yellow").onclick = function() {
+  document.getElementById("yellow").onclick = function () {
     colour = "yellow";
   };
-  document.getElementById("green").onclick = function() {
+  document.getElementById("green").onclick = function () {
     colour = "green";
   };
-  document.getElementById("blue").onclick = function() {
+  document.getElementById("blue").onclick = function () {
     colour = "blue";
   };
-  document.getElementById("purple").onclick = function() {
+  document.getElementById("purple").onclick = function () {
     colour = "rebeccapurple";
   };
-  document.getElementById("brown").onclick = function() {
+  document.getElementById("brown").onclick = function () {
     colour = "sienna";
   };
-  document.getElementById("black").onclick = function() {
+  document.getElementById("black").onclick = function () {
     colour = "black";
   };
-  document.getElementById("white").onclick = function() {
+  document.getElementById("white").onclick = function () {
     colour = "white";
   };
 
   //size changing
   let lineSize = 2;
-  document.getElementById("xSmaller").onclick = function() {
+  document.getElementById("xSmaller").onclick = function () {
     lineSize = 2;
   };
-  document.getElementById("small").onclick = function() {
+  document.getElementById("small").onclick = function () {
     lineSize = 5;
   };
-  document.getElementById("medium").onclick = function() {
+  document.getElementById("medium").onclick = function () {
     lineSize = 10;
   };
-  document.getElementById("large").onclick = function() {
+  document.getElementById("large").onclick = function () {
     lineSize = 20;
   };
-  document.getElementById("xLarger").onclick = function() {
+  document.getElementById("xLarger").onclick = function () {
     lineSize = 30;
   };
 
   // canvas clear functions
-  document.getElementById("clear").onclick = function() {
+  document.getElementById("clear").onclick = function () {
     socket.emit("clearScreen", console.log("clear screen was sent"));
   };
 
@@ -458,7 +477,7 @@ $(document).ready(function() {
   socket.on("clearScreen", clearScreen);
 
   // canvas fill function
-  document.getElementById("fill").onclick = function() {
+  document.getElementById("fill").onclick = function () {
     socket.emit("fillScreen", colour);
   };
   socket.on("fillScreen", fillScreen);
@@ -494,7 +513,7 @@ $(document).ready(function() {
     ctx.closePath();
     ctx.stroke();
   }
-  canvas.onmousedown = function(e) {
+  canvas.onmousedown = function (e) {
     //   ctx.beginPath();
     //   ctx.moveTo(mouse.x, mouse.y);
     startX = mouse.x;
@@ -503,11 +522,11 @@ $(document).ready(function() {
     canvas.addEventListener("mousemove", onPaint, false);
   };
 
-  canvas.onmouseup = function() {
+  canvas.onmouseup = function () {
     canvas.removeEventListener("mousemove", onPaint, false);
   };
 
-  var onPaint = function() {
+  var onPaint = function () {
     ctx.strokeStyle = colour; //allows color to change
     ctx.lineWidth = lineSize; // allows size to change
     ctx.beginPath();

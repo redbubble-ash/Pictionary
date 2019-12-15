@@ -189,17 +189,6 @@ let startNextRound = function(roomName, reason) {
     rooms[roomName].round++;
   }
 
-  io.to(roomName).emit("roundResults", {
-    userNames: rooms[roomName].users.map(x => x.userName),
-    roundScores: rooms[roomName].users.map(x => x.roundScore),
-    totalScores: rooms[roomName].users.map(x => x.totalScore),
-    icons: rooms[roomName].users.map(x => x.icon),
-    reason: reason,
-    round: rooms[roomName].round
-  });
-
-  console.log("REASON IS " + reason);
-
   io.to(roomName).emit("clearScreen");
   rooms[roomName].users.push(rooms[roomName].users.shift());
   // curTurnIdx = (curTurnIdx+1)%users.length;
@@ -212,6 +201,16 @@ let startNextRound = function(roomName, reason) {
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
 
   console.log("round end time" + rooms[roomName].roundEndTime);
+
+  io.to(roomName).emit("roundResults", {
+    userNames: rooms[roomName].users.map(x => x.userName),
+    roundScores: rooms[roomName].users.map(x => x.roundScore),
+    totalScores: rooms[roomName].users.map(x => x.totalScore),
+    icons: rooms[roomName].users.map(x => x.icon),
+    reason: reason,
+    round: rooms[roomName].round
+  });
+
 
   for (let i = 0; i < rooms[roomName].users.length; i++) {
     if (i == 0) {
