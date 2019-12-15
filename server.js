@@ -21,7 +21,7 @@ var history = [];
 // var remainingTime;
 var roundStartTime;
 
-var roundTime = 150000; //make timer 95,000 before release
+var roundTime = 95000; //make timer 95,000 before release
 let roundEndTime;
 // let curTurnIdx = 0;
 
@@ -40,14 +40,16 @@ var secretWord = {
     "camel",
     "turtle",
     "elephant",
-    "unicorn"
+    "unicorn",
+    "orangutan",
+    "owl"
   ],
-  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza"],
-  random: ["rainbow", "toothpaste", "mermaid", "computer"]
+  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi"],
+  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt"]
 };
 
 io.on("connection", function(socket) {
-  //io.emit('userlist', users);
+  //io.emit('userlist', users); //delete this?
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
   console.log(playerIcon);
   socket.on("join", function(name, room, past) {
@@ -73,7 +75,7 @@ io.on("connection", function(socket) {
     socket.join(room);
 
     if (rooms[room].users.length == 1) {
-      rooms[room].roundEndTime = new Date().getTime() + roundTime;
+      rooms[room].roundEndTime = new Date().getTime() + 90000;
       rooms[room].secretWord = generateSecretWord(room);
 
       console.log(rooms[room].secretWord);
@@ -96,7 +98,7 @@ io.on("connection", function(socket) {
       });
       past(rooms[room].history);
 
-      // io.to(socket.id).emit('timeRemaining', remainingTime);
+      // io.to(socket.id).emit('timeRemaining', remainingTime); // delete this?
     }
 
     //update the score board when a new player joined the game

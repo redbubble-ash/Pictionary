@@ -1,74 +1,85 @@
-*{
+* {
   /* border: 2px solid black; */
   margin: 0px;
   padding: 0px;
   border-radius: 4px;
-  border-color: #4A525A;
+  border-color: #4a525a;
   box-sizing: content-box;
 }
 
 /* fonts */
 body {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
   font-weight: 300;
- }
- 
- h1, h2, h3, h4, h5, h6 {
-  font-weight: 500;
- }
-
- html {
-  box-sizing: border-box;
 }
-body{
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
+
+html {
+  box-sizing: border-box; /* do not change this, this will affect the canvas -RM*/
+  -webkit-touch-callout: none; /* stops users from being able to select on iOS Safari */
+  -webkit-user-select: none; /*stops users from being able to select on Safari */
+  -khtml-user-select: none; /*stops users from being able to select on Konqueror HTML */
+  -moz-user-select: none; /*stops users from being able to select on Old versions of Firefox */
+  -ms-user-select: none; /*stops users from being able to select on Internet Explorer/Edge */
+  user-select: none; /*stops users from being able to select on Chrome, Opera and Firefox */
+}
+body {
   text-align: center;
 }
 .container {
-  max-width: -webkit-fill-available !important;    
+  max-width: -webkit-fill-available !important;
 }
-.row{
+.row {
   height: 400px;
 }
-#infoBars{
-  height:40px;
+#infoBars {
+  height: 40px;
   margin-top: 10px;
-} 
-#hourglass{
-  margin-left:25px;
 }
-#timer{
+#hourglass {
+  margin-left: 25px;
+}
+#timer {
   float: left;
   clear: left;
   margin-left: 25px;
-} 
-#secretword{
+}
+#secretword {
   letter-spacing: 2px;
   width: 20%;
   margin-left: auto;
   margin-right: auto;
 }
-#roundInfo{
-  text-align:center;
+#roundInfo {
+  text-align: center;
 }
 body {
   /* font: 13px Helvetica, Arial; */
   height: 100%;
-  background-image: url('/images/bkgBee.png');
+  background-image: url("/images/bkgBee.png");
   background-size: cover;
   /* display:block; */
 }
 /* \/used for first popup box\/ */
 .hidden {
   display: none;
-} 
+}
 .grey-out {
   position: fixed;
   top: 0px;
   left: 0px;
   width: 100%;
   height: 100%;
-  background-color: #4A4A4A;
-  opacity: .9;
+  background-color: #4a4a4a;
+  opacity: 0.9;
   display: none;
   z-index: 900;
 }
@@ -89,22 +100,23 @@ body {
   padding: 5px;
   margin: 10px;
 }
-#room{
+#room {
   height: 25px;
 }
 
-#login-button{
+#login-button {
   width: 120px;
   height: 20px;
   border-radius: 4px;
-  background-color: #F2DA73;
+  background-color: #f2da73;
 }
 
-.game{
-  visibility: hidden
+.game {
+  visibility: hidden;
 }
 
-input[type=text], select {
+input[type="text"],
+select {
   width: 100%;
   padding: 5px 5px;
   margin: 8px 0;
@@ -114,8 +126,8 @@ input[type=text], select {
   box-sizing: border-box;
 }
 
-#room{
-  font:inherit;
+#room {
+  font: inherit;
   width: 100%;
   padding: 5px 5px;
   margin: 8px 0;
@@ -131,46 +143,45 @@ input[type=text], select {
   height: 85%;
   background-color: white;
 } */
-#drawArea{
-  border: 2px solid #4A525A;
+#drawArea {
+  border: 2px solid #4a525a;
   background-color: white;
   max-width: 800;
-  max-height: 600;  
+  max-height: 600;
 }
 
-#settings { 
+#settings {
   display: block;
-  text-align:center;
-  
+  text-align: center;
 }
-#red{
+#red {
   background: red;
 }
-#orange{
+#orange {
   background: orange;
 }
-#yellow{
+#yellow {
   background: yellow;
   color: black;
 }
-#green{
+#green {
   background: green;
 }
-#blue{
+#blue {
   background: blue;
   color: white;
 }
-#purple{
+#purple {
   background: rebeccapurple;
 }
-#brown{
+#brown {
   background: sienna;
 }
-#black{
+#black {
   background: black;
   color: white;
 }
-#white{
+#white {
   background: white;
   color: black;
   border: 1px solid black;
@@ -192,30 +203,59 @@ form button {
   border: none;
   padding: 10px;
 }
-#messageContainer{
+/* #messageContainer{
   overflow: auto;
   width: 100%;
-  height: 90%;
+  height: 500px;
   border: 2px solid #4A525A;
   background-color: #F7EADA;
-}
-#messageInput{
-  border-right: 1px solid #4A525A;
+  
+} */
+#messageInput {
+  border-right: 1px solid #4a525a;
+  vertical-align: bottom;
 }
 /* #messages {
-  list-style-type: none;
+  position:absolute;
+  overflow:none;
   height: 100%;
   width: 100%;
-  border: 1px solid #000;
-  display: table-cell;
-  vertical-align: bottom; 
+  bottom:0;
+  /* display: table-cell;
+  vertical-align: bottom; */
+/* text-align: left; */
+/* max-height: inherit;
 } */
-#chatSend{
+
+#messageContainer {
+  overflow: auto;
+  width: 100%;
+  height: 500px;
+  border: 2px solid #4a525a;
+  background-color: #f7eada;
+  position: relative;
+}
+
+.messages {
+  position: absolute;
+  overflow-y: auto;
+  width: 498px;
+  bottom: 0;
+  text-align: left;
+  max-height: 500px;
+}
+
+#chatSend {
   border-bottom: 2px solid black;
   border-top: 2px solid black;
   border-right: 2px solid black;
   border-left: 1px solid black;
 }
+
+ul {
+  vertical-align: bottom;
+}
+
 /* #messages {
   width: 100%;
   margin: 0%;
@@ -233,21 +273,21 @@ form button {
 }
 
 /* Popup box BEGIN */
-.hover_bkgr_fricc{
-  background:rgba(0,0,0,.4);
-  cursor:pointer;
-  display:none;
-  height:100%;
-  position:fixed;
-  text-align:center;
-  top:0;
-  width:100%;
-  z-index:10000;
+.hover_bkgr_fricc {
+  background: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: none;
+  height: 100%;
+  position: fixed;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
 }
-.hover_bkgr_fricc .helper{
-  display:inline-block;
-  height:100%;
-  vertical-align:middle;
+.hover_bkgr_fricc .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
 .hover_bkgr_fricc > div {
   background-color: #fff;
@@ -270,7 +310,7 @@ form button {
   font-weight: bold;
 }
 /* Popup box BEGIN */
-#scoreHolder{
+#scoreHolder {
   border: 2px solid black;
-  background-color: #F7EADA;
+  background-color: #f7eada;
 }

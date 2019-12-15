@@ -1,13 +1,16 @@
 $(document).ready(function () {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
-  let conversation = "";
+  //let conversation = ""; delete this?
   let drawer;
   let secretWord;
   let roomName;
   let guessed = false;
   let reason;
-  let icon;
+  //let icon; delete this?
+  let index1; //These three are for the hint maker
+  let index2;
+  let index3;
 
 
   // Login
@@ -34,7 +37,7 @@ $(document).ready(function () {
           .val()
           .trim();
       }
-
+      // re-enable this?
       // if (userName == "") {
       //     return false
       // };
@@ -62,7 +65,7 @@ $(document).ready(function () {
 
       //update the score board when a new player joined the game
       socket.on("newPlayer", scoreBoardDisplay);
-
+      //delete this?
       // $(".user").fadeOut(300);
       //$('input.guess-input').focus();
     });
@@ -124,16 +127,20 @@ $(document).ready(function () {
       socket.emit("next round", roomName, reason);
     }
 
-    socket.emit("chat message", {
-      roomName: roomName,
-      userName: userName,
-      msg: $("#messageInput").val()
-    });
+    
     let isAMatch = false;
     let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
     if (toBeEval.toLowerCase().search(secretWord) >= 0) {
       // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
       isAMatch = true;
+    }
+
+    if(!isAMatch){
+      socket.emit("chat message", {
+        roomName: roomName,
+        userName: userName,
+        msg: $("#messageInput").val()
+      });
     }
 
     if (isAMatch && !guessed) {
@@ -153,45 +160,19 @@ $(document).ready(function () {
     return secretWord.replace(/[a-zA-Z]/g, "_");
   }
 
-  let newHint = "";
-
+  let newHint = '';
   function hintMaker(word, seconds) {
     let hint = dashMaker(word);
-    const index1 = Math.floor(Math.random() * hint.length);
-    const index2 = noMatch12();
-    const index3 = noMatch123();
-
-    function noMatch12() {
-      temp = Math.floor(Math.random() * hint.length);
-      if (temp === index1) {
-        noMatch12();
-      }
-      return temp;
-    }
-
-    function noMatch123() {
-      temp = Math.floor(Math.random() * hint.length);
-      if (temp === index1 || temp === index2) {
-        noMatch123();
-      }
-      return temp;
-    }
-
-    if (seconds > 60) {
-      newHint = hint;
-    } else if (seconds === 60) {
-      newHint =
-        hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
-    } else if (seconds === 30 && word.length > 4) {
-      newHint =
-        newHint.substring(0, index2) +
-        word[index2] +
-        newHint.substring(index2 + 1);
-    } else if (seconds === 10 && word.length > 3) {
-      newHint =
-        newHint.substring(0, index3) +
-        word[index3] +
-        newHint.substring(index3 + 1);
+    //console.log(hint)
+    newHint = hint;
+    if (seconds <= 60) {
+      newHint = hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
+    } 
+    if (seconds <= 30) {
+      newHint = newHint.substring(0, index2) + word[index2] + newHint.substring(index2 + 1);
+    } 
+    if (seconds <= 10) {
+      newHint = newHint.substring(0, index3) + word[index3] + newHint.substring(index3 + 1);
     }
     return newHint;
   }
@@ -203,6 +184,30 @@ $(document).ready(function () {
     roundEndTime = status.roundEndTime;
     icon = status.icon;
     guessed = false;
+    index1 = Math.floor(Math.random() * secretWord.length);// these make a new index each round for the hinter
+    index2 = noMatch12();
+    index3 = noMatch123();
+    
+    console.log(`here are those indexes:${index1},${index2},${index3}`)
+    function noMatch12() { // the noMatch functions ensure unique letters for 5-letter words and above
+      temp = Math.floor(Math.random() * secretWord.length);
+      if(secretWord.length === 4){//causes only two unique letters for four letter words
+        temp = index1;
+      }else if (temp === index1) {
+        noMatch12();
+      }
+      return temp;
+    }
+    function noMatch123() {
+      temp = Math.floor(Math.random() * secretWord.length);
+      if(secretWord.length === 3){// only reveals one letter for three letter words
+        temp = index1;
+        index2 = index1;
+      }else if (temp === index1 || temp === index2) {
+        noMatch123();
+      }
+      return temp;
+    }
 
     $("#currentRoom").text("Room: " + roomName);
 
@@ -211,11 +216,19 @@ $(document).ready(function () {
       document.getElementById("messageInput").value =
         "I give up and cant draw this.";
       document.getElementById("messageInput").style.display = "none";
+      let artButtons = document.getElementsByClassName("drawTools");
+      for(let i = 0; i < artButtons.length; i++){
+        artButtons[i].style.visibility = "visible";
+      }
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
       document.getElementById("messageInput").value = "";
       document.getElementById("messageInput").style.display = "block";
+      let artButtons = document.getElementsByClassName("drawTools");
+      for(let i = 0; i < artButtons.length; i++){
+        artButtons[i].style.visibility = "hidden";
+      }
     }
 
     startDrawing();
@@ -240,16 +253,18 @@ $(document).ready(function () {
   }
   var countDownTimer = setInterval(gameTimer, 1000);
 
-  socket.on("hello", function (msg) {
-    $("#messages").append($("<li>").text(msg.userName + ": " + msg.msg));
-    window.scrollTo(0, -document.body.scrollHeight);
+  socket.on("hello", function(msg) {
+    $(".messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
+
+    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
+
   });
-  socket.on("correct answer", function (msg) {
-    $("#messages").append(
-      $("<li>").text(msg.userName + " has the correct answer!")
+  socket.on("correct answer", function(msg) {
+    $(".messages").append(
+      $("<ul>").text(msg.userName + " has the correct answer!")
     );
-    window.scrollTo(0, -document.body.scrollHeight);
-    // socket.emit("take turns");
+    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
+
   });
 
   socket.on("roundResults", function (results) {
@@ -363,12 +378,11 @@ $(document).ready(function () {
     };
 
     /* Drawing on Paint App */
-    canvas.onmousedown = function (e) {
-      //   ctx.beginPath();
+    canvas.onmousedown = function(e) {
+      //   ctx.beginPath(); // delete this?
       //   ctx.moveTo(mouse.x, mouse.y);
       startX = mouse.x;
       startY = mouse.y;
-
       canvas.addEventListener("mousemove", onPaint, false);
     };
 
@@ -513,8 +527,8 @@ $(document).ready(function () {
     ctx.closePath();
     ctx.stroke();
   }
-  canvas.onmousedown = function (e) {
-    //   ctx.beginPath();
+  canvas.onmousedown = function(e) {
+    //   ctx.beginPath(); // delete this?
     //   ctx.moveTo(mouse.x, mouse.y);
     startX = mouse.x;
     startY = mouse.y;
