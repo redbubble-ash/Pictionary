@@ -100,18 +100,19 @@ io.on("connection", function(socket) {
 
       // io.to(socket.id).emit('timeRemaining', remainingTime); // delete this?
     }
-    
+
     //update the score board when a new player joined the game
     io.to(room).emit("newPlayer", {
       userNames: rooms[room].users.map(x => x.userName),
       totalScores: rooms[room].users.map(x => x.totalScore),
-      icons: rooms[room].users.map(x => x.icon)
+      icons: rooms[room].users.map(x => x.icon),
+      round: rooms[room].round
     });
+
 
     io.to(socket.room).emit("playerChange",socket.userName,"joined");
 
-  
-
+ 
 
     // console.log(socket.rooms);
 
@@ -125,7 +126,7 @@ io.on("connection", function(socket) {
 
   socket.on("correct answer", function(msg) {
     socket.roundScore = msg.roundScore;
-    socket.totalScore += msg.roundScore;
+    //socket.totalScore += msg.roundScore;
 
     io.to(socket.room).emit("correct answer", msg);
   });
@@ -153,7 +154,7 @@ io.on("connection", function(socket) {
         delete rooms[socket.room];
       } else {
         //rooms[socket.room].users.pop();
-        rooms[socket.room].users.shift();//remove the drawer (the first element) before start the next turn
+        rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
         startNextRound(socket.room, "Drawer Left!");
       }
       console.log("drawer disconnected");
@@ -164,12 +165,15 @@ io.on("connection", function(socket) {
         1
       );
 
-    //update the score board when guesser left the game
-    io.to(socket.room).emit("guesserLeft", {
-      userNames: rooms[socket.room].users.map(x => x.userName),
-      totalScores: rooms[socket.room].users.map(x => x.totalScore),
-      icons: rooms[socket.room].users.map(x => x.icon),
-    });
+
+      //update the score board when guesser left the game
+      io.to(socket.room).emit("guesserLeft", {
+        userNames: rooms[socket.room].users.map(x => x.userName),
+        totalScores: rooms[socket.room].users.map(x => x.totalScore),
+        icons: rooms[socket.room].users.map(x => x.icon),
+        round: rooms[socket.room].round
+      });
+
       console.log("guesser disconnected");
       // console.log(users.length);
     }
@@ -187,21 +191,13 @@ let generateSecretWord = function(room) {
 };
 
 let startNextRound = function(roomName, reason) {
+  for (let i = 0; i < rooms[roomName].users.length; i++) {
+    rooms[roomName].users[i].totalScore += rooms[roomName].users[i].roundScore;
+  }
   if (rooms[roomName] != undefined) {
     rooms[roomName].history = [];
     rooms[roomName].round++;
   }
-
-  io.to(roomName).emit("roundResults", {
-    userNames: rooms[roomName].users.map(x => x.userName),
-    roundScores: rooms[roomName].users.map(x => x.roundScore),
-    totalScores: rooms[roomName].users.map(x => x.totalScore),
-    icons: rooms[roomName].users.map(x => x.icon),
-    reason: reason,
-    round: rooms[roomName].round
-  });
-
-  console.log("REASON IS " + reason);
 
   io.to(roomName).emit("clearScreen");
   rooms[roomName].users.push(rooms[roomName].users.shift());
@@ -215,6 +211,16 @@ let startNextRound = function(roomName, reason) {
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
 
   console.log("round end time" + rooms[roomName].roundEndTime);
+
+  io.to(roomName).emit("roundResults", {
+    userNames: rooms[roomName].users.map(x => x.userName),
+    roundScores: rooms[roomName].users.map(x => x.roundScore),
+    totalScores: rooms[roomName].users.map(x => x.totalScore),
+    icons: rooms[roomName].users.map(x => x.icon),
+    reason: reason,
+    round: rooms[roomName].round
+  });
+
 
   for (let i = 0; i < rooms[roomName].users.length; i++) {
     if (i == 0) {
@@ -234,5 +240,7 @@ let startNextRound = function(roomName, reason) {
         roundEndTime: rooms[roomName].roundEndTime
       });
     }
+    //reset round score to zero
+    rooms[roomName].users[i].roundScore = 0;
   }
 };
