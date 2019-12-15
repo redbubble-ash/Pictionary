@@ -103,7 +103,8 @@ io.on("connection", function(socket) {
     io.to(room).emit("newPlayer", {
       userNames: rooms[room].users.map(x => x.userName),
       totalScores: rooms[room].users.map(x => x.totalScore),
-      icons: rooms[room].users.map(x => x.icon)
+      icons: rooms[room].users.map(x => x.icon),
+      round: rooms[room].round
     });
 
     // console.log(socket.rooms);
@@ -161,7 +162,8 @@ io.on("connection", function(socket) {
       io.to(socket.room).emit("guesserLeft", {
         userNames: rooms[socket.room].users.map(x => x.userName),
         totalScores: rooms[socket.room].users.map(x => x.totalScore),
-        icons: rooms[socket.room].users.map(x => x.icon)
+        icons: rooms[socket.room].users.map(x => x.icon),
+        round: rooms[socket.room].round
       });
 
       console.log("guesser disconnected");

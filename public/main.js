@@ -73,6 +73,7 @@ $(document).ready(function() {
     let names = results.userNames;
     let totalScores = results.totalScores;
     let playerIcons = results.icons;
+    let gameRound = results.round;
 
     $("#roundResults").empty();
     $("#timesUp").empty();
@@ -117,6 +118,7 @@ $(document).ready(function() {
       );
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
+      $("#roundInfo").text("Round " + gameRound);
     }
   }
 
