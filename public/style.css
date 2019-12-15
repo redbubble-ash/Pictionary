@@ -19,6 +19,12 @@ body {
 
  html {
   box-sizing: border-box; /* do not change this, this will affect the canvas -RM*/
+  -webkit-touch-callout: none; /* stops users from being able to select on iOS Safari */ 
+  -webkit-user-select: none; /*stops users from being able to select on Safari */
+  -khtml-user-select: none; /*stops users from being able to select on Konqueror HTML */
+  -moz-user-select: none; /*stops users from being able to select on Old versions of Firefox */
+  -ms-user-select: none; /*stops users from being able to select on Internet Explorer/Edge */
+  user-select: none; /*stops users from being able to select on Chrome, Opera and Firefox */
 }
 body{
   text-align: center;
