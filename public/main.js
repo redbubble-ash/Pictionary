@@ -92,27 +92,13 @@ $(document).ready(function() {
       }
       let rank = scores.findIndex(findScore);
       rank++;
-      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
-      let $nameScore = $name.append(
-        $(
-          "<p style='text-align: center'>" +
-            " Total: " +
-            totalScores[i] +
-            "</p>"
-        )
-      );
       let $scoreList = $(
-        "<div style='display = flex; align-items: center'>"
+        "<div style='display = flex; align-items: center; font-weight:bold'>"
       );
-      $scoreList.append(
-        "<strong style='float:left; font-size:large;text-align: center'>" +
-          "# " +
-          rank +
-          "</strong>"
+      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>"+ "# " +rank +"&nbsp;&nbsp;&nbsp"+"</span>"+ "<span style='color:blue'>" + names[i] +"</span>"+"&nbsp;&nbsp;&nbsp"+"<span style='color:red'>Total: "+totalScores[i]+"</span></p>"
       );
-      $scoreList.append($nameScore);
       let $icon = $(
-        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+        "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
           playerIcons[i] +
           "' alt='player icon'></img></p>"
       );
@@ -262,12 +248,15 @@ $(document).ready(function() {
     let totalScores = results.totalScores;
     let reasonNextRound = results.reason;
     let playerIcons = results.icons;
+    let gameRound = results.round;
+
 
     $("#roundResults").empty();
     $("#secretWord").empty();
     $("#timesUp").empty();
     $("#roundresults").empty();
-
+    
+    //Popup window
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
     console.log("REASON IS " + reasonNextRound);
@@ -288,6 +277,8 @@ $(document).ready(function() {
       $("#timer").show();
     }, 5000);
 
+
+    
     //update the score board
     let scores = [];
     for (let i = 0; i < names.length; i++) {
@@ -295,40 +286,25 @@ $(document).ready(function() {
       scores = scores.sort((a, b) => b - a);
     }
 
-    console.log("scores: " + scores);
     for (let i = 0; i < names.length; i++) {
       function findScore(score) {
         return score === totalScores[i];
       }
       let rank = scores.findIndex(findScore);
       rank++;
-      //console.log("Player: "+names[i]+"RANK "+rank)
-      let $name = $("<p style='float:left'>" + names[i] + "</p>");
-      let $nameScore = $name.append(
-        $(
-          "<p>" +
-            " Total: " +
-            totalScores[i] +
-            "</p>"
-        )
+      let $scoreList = $(
+        "<div style='display = flex; align-items: center; font-weight:bold'>"
       );
-      let $scoreList = $("<div style='display = flex'>");
-      $scoreList.append(
-        "<strong style='float:left; font-size:large'>" +
-          "# " +
-          rank +
-          "</strong>"
+      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>"+ "# " +rank +"&nbsp;&nbsp;&nbsp"+"</span>"+ "<span style='color:blue'>" + names[i] +"</span>"+"&nbsp;&nbsp;&nbsp"+"<span style='color:red'>Total: "+totalScores[i]+"</span></p>"
       );
-      $scoreList.append($nameScore);
       let $icon = $(
-        "<p><img style='width = '30' height = '30'' src='./images/icon/" +
+        "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
           playerIcons[i] +
           "' alt='player icon'></img></p>"
       );
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
-      //console.log("PLAYERS ICON IS" + playerIcons[i]);
-      $("#roundInfo").text("Round " + results.round);
+      $("#roundInfo").text("Round " + gameRound);
     }
   });
 
