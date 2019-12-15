@@ -1,28 +1,29 @@
 $(document).ready(function() {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
-  let conversation = "";
+  //let conversation = ""; delete this?
   let drawer;
   let secretWord;
   let roomName;
   let guessed = false;
-  let icon;
   let reason;
+  //let icon; delete this?
+  let index1; //These three are for the hint maker
+  let index2;
+  let index3;
 
   // Login
   function loginSucceed() {
     // $(".game").toggle();
     $(".grey-out").fadeIn(500);
 
-    $('#room').on('change', function() {
-      if(this.value==='custom'){
-        $("#roomName").css('visibility','visible');
-      }
-      else{
-        $("#roomName").css('visibility','hidden');
+    $("#room").on("change", function() {
+      if (this.value === "custom") {
+        $("#roomName").css("visibility", "visible");
+      } else {
+        $("#roomName").css("visibility", "hidden");
       }
     });
-
 
     $(".user").submit(function() {
       event.preventDefault();
@@ -35,7 +36,7 @@ $(document).ready(function() {
           .val()
           .trim();
       }
-
+      // re-enable this?
       // if (userName == "") {
       //     return false
       // };
@@ -60,12 +61,67 @@ $(document).ready(function() {
       });
       $(".grey-out").fadeOut(300);
       $(".game").css("visibility", "visible");
+
+    //update the score board when a new player joined the game
+      socket.on("newPlayer", scoreBoardDisplay);
+      //delete this?
       // $(".user").fadeOut(300);
       //$('input.guess-input').focus();
     });
   }
 
   loginSucceed();
+
+  const scoreBoardDisplay = function(results) {
+    let names = results.userNames;
+    let totalScores = results.totalScores;
+    let playerIcons = results.icons;
+
+    $("#roundResults").empty();
+    $("#timesUp").empty();
+    $("#roundresults").empty();
+
+    //update the score board
+    let scores = [];
+    for (let i = 0; i < names.length; i++) {
+      scores.push(totalScores[i]);
+      scores = scores.sort((a, b) => b - a);
+    }
+
+    for (let i = 0; i < names.length; i++) {
+      function findScore(score) {
+        return score === totalScores[i];
+      }
+      let rank = scores.findIndex(findScore);
+      rank++;
+      let $name = $("<p style='text-align: center'>" + names[i] + "</p>");
+      let $nameScore = $name.append(
+        $(
+          "<p style='text-align: center'>" +
+            " Total: " +
+            totalScores[i] +
+            "</p>"
+        )
+      );
+      let $scoreList = $(
+        "<div style='display = flex; align-items: center'>"
+      );
+      $scoreList.append(
+        "<strong style='float:left; font-size:large;text-align: center'>" +
+          "# " +
+          rank +
+          "</strong>"
+      );
+      $scoreList.append($nameScore);
+      let $icon = $(
+        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'></img></p>"
+      );
+      $scoreList.append($icon);
+      $("#roundresults").append($scoreList);
+    }
+  }
 
   // Chat and guess area
   $("#messagesForm").submit(function() {
@@ -103,43 +159,19 @@ $(document).ready(function() {
     return secretWord.replace(/[a-zA-Z]/g, "_");
   }
 
-  let newHint = "";
+  let newHint = '';
   function hintMaker(word, seconds) {
     let hint = dashMaker(word);
-    const index1 = Math.floor(Math.random() * hint.length);
-    const index2 = noMatch12();
-    const index3 = noMatch123();
-
-    function noMatch12() {
-      temp = Math.floor(Math.random() * hint.length);
-      if (temp === index1) {
-        noMatch12();
-      }
-      return temp;
-    }
-    function noMatch123() {
-      temp = Math.floor(Math.random() * hint.length);
-      if (temp === index1 || temp === index2) {
-        noMatch123();
-      }
-      return temp;
-    }
-
-    if (seconds > 60) {
-      newHint = hint;
-    } else if (seconds === 60) {
-      newHint =
-        hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
-    } else if (seconds === 30 && word.length > 4) {
-      newHint =
-        newHint.substring(0, index2) +
-        word[index2] +
-        newHint.substring(index2 + 1);
-    } else if (seconds === 10 && word.length > 3) {
-      newHint =
-        newHint.substring(0, index3) +
-        word[index3] +
-        newHint.substring(index3 + 1);
+    //console.log(hint)
+    newHint = hint;
+    if (seconds <= 60) {
+      newHint = hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
+    } 
+    if (seconds <= 30) {
+      newHint = newHint.substring(0, index2) + word[index2] + newHint.substring(index2 + 1);
+    } 
+    if (seconds <= 10) {
+      newHint = newHint.substring(0, index3) + word[index3] + newHint.substring(index3 + 1);
     }
     return newHint;
   }
@@ -151,22 +183,51 @@ $(document).ready(function() {
     roundEndTime = status.roundEndTime;
     icon = status.icon;
     guessed = false;
-
-    $('#currentRoom').text("Room: " + roomName);
-
+    index1 = Math.floor(Math.random() * secretWord.length);// these make a new index each round for the hinter
+    index2 = noMatch12();
+    index3 = noMatch123();
     
-    if(drawer){ 
-    document.getElementById("chatSend").innerHTML = "Give up turn?";
-    document.getElementById("messageInput").value = "I give up and cant draw this."
-    document.getElementById("messageInput").style.display = "none";
-    $("#drawingtools").css('visibility','visible');
+    console.log(`here are those indexes:${index1},${index2},${index3}`)
+    function noMatch12() { // the noMatch functions ensure unique letters for 5-letter words and above
+      temp = Math.floor(Math.random() * secretWord.length);
+      if(secretWord.length === 4){//causes only two unique letters for four letter words
+        temp = index1;
+      }else if (temp === index1) {
+        noMatch12();
+      }
+      return temp;
+    }
+    function noMatch123() {
+      temp = Math.floor(Math.random() * secretWord.length);
+      if(secretWord.length === 3){// only reveals one letter for three letter words
+        temp = index1;
+        index2 = index1;
+      }else if (temp === index1 || temp === index2) {
+        noMatch123();
+      }
+      return temp;
+    }
 
+    $("#currentRoom").text("Room: " + roomName);
+
+    if (drawer) {
+      document.getElementById("chatSend").innerHTML = "Give up turn?";
+      document.getElementById("messageInput").value =
+        "I give up and cant draw this.";
+      document.getElementById("messageInput").style.display = "none";
+      let artButtons = document.getElementsByClassName("drawTools");
+      for(let i = 0; i < artButtons.length; i++){
+        artButtons[i].style.visibility = "visible";
+      }
     }
     if (!drawer) {
       document.getElementById("chatSend").innerHTML = "send";
       document.getElementById("messageInput").value = "";
       document.getElementById("messageInput").style.display = "block";
-      $("#drawingtools").css('visibility','hidden');
+      let artButtons = document.getElementsByClassName("drawTools");
+      for(let i = 0; i < artButtons.length; i++){
+        artButtons[i].style.visibility = "hidden";
+      }
     }
 
     startDrawing();
@@ -214,7 +275,7 @@ $(document).ready(function() {
     let roundScores = results.roundScores;
     let totalScores = results.totalScores;
     let reasonNextRound = results.reason;
-
+    let playerIcons = results.icons;
 
     $("#roundResults").empty();
     $("#secretWord").empty();
@@ -223,7 +284,7 @@ $(document).ready(function() {
 
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
-    console.log('REASON IS ' + reasonNextRound);
+    console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
       $("#roundResults").append(
@@ -264,7 +325,7 @@ $(document).ready(function() {
             "</p>"
         )
       );
-      let $scoreList = $("<div>");
+      let $scoreList = $("<div style='display = flex; align-items: center'>");
       $scoreList.append(
         "<strong style='float:left; font-size:large;text-align: center'>" +
           "# " +
@@ -272,26 +333,37 @@ $(document).ready(function() {
           "</strong>"
       );
       $scoreList.append($nameScore);
+      let $icon = $(
+        "<p><img style='width = '30' height = '30'; text-align: center' src='./images/icon/" +
+          playerIcons[i] +
+          "' alt='player icon'></img></p>"
+      );
+      $scoreList.append($icon);
       $("#roundresults").append($scoreList);
+      //console.log("PLAYERS ICON IS" + playerIcons[i]);
       $("#roundInfo").text("Round " + results.round);
     }
   });
+
+    //update the score board when guesser left the game
+    socket.on("guesserLeft", scoreBoardDisplay);
+  
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
 
-  console.log(window.innerWidth); 
-  if(window.innerWidth >= 1300){
-    console.log("Hey I am large")
+  console.log(window.innerWidth);
+  if (window.innerWidth >= 1300) {
+    console.log("Hey I am large");
     canvas.width = 800;
     canvas.height = 600;
-  } else{
-    console.log("Hey I am medium")
+  } else {
+    console.log("Hey I am medium");
     canvas.width = 640;
     canvas.height = 480;
   }
-  
+
   let startX, startY, endX, endY;
 
   let mouse = {
@@ -310,11 +382,10 @@ $(document).ready(function() {
 
     /* Drawing on Paint App */
     canvas.onmousedown = function(e) {
-      //   ctx.beginPath();
+      //   ctx.beginPath(); // delete this?
       //   ctx.moveTo(mouse.x, mouse.y);
       startX = mouse.x;
       startY = mouse.y;
-
       canvas.addEventListener("mousemove", onPaint, false);
     };
 
@@ -442,23 +513,25 @@ $(document).ready(function() {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
     let scaleFactor = 1;
-    if(canvas.width !== originalWidth){
-      if(originalWidth === 800 && canvas.width === 640){
-        scaleFactor = .8;
-        console.log(`big down to small OW: ${originalWidth}, CW: ${canvas.width}`)
-      } else if(originalWidth === 640 && canvas.width === 800){
+    if (canvas.width !== originalWidth) {
+      if (originalWidth === 800 && canvas.width === 640) {
+        scaleFactor = 0.8;
+        console.log(
+          `big down to small OW: ${originalWidth}, CW: ${canvas.width}`
+        );
+      } else if (originalWidth === 640 && canvas.width === 800) {
         scaleFactor = 1.25;
-        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`)
+        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`);
       }
     }
     ctx.beginPath();
-    ctx.moveTo((line.from.x * scaleFactor), (line.from.y * scaleFactor));
-    ctx.lineTo((line.to.x * scaleFactor), (line.to.y * scaleFactor));
+    ctx.moveTo(line.from.x * scaleFactor, line.from.y * scaleFactor);
+    ctx.lineTo(line.to.x * scaleFactor, line.to.y * scaleFactor);
     ctx.closePath();
     ctx.stroke();
   }
   canvas.onmousedown = function(e) {
-    //   ctx.beginPath();
+    //   ctx.beginPath(); // delete this?
     //   ctx.moveTo(mouse.x, mouse.y);
     startX = mouse.x;
     startY = mouse.y;
@@ -502,4 +575,6 @@ $(document).ready(function() {
       buttons[i].setAttribute("disabled", "disabled");
     }
   }
+
+
 });
