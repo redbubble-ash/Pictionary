@@ -264,11 +264,19 @@ $(document).ready(function() {
   });
   socket.on("correct answer", function(msg) {
     $(".messages").append(
-      $("<ul>").text(msg.userName + " has the correct answer!")
+      $("<ul>").text(msg.userName + " has the correct answer!").css('color','green')
     );
     $('.messages').scrollTop ($('.messages')[0].scrollHeight);
 
   });
+
+
+  socket.on("playerChange", function(name, status){
+    $(".messages").append(
+      $("<ul>").text(name + " has " + status + " the room.").css('color','red')
+    );
+    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
+  })
 
   socket.on("roundResults", function(results) {
     $("#timer").hide();

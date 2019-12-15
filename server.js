@@ -107,6 +107,9 @@ io.on("connection", function(socket) {
       totalScores: rooms[room].users.map(x => x.totalScore),
       icons: rooms[room].users.map(x => x.icon)
     });
+
+    io.to(socket.room).emit("playerChange",socket.userName,"joined");
+
   
 
 
@@ -167,10 +170,11 @@ io.on("connection", function(socket) {
       totalScores: rooms[socket.room].users.map(x => x.totalScore),
       icons: rooms[socket.room].users.map(x => x.icon),
     });
-
       console.log("guesser disconnected");
       // console.log(users.length);
     }
+
+    io.to(socket.room).emit("playerChange",socket.userName,"left");
   });
 });
 
