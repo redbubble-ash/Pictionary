@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
   //let conversation = ""; delete this?
@@ -12,13 +12,12 @@ $(document).ready(function () {
   let index2;
   let index3;
 
-
   // Login
   function loginSucceed() {
     // $(".game").toggle();
     $(".grey-out").fadeIn(500);
 
-    $("#room").on("change", function () {
+    $("#room").on("change", function() {
       if (this.value === "custom") {
         $("#roomName").css("visibility", "visible");
       } else {
@@ -26,8 +25,7 @@ $(document).ready(function () {
       }
     });
 
-    $(".user").submit(function () {
-      
+    $(".user").submit(function() {
       event.preventDefault();
       userName = $("#userName")
         .val()
@@ -39,20 +37,24 @@ $(document).ready(function () {
           .trim();
       }
 
+      console.log("ROOM INFO: Name: " + userName + ", Room: " + roomName);
+
       $("#userNameErrorMsg").empty();
       $("#roomErrorMsg").empty();
 
-
       if(userName===''){
         $("#userNameErrorMsg").text("name cannot be empty");
-        return false;
+        return;
       }
 
       socket.emit("canIJoin", userName, roomName);
-      socket.on("canIJoin",function(msg){
-        if(msg=="true"){
+      console.log("SOCKET EMITTED");
+
+      checkLogIn().then(function(value) {
+        console.log(value);
+        if (value=='true') {
           $("#newUser").html("Log in succeed: " + userName);
-          socket.emit("join", userName, roomName, function (past) {
+          socket.emit("join", userName, roomName, function(past) {
             past.forEach(line => draw(line));
             past.forEach(x => console.log(x));
           });
@@ -64,37 +66,39 @@ $(document).ready(function () {
           });
           $(".grey-out").fadeOut(300);
           $(".game").css("visibility", "visible");
-    
+
           //update the score board when a new player joined the game
           socket.on("newPlayer", scoreBoardDisplay);
           //delete this?
           // $(".user").fadeOut(300);
           //$('input.guess-input').focus();
-
         }
-
-        else if (msg=="name already exist in room"){
-          console.log(msg);
-          $("#userNameErrorMsg").text("name already exist in room");
-          return false;
-        }
-
-        else if (msg=="room is full"){
-          $("#roomErrorMsg").text("room is full");
-          return false;
-        }
-
-      })
-     
+      });
     });
   }
 
+  function checkLogIn() {
+    return new Promise(resolve => {
+      socket.on("canIJoin", function(msg) {
 
+        if(msg === 'name already exist in room'){
+          $("#userNameErrorMsg").text("name already exist in room");
+        }
+        else if (msg=="room is full"){
+          $("#roomErrorMsg").text("room is full");
+        }
   
+        console.log("CHECKED LOGGIN");
+  
+        resolve(msg);
+      });
+      
+    });
+  }
 
   loginSucceed();
 
-  const scoreBoardDisplay = function (results) {
+  const scoreBoardDisplay = function(results) {
     let names = results.userNames;
     let totalScores = results.totalScores;
     let playerIcons = results.icons;
@@ -120,35 +124,49 @@ $(document).ready(function () {
       let $scoreList = $(
         "<div style='display = flex; align-items: center; font-weight:bold'>"
       );
-      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>" + "# " + rank + "&nbsp;&nbsp;&nbsp" + "</span>" + "<span style='color:blue'>" + names[i] + "</span>" + "&nbsp;&nbsp;&nbsp" + "<span style='color:red'>Total: " + totalScores[i] + "</span></p>");
+      $scoreList.append(
+        "<p style='text-align: center;float:left'><span style='color:red'>" +
+          "# " +
+          rank +
+          "&nbsp;&nbsp;&nbsp" +
+          "</span>" +
+          "<span style='color:blue'>" +
+          names[i] +
+          "</span>" +
+          "&nbsp;&nbsp;&nbsp" +
+          "<span style='color:red'> " +
+          totalScores[i] +
+          "</span></p>"
+      );
       let $icon;
-      if(i===0){
+      if (i === 0) {
         $icon = $(
           "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
-          playerIcons[i] +
-          "' alt='player icon'>"+ "&nbsp;&nbsp"+"</img><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/051-bee.png'  alt='drawer icon'></img></p>"
+            playerIcons[i] +
+            "' alt='player icon'>" +
+            "&nbsp;&nbsp" +
+            "</img><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/051-bee.png'  alt='drawer icon'></img></p>"
         );
-        }else{
+      } else {
         $icon = $(
           "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
-          playerIcons[i] +
-          "' alt='player icon'></img></p>"
+            playerIcons[i] +
+            "' alt='player icon'></img></p>"
         );
-        }
+      }
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
       $("#roundInfo").text("Round " + gameRound);
     }
-  }
+  };
 
   // Chat and guess area
-  $("#messagesForm").submit(function () {
+  $("#messagesForm").submit(function() {
     if (drawer) {
       reason = "Drawer Gave up!";
       socket.emit("next round", roomName, reason);
     }
 
-    
     let isAMatch = false;
     let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
     if (toBeEval.toLowerCase().search(secretWord) >= 0) {
@@ -156,7 +174,7 @@ $(document).ready(function () {
       isAMatch = true;
     }
 
-    if(!isAMatch){
+    if (!isAMatch) {
       socket.emit("chat message", {
         roomName: roomName,
         userName: userName,
@@ -181,23 +199,30 @@ $(document).ready(function () {
     return secretWord.replace(/[a-zA-Z]/g, "_");
   }
 
-  let newHint = '';
+  let newHint = "";
   function hintMaker(word, seconds) {
     let hint = dashMaker(word);
     //console.log(hint)
     newHint = hint;
     if (seconds <= 60) {
-      newHint = hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
-    } 
+      newHint =
+        hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
+    }
     if (seconds <= 30) {
-      newHint = newHint.substring(0, index2) + word[index2] + newHint.substring(index2 + 1);
-    } 
+      newHint =
+        newHint.substring(0, index2) +
+        word[index2] +
+        newHint.substring(index2 + 1);
+    }
     if (seconds <= 10) {
-      newHint = newHint.substring(0, index3) + word[index3] + newHint.substring(index3 + 1);
+      newHint =
+        newHint.substring(0, index3) +
+        word[index3] +
+        newHint.substring(index3 + 1);
     }
     return newHint;
   }
-  socket.on("gameStatus", function (status) {
+  socket.on("gameStatus", function(status) {
     console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu
     drawer = status.drawer;
     roomName = status.roomName;
@@ -205,26 +230,29 @@ $(document).ready(function () {
     roundEndTime = status.roundEndTime;
     icon = status.icon;
     guessed = false;
-    index1 = Math.floor(Math.random() * secretWord.length);// these make a new index each round for the hinter
+    index1 = Math.floor(Math.random() * secretWord.length); // these make a new index each round for the hinter
     index2 = noMatch12();
     index3 = noMatch123();
-    
-    console.log(`here are those indexes:${index1},${index2},${index3}`)
-    function noMatch12() { // the noMatch functions ensure unique letters for 5-letter words and above
+
+    console.log(`here are those indexes:${index1},${index2},${index3}`);
+    function noMatch12() {
+      // the noMatch functions ensure unique letters for 5-letter words and above
       temp = Math.floor(Math.random() * secretWord.length);
-      if(secretWord.length === 4){//causes only two unique letters for four letter words
+      if (secretWord.length === 4) {
+        //causes only two unique letters for four letter words
         temp = index1;
-      }else if (temp === index1) {
+      } else if (temp === index1) {
         noMatch12();
       }
       return temp;
     }
     function noMatch123() {
       temp = Math.floor(Math.random() * secretWord.length);
-      if(secretWord.length === 3){// only reveals one letter for three letter words
+      if (secretWord.length === 3) {
+        // only reveals one letter for three letter words
         temp = index1;
         index2 = index1;
-      }else if (temp === index1 || temp === index2) {
+      } else if (temp === index1 || temp === index2) {
         noMatch123();
       }
       return temp;
@@ -238,7 +266,7 @@ $(document).ready(function () {
         "I give up and cant draw this.";
       document.getElementById("messageInput").style.display = "none";
       let artButtons = document.getElementsByClassName("drawTools");
-      for(let i = 0; i < artButtons.length; i++){
+      for (let i = 0; i < artButtons.length; i++) {
         artButtons[i].style.visibility = "visible";
       }
     }
@@ -247,7 +275,7 @@ $(document).ready(function () {
       document.getElementById("messageInput").value = "";
       document.getElementById("messageInput").style.display = "block";
       let artButtons = document.getElementsByClassName("drawTools");
-      for(let i = 0; i < artButtons.length; i++){
+      for (let i = 0; i < artButtons.length; i++) {
         artButtons[i].style.visibility = "hidden";
       }
     }
@@ -262,9 +290,9 @@ $(document).ready(function () {
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
 
-    document.getElementById("secretword").innerHTML = drawer ?
-      secretWord :
-      hintMaker(secretWord, seconds);
+    document.getElementById("secretword").innerHTML = drawer
+      ? secretWord
+      : hintMaker(secretWord, seconds);
     $("#timer").html(seconds + " Seconds");
 
     if (distance <= 0 && drawer) {
@@ -277,28 +305,27 @@ $(document).ready(function () {
   socket.on("hello", function(msg) {
     $(".messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
 
-    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
-
+    $(".messages").scrollTop($(".messages")[0].scrollHeight);
   });
   socket.on("correct answer", function(msg) {
     $(".messages").append(
-      $("<ul>").text(msg.userName + " has the correct answer!").css('color','green')
+      $("<ul>")
+        .text(msg.userName + " has the correct answer!")
+        .css("color", "green")
     );
-    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
-
+    $(".messages").scrollTop($(".messages")[0].scrollHeight);
   });
 
-
-
-  socket.on("playerChange", function(name, status){
+  socket.on("playerChange", function(name, status) {
     $(".messages").append(
-      $("<ul>").text(name + " has " + status + " the room.").css('color','red')
+      $("<ul>")
+        .text(name + " has " + status + " the room.")
+        .css("color", "red")
     );
-    $('.messages').scrollTop ($('.messages')[0].scrollHeight);
-  })
+    $(".messages").scrollTop($(".messages")[0].scrollHeight);
+  });
 
   socket.on("roundResults", function(results) {
-
     $("#timer").hide();
     let names = results.userNames;
     let roundScores = results.roundScores;
@@ -306,7 +333,6 @@ $(document).ready(function () {
     let reasonNextRound = results.reason;
     let playerIcons = results.icons;
     let gameRound = results.round;
-
 
     $("#roundResults").empty();
     $("#secretWord").empty();
@@ -319,9 +345,19 @@ $(document).ready(function () {
     console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
-      let $roundScore = $("<p style='color:red'>" + "+  " + roundScores[i] + "</p>");
-      let $playerName = $("<p style='color:blue; float:left'>" + "        " + names[i] + "                        " + "</p>");
-      let $playerList = $("<div style ='font-weight: bold; font-size:x-large'>");
+      let $roundScore = $(
+        "<p style='color:red'>" + "+  " + roundScores[i] + "</p>"
+      );
+      let $playerName = $(
+        "<p style='color:blue; float:left'>" +
+          "        " +
+          names[i] +
+          "                        " +
+          "</p>"
+      );
+      let $playerList = $(
+        "<div style ='font-weight: bold; font-size:x-large'>"
+      );
       $("#roundResults").append($playerList);
       $playerList.append($playerName);
       $playerList.append($roundScore);
@@ -333,8 +369,6 @@ $(document).ready(function () {
     setTimeout(() => {
       $("#timer").show();
     }, 5000);
-
-
 
     //update the score board
     let scores = [];
@@ -352,21 +386,36 @@ $(document).ready(function () {
       let $scoreList = $(
         "<div style='display = flex; align-items: center; font-weight:bold'>"
       );
-      $scoreList.append("<p style='text-align: center;float:left'><span style='color:red'>" + "# " + rank + "&nbsp;&nbsp;&nbsp" + "</span>" + "<span style='color:blue'>" + names[i] + "</span>" + "&nbsp;&nbsp;&nbsp" + "<span style='color:red'>Total: " + totalScores[i] + "</span></p>");
+      $scoreList.append(
+        "<p style='text-align: center;float:left'><span style='color:red'>" +
+          "# " +
+          rank +
+          "&nbsp;&nbsp;&nbsp" +
+          "</span>" +
+          "<span style='color:blue'>" +
+          names[i] +
+          "</span>" +
+          "&nbsp;&nbsp;&nbsp" +
+          "<span style='color:red'> " +
+          totalScores[i] +
+          "</span></p>"
+      );
       let $icon;
-      if(i===0){
+      if (i === 0) {
         $icon = $(
           "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
-          playerIcons[i] +
-          "' alt='player icon'>"+ "&nbsp;&nbsp"+"</img><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/051-bee.png'  alt='drawer icon'></img></p>"
+            playerIcons[i] +
+            "' alt='player icon'>" +
+            "&nbsp;&nbsp" +
+            "</img><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/051-bee.png'  alt='drawer icon'></img></p>"
         );
-        }else{
+      } else {
         $icon = $(
           "<p><img style='width = '30' height = '30'; font-weight:bold;text-align: center;float:right' src='./images/icon/" +
-          playerIcons[i] +
-          "' alt='player icon'></img></p>"
+            playerIcons[i] +
+            "' alt='player icon'></img></p>"
         );
-        }
+      }
       $scoreList.append($icon);
       $("#roundresults").append($scoreList);
       $("#roundInfo").text("Round " + gameRound);
@@ -375,7 +424,6 @@ $(document).ready(function () {
 
   //update the score board when guesser left the game
   socket.on("guesserLeft", scoreBoardDisplay);
-
 
   // Canvas drawing area
   let canvas = document.getElementById("drawArea");
@@ -399,9 +447,9 @@ $(document).ready(function () {
     y: 0
   };
 
-  var startDrawing = function () {
+  var startDrawing = function() {
     console.log("draw on canvas");
-    canvas.onmousemove = function (e) {
+    canvas.onmousemove = function(e) {
       mouse.x = e.pageX - $(this).offset().left;
       mouse.y = e.pageY - $(this).offset().top;
       endX = mouse.x;
@@ -417,14 +465,14 @@ $(document).ready(function () {
       canvas.addEventListener("mousemove", onPaint, false);
     };
 
-    canvas.onmouseup = function () {
+    canvas.onmouseup = function() {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
-    canvas.onmouseout = function () {
+    canvas.onmouseout = function() {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
 
-    var onPaint = function () {
+    var onPaint = function() {
       if (drawer) {
         ctx.strokeStyle = colour;
         ctx.lineWidth = lineSize;
@@ -464,56 +512,56 @@ $(document).ready(function () {
 
   //this begins colour controls
   let colour = "black";
-  document.getElementById("red").onclick = function () {
+  document.getElementById("red").onclick = function() {
     colour = "red";
   };
-  document.getElementById("orange").onclick = function () {
+  document.getElementById("orange").onclick = function() {
     colour = "orange";
   };
-  document.getElementById("yellow").onclick = function () {
+  document.getElementById("yellow").onclick = function() {
     colour = "yellow";
   };
-  document.getElementById("green").onclick = function () {
+  document.getElementById("green").onclick = function() {
     colour = "green";
   };
-  document.getElementById("blue").onclick = function () {
+  document.getElementById("blue").onclick = function() {
     colour = "blue";
   };
-  document.getElementById("purple").onclick = function () {
+  document.getElementById("purple").onclick = function() {
     colour = "rebeccapurple";
   };
-  document.getElementById("brown").onclick = function () {
+  document.getElementById("brown").onclick = function() {
     colour = "sienna";
   };
-  document.getElementById("black").onclick = function () {
+  document.getElementById("black").onclick = function() {
     colour = "black";
   };
   document.getElementById("dimGray").onclick = function() {
     colour = "dimgray";
   };
   //second row
-  document.getElementById("white").onclick = function () {
+  document.getElementById("white").onclick = function() {
     colour = "white";
   };
-  document.getElementById("pink").onclick = function () {
+  document.getElementById("pink").onclick = function() {
     colour = "pink";
   };
-  document.getElementById("tomato").onclick = function () {
+  document.getElementById("tomato").onclick = function() {
     colour = "tomato";
   };
-  document.getElementById("goldenrod").onclick = function () {
+  document.getElementById("goldenrod").onclick = function() {
     colour = "goldenrod";
   };
-  document.getElementById("chartreuse").onclick = function () {
+  document.getElementById("chartreuse").onclick = function() {
     colour = "chartreuse";
   };
-  document.getElementById("skyblue").onclick = function () {
+  document.getElementById("skyblue").onclick = function() {
     colour = "skyblue";
   };
-  document.getElementById("fuchsia").onclick = function () {
+  document.getElementById("fuchsia").onclick = function() {
     colour = "fuchsia";
   };
-  document.getElementById("tan").onclick = function () {
+  document.getElementById("tan").onclick = function() {
     colour = "tan";
   };
   document.getElementById("lightGray").onclick = function() {
@@ -521,24 +569,24 @@ $(document).ready(function () {
   };
   //size changing
   let lineSize = 2;
-  document.getElementById("xSmaller").onclick = function () {
+  document.getElementById("xSmaller").onclick = function() {
     lineSize = 2;
   };
-  document.getElementById("small").onclick = function () {
+  document.getElementById("small").onclick = function() {
     lineSize = 5;
   };
-  document.getElementById("medium").onclick = function () {
+  document.getElementById("medium").onclick = function() {
     lineSize = 10;
   };
-  document.getElementById("large").onclick = function () {
+  document.getElementById("large").onclick = function() {
     lineSize = 20;
   };
-  document.getElementById("xLarger").onclick = function () {
+  document.getElementById("xLarger").onclick = function() {
     lineSize = 30;
   };
 
   // canvas clear functions
-  document.getElementById("clear").onclick = function () {
+  document.getElementById("clear").onclick = function() {
     socket.emit("clearScreen", console.log("clear screen was sent"));
   };
 
@@ -549,7 +597,7 @@ $(document).ready(function () {
   socket.on("clearScreen", clearScreen);
 
   // canvas fill function
-  document.getElementById("fill").onclick = function () {
+  document.getElementById("fill").onclick = function() {
     socket.emit("fillScreen", colour);
   };
   socket.on("fillScreen", fillScreen);
@@ -594,11 +642,11 @@ $(document).ready(function () {
     canvas.addEventListener("mousemove", onPaint, false);
   };
 
-  canvas.onmouseup = function () {
+  canvas.onmouseup = function() {
     canvas.removeEventListener("mousemove", onPaint, false);
   };
 
-  var onPaint = function () {
+  var onPaint = function() {
     ctx.strokeStyle = colour; //allows color to change
     ctx.lineWidth = lineSize; // allows size to change
     ctx.beginPath();
@@ -630,6 +678,4 @@ $(document).ready(function () {
       buttons[i].setAttribute("disabled", "disabled");
     }
   }
-
-
 });
