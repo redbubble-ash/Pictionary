@@ -442,7 +442,7 @@ $(document).ready(function () {
   ctx.lineCap = "round";
 
   //this begins colour controls
-  let colour = "white";
+  let colour = "black";
   document.getElementById("red").onclick = function () {
     colour = "red";
   };
@@ -467,13 +467,37 @@ $(document).ready(function () {
   document.getElementById("black").onclick = function () {
     colour = "black";
   };
-  document.getElementById("white").onclick = function () {
-    colour = "white";
-  };
   document.getElementById("dimGray").onclick = function() {
     colour = "dimgray";
   };
-
+  //second row
+  document.getElementById("white").onclick = function () {
+    colour = "white";
+  };
+  document.getElementById("pink").onclick = function () {
+    colour = "pink";
+  };
+  document.getElementById("tomato").onclick = function () {
+    colour = "tomato";
+  };
+  document.getElementById("goldenrod").onclick = function () {
+    colour = "goldenrod";
+  };
+  document.getElementById("chartreuse").onclick = function () {
+    colour = "chartreuse";
+  };
+  document.getElementById("skyblue").onclick = function () {
+    colour = "skyblue";
+  };
+  document.getElementById("fuchsia").onclick = function () {
+    colour = "fuchsia";
+  };
+  document.getElementById("tan").onclick = function () {
+    colour = "tan";
+  };
+  document.getElementById("lightGray").onclick = function() {
+    colour = "lightgray";
+  };
   //size changing
   let lineSize = 2;
   document.getElementById("xSmaller").onclick = function () {
