@@ -100,9 +100,7 @@ body {
   padding: 5px;
   margin: 10px;
 }
-#room {
-  height: 25px;
-}
+
 
 #login-button {
   width: 120px;
@@ -177,29 +175,12 @@ form button {
   border: none;
   padding: 10px;
 }
-/* #messageContainer{
-  overflow: auto;
-  width: 100%;
-  height: 500px;
-  border: 2px solid #4A525A;
-  background-color: #F7EADA;
-  
-} */
+
 #messageInput {
   border-right: 1px solid #4a525a;
   vertical-align: bottom;
 }
-/* #messages {
-  position:absolute;
-  overflow:none;
-  height: 100%;
-  width: 100%;
-  bottom:0;
-  /* display: table-cell;
-  vertical-align: bottom; */
-/* text-align: left; */
-/* max-height: inherit;
-} */
+
 
 #messageContainer {
   overflow: auto;
