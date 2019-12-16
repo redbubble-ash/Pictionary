@@ -34,21 +34,63 @@ $(document).ready(function() {
           .val()
           .trim();
       }
-      $("#newUser").html("Log in succeed: " + userName);
-      socket.emit("join", userName, roomName, function(past) {
-        past.forEach(line => draw(line));
-        //past.forEach(x => console.log(x)); // delete this?
+
+      console.log("ROOM INFO: Name: " + userName + ", Room: " + roomName);
+
+      $("#userNameErrorMsg").empty();
+      $("#roomErrorMsg").empty();
+
+      if(userName===''){
+        $("#userNameErrorMsg").text("name cannot be empty");
+        return;
+      }
+
+      socket.emit("canIJoin", userName, roomName);
+      console.log("SOCKET EMITTED");
+
+      checkLogIn().then(function(value) {
+        console.log(value);
+        if (value=='true') {
+          $("#newUser").html("Log in succeed: " + userName);
+          socket.emit("join", userName, roomName, function(past) {
+            past.forEach(line => draw(line));
+            past.forEach(x => console.log(x));
+          });
+          console.log(userName + " has joined!");
+          $("body").css({
+            "background-image": "url(" + "/images/bkgbees.jpg" + ")",
+            "background-size": "initial",
+            "background-repeat": "repeat"
+          });
+          $(".grey-out").fadeOut(300);
+          $(".game").css("visibility", "visible");
+
+          //update the score board when a new player joined the game
+          socket.on("newPlayer", scoreBoardDisplay);
+          //delete this?
+          // $(".user").fadeOut(300);
+          //$('input.guess-input').focus();
+        }
       });
-      //console.log(userName + " has joined!"); // delete this?
-      $("body").css({
-        "background-image": "url(" + "/images/bkgbees.jpg" + ")",
-        "background-size": "initial",
-        "background-repeat": "repeat"
+    });
+  }
+
+  function checkLogIn() {
+    return new Promise(resolve => {
+      socket.on("canIJoin", function(msg) {
+
+        if(msg === 'name already exist in room'){
+          $("#userNameErrorMsg").text("name already exist in room");
+        }
+        else if (msg=="room is full"){
+          $("#roomErrorMsg").text("room is full");
+        }
+  
+        console.log("CHECKED LOGGIN");
+  
+        resolve(msg);
       });
-      $(".grey-out").fadeOut(300);
-      $(".game").css("visibility", "visible");
-      //update the score board when a new player joined the game
-      socket.on("newPlayer", scoreBoardDisplay);
+      
     });
   }
   loginSucceed();
@@ -85,7 +127,7 @@ $(document).ready(function() {
           names[i] +
           "</span>" +
           "&nbsp;&nbsp;&nbsp" +
-          "<span style='color:red'>" +
+          "<span style='color:red'> " +
           totalScores[i] +
           "</span></p>"
       );
@@ -282,16 +324,22 @@ $(document).ready(function() {
     console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
-
-      let $playerList = $(
-        "<div style ='font-weight: bold;height:40px; font-size:x-large' class='row''> <div style='color:blue;text-align: left' class='col-5''>" +
+      let $roundScore = $(
+        "<p style='color:red'>" + "+  " + roundScores[i] + "</p>"
+      );
+      let $playerName = $(
+        "<p style='color:blue; float:left'>" +
+          "        " +
           names[i] +
-          "</div><div style='color:red;text-align: left' class='col-5''>" +
-          "+ " +
-          roundScores[i] +
-          "</div></div>"
+          "                        " +
+          "</p>"
+      );
+      let $playerList = $(
+        "<div style ='font-weight: bold; font-size:x-large'>"
       );
       $("#roundResults").append($playerList);
+      $playerList.append($playerName);
+      $playerList.append($roundScore);
     }
     setTimeout(() => {
       $(".hover_bkgr_fricc").fadeOut("slow");
@@ -327,7 +375,7 @@ $(document).ready(function() {
           names[i] +
           "</span>" +
           "&nbsp;&nbsp;&nbsp" +
-          "<span style='color:red'>Total: " +
+          "<span style='color:red'> " +
           totalScores[i] +
           "</span></p>"
       );
@@ -477,7 +525,6 @@ $(document).ready(function() {
     colour = "black";
     colorWindowChanger(colour);
   };
-
   document.getElementById("dimGray").onclick = function() {
     colour = "dimgray";
     colorWindowChanger(colour);
@@ -487,31 +534,31 @@ $(document).ready(function() {
     colour = "white";
     colorWindowChanger(colour);
   };
-  document.getElementById("pink").onclick = function () {
+  document.getElementById("pink").onclick = function() {
     colour = "pink";
     colorWindowChanger(colour);
   };
-  document.getElementById("tomato").onclick = function () {
+  document.getElementById("tomato").onclick = function() {
     colour = "tomato";
     colorWindowChanger(colour);
   };
-  document.getElementById("goldenrod").onclick = function () {
+  document.getElementById("goldenrod").onclick = function() {
     colour = "goldenrod";
     colorWindowChanger(colour);
   };
-  document.getElementById("chartreuse").onclick = function () {
+  document.getElementById("chartreuse").onclick = function() {
     colour = "chartreuse";
     colorWindowChanger(colour);
   };
-  document.getElementById("skyblue").onclick = function () {
+  document.getElementById("skyblue").onclick = function() {
     colour = "skyblue";
     colorWindowChanger(colour);
   };
-  document.getElementById("fuchsia").onclick = function () {
+  document.getElementById("fuchsia").onclick = function() {
     colour = "fuchsia";
     colorWindowChanger(colour);
   };
-  document.getElementById("tan").onclick = function () {
+  document.getElementById("tan").onclick = function() {
     colour = "tan";
     colorWindowChanger(colour);
   };
