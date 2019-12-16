@@ -32,20 +32,9 @@ const fs = require("fs");
 const iconFiles = fs.readdirSync(iconFolder);
 
 var secretWord = {
-  animal: [
-    "shark",
-    "kangaroo",
-    "zebra",
-    "peacock",
-    "camel",
-    "turtle",
-    "elephant",
-    "unicorn",
-    "orangutan",
-    "owl"
-  ],
-  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi"],
-  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt"]
+  animal: ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn","orangutan","owl","fox","armadillo","opossum","llama","clownfish","capybara","shrimp"],
+  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp"],
+  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flowers","chair"]
 };
 
 io.on("connection", function(socket) {

@@ -151,40 +151,14 @@ select {
 }
 
 #settings {
-  display: block;
+  background: white;
+  display: inline-flex;
   text-align: center;
 }
-#red {
-  background: red;
-}
-#orange {
-  background: orange;
-}
-#yellow {
-  background: yellow;
-  color: black;
-}
-#green {
-  background: green;
-}
-#blue {
-  background: blue;
-  color: white;
-}
-#purple {
-  background: rebeccapurple;
-}
-#brown {
-  background: sienna;
-}
-#black {
-  background: black;
-  color: white;
-}
-#white {
-  background: white;
-  color: black;
-  border: 1px solid black;
+.colorButtons{
+  width: 20px;
+  height: 20px;
+  padding: 4px;
 }
 /*/\used for canvas & controls/\ */
 /*\/used for chat box\/ */
