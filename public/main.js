@@ -11,7 +11,6 @@ $(document).ready(function() {
   let index3;
   let lineSize = 2;
   let colour = "black";
-
   // Login
   function loginSucceed() {
     // $(".game").toggle();
@@ -24,7 +23,6 @@ $(document).ready(function() {
         $("#roomName").css("visibility", "hidden");
       }
     });
-
     $(".user").submit(function() {
       event.preventDefault();
       userName = $("#userName")
@@ -36,24 +34,12 @@ $(document).ready(function() {
           .val()
           .trim();
       }
-      // re-enable this?
-      // if (userName == "") {
-      //     return false
-      // };
-
-      // var index = users.indexOf(user);
-
-      // if (index > -1) {
-      //     alert(user + ' already exists');
-      //     return false
-      // };
-
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, roomName, function(past) {
         past.forEach(line => draw(line));
-        //past.forEach(x => console.log(x));
+        //past.forEach(x => console.log(x)); // delete this?
       });
-      console.log(userName + " has joined!");
+      //console.log(userName + " has joined!"); // delete this?
       $("body").css({
         "background-image": "url(" + "/images/bkgbees.jpg" + ")",
         "background-size": "initial",
@@ -61,31 +47,25 @@ $(document).ready(function() {
       });
       $(".grey-out").fadeOut(300);
       $(".game").css("visibility", "visible");
-
       //update the score board when a new player joined the game
       socket.on("newPlayer", scoreBoardDisplay);
     });
   }
-
   loginSucceed();
-
   const scoreBoardDisplay = function(results) {
     let names = results.userNames;
     let totalScores = results.totalScores;
     let playerIcons = results.icons;
     let gameRound = results.round;
-
     $("#roundResults").empty();
     $("#timesUp").empty();
     $("#roundresults").empty();
-
     //update the score board
     let scores = [];
     for (let i = 0; i < names.length; i++) {
       scores.push(totalScores[i]);
       scores = scores.sort((a, b) => b - a);
     }
-
     for (let i = 0; i < names.length; i++) {
       function findScore(score) {
         return score === totalScores[i];
@@ -130,21 +110,18 @@ $(document).ready(function() {
       $("#roundInfo").text("Round " + gameRound);
     }
   };
-
   // Chat and guess area
   $("#messagesForm").submit(function() {
     if (drawer) {
       reason = "Drawer Gave up!";
       socket.emit("next round", roomName, reason);
     }
-
     let isAMatch = false;
     let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
     if (toBeEval.toLowerCase().search(secretWord) >= 0) {
       // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
       isAMatch = true;
     }
-
     if (!isAMatch) {
       socket.emit("chat message", {
         roomName: roomName,
@@ -152,7 +129,6 @@ $(document).ready(function() {
         msg: $("#messageInput").val()
       });
     }
-
     if (isAMatch && !guessed) {
       guessed = true;
       socket.emit("correct answer", {
@@ -160,16 +136,14 @@ $(document).ready(function() {
         roundScore: 50
       });
       isAMatch = false; // resets isAMatch to false
-      //socket.emit("next round");
+      //socket.emit("next round"); // delete this?
     }
     $("#messageInput").val("");
     return false;
   });
-
   function dashMaker(secretWord) {
     return secretWord.replace(/[a-zA-Z]/g, "_");
   }
-
   let newHint = "";
   function hintMaker(word, seconds) {
     let hint = dashMaker(word);
@@ -194,7 +168,7 @@ $(document).ready(function() {
     return newHint;
   }
   socket.on("gameStatus", function(status) {
-    console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu
+    //console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu // delete this?
     drawer = status.drawer;
     roomName = status.roomName;
     secretWord = status.secretWord;
@@ -204,13 +178,9 @@ $(document).ready(function() {
     index1 = Math.floor(Math.random() * secretWord.length); // these make a new index each round for the hinter
     index2 = noMatch12();
     index3 = noMatch123();
-
-    console.log(`here are those indexes:${index1},${index2},${index3}`);
-    function noMatch12() {
-      // the noMatch functions ensure unique letters for 5-letter words and above
+    function noMatch12() { // the noMatch functions ensure unique letters for 5-letter words and above
       temp = Math.floor(Math.random() * secretWord.length);
-      if (secretWord.length === 4) {
-        //causes only two unique letters for four letter words
+      if (secretWord.length === 4) {//causes only two unique letters for four letter words
         temp = index1;
       } else if (temp === index1) {
         noMatch12();
@@ -219,8 +189,7 @@ $(document).ready(function() {
     }
     function noMatch123() {
       temp = Math.floor(Math.random() * secretWord.length);
-      if (secretWord.length === 3) {
-        // only reveals one letter for three letter words
+      if (secretWord.length === 3) {// only reveals one letter for three letter words
         temp = index1;
         index2 = index1;
       } else if (temp === index1 || temp === index2) {
@@ -228,9 +197,7 @@ $(document).ready(function() {
       }
       return temp;
     }
-
     $("#currentRoom").text("Room: " + roomName);
-
     if (drawer) {
       document.getElementById("chatSend").innerHTML = "Give up turn?";
       document.getElementById("messageInput").value =
@@ -250,13 +217,12 @@ $(document).ready(function() {
         artButtons[i].style.visibility = "hidden";
       }
     }
-
     startDrawing();
     countDownTimer;
   });
 
   function gameTimer() {
-    //console.log("end time: " + roundEndTime);
+    //console.log("end time: " + roundEndTime); // delete this?
     let now = new Date().getTime();
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);

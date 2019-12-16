@@ -19,129 +19,149 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="main.js"></script>
-    
 </head>
 
 <body>
     <div class="grey-out hidden">
-
         <form class="user">
-            <img src = "/images/db.png" class="img-fluid" alt="pictionary">
+            <img src="/images/db.png" class="img-fluid" alt="pictionary">
             <!-- <label for="username">Nickname</label> -->
             <input id="userName" type="text" placeholder="Nickname" maxlength="14" autofocus>
             <!-- <label for="room">Room</label> -->
             <select id="room">
-                <option value = "animal">Animal</option>
-                <option value = "food">Food</option>
-                <option value = "custom">Custom</option>
+                <option value="animal">Animal</option>
+                <option value="food">Food</option>
+                <option value="custom">Custom</option>
             </select>
-            <input id="roomName" type="text" placeholder="Room" maxlength="14" autofocus style="visibility:hidden;"/>
+            <input id="roomName" type="text" placeholder="Room" maxlength="14" autofocus style="visibility:hidden;" />
             <button type="submit" id="login-button">Join a game!</button>
             <p id="newUser"></p>
         </form>
     </div>
-
-    <div class = "game">
-            <div class="container-fluid">
-                    <div id="infoBars"class="row">
-                        <div id="round"class="col-2">
-                            <h5 id="roundInfo"></h5>
-                        </div>
-                        <div class="col-6">
-                            <div id="infoHolder" class="row">
-                                <img id="hourglass" src = "/images/hourglass.png" alt="timer" width = '30' height = '30'>
-                                <h5 id="timer"></h5>
-                                <h2 id="secretword"></h2>
-                                <!-- <div id="secretword">Secret Wood</div> -->
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <h3 id="currentRoom"></h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div id="scoreHolder"class="col-2">
-                            <ul id="scoreboard">
-                                <ul id="roundresults"></ul>
-                            </ul>
-                        </div>
-                        <div class="col-7">
-                            <canvas id="drawArea"></canvas>
-                            <!-- <hr> -->
-                            <div>
-                                <div id="colorRow1" class="btn-group" role="group">
-                                    <button id="red" class="btn btn-secondary drawTools colorButtons" style="background: red" type="button"></button>
-                                    <button id="orange" class="btn btn-secondary drawTools colorButtons" style="background: orange"type="button"></button>
-                                    <button id="yellow" class="btn btn-secondary drawTools colorButtons" style="background: yellow"type="button"></button>
-                                    <button id="green" class="btn btn-secondary drawTools colorButtons" style="background: green" type="button"></button>
-                                    <button id="blue" class="btn btn-secondary drawTools colorButtons" style="background: blue" type="button"></button>
-                                    <button id="purple" class="btn btn-secondary drawTools colorButtons" style="background: rebeccapurple" type="button"></button>
-                                    <button id="brown" class="btn btn-secondary drawTools colorButtons" style="background: sienna" type="button"></button>
-                                    <button id="dimGray" class="btn btn-secondary drawTools colorButtons" style="background: dimgray" type="button"></button>
-                                    <button id="black" class="btn btn-secondary drawTools colorButtons" style="background: black" type="button"></button>
-                                </div>
-                                <div id="colorWindow" class="drawTools"></div>
-                            <div id="colorRow2" class="btn-group" role="group">
-                                <button id="pink" class="btn btn-secondary drawTools colorButtons" style="background: pink" type="button"></button>
-                                <button id="tomato" class="btn btn-secondary drawTools colorButtons" style="background: tomato"type="button"></button>
-                                <button id="goldenrod" class="btn btn-secondary drawTools colorButtons" style="background: goldenrod"type="button"></button>
-                                <button id="chartreuse" class="btn btn-secondary drawTools colorButtons" style="background: chartreuse " type="button"></button>
-                                <button id="skyblue" class="btn btn-secondary drawTools colorButtons" style="background: skyblue" type="button"></button>
-                                <button id="fuchsia" class="btn btn-secondary drawTools colorButtons" style="background: fuchsia" type="button"></button>
-                                <button id="tan" class="btn btn-secondary drawTools colorButtons" style="background: tan" type="button"></button>
-                                <button id="lightGray" class="btn btn-secondary drawTools colorButtons" style="background: lightgray" type="button"></button>
-                                <button id="white" class="btn btn-secondary drawTools colorButtons" style="background: white" type="button"></button>
-                            </div>
-                        </div>
-                            <div id="sizes" class="btn-group btn-group-toggle btn-group-sm" role="group" data-toggle="buttons">
-                                <label class="btn btn-warning active drawTools sizeDotsButton">
-                                  <input type="radio" name="options" id="xSmaller" checked><div id="sizeDotxs"></div></label>
-                                <label class="btn btn-warning drawTools sizeDotsButton">
-                                  <input type="radio" name="options" id="small"><div id="sizeDots"></div></label>                        
-                                <label class="btn btn-warning drawTools sizeDotsButton">
-                                  <input type="radio" name="options" id="medium"><div id="sizeDotm"></div></label>
-                                <label class="btn btn-warning drawTools sizeDotsButton">
-                                    <input type="radio" name="options" id="large"><div id="sizeDotl"></div></label>
-                                <label class="btn btn-warning drawTools sizeDotsButton">
-                                    <input type="radio" name="options" id="xLarger"><div id="sizeDotxl"></div></label>
-                            </div>
-                            <div id="miscButtons" class="btn-group btn-group-sm" role="group" data-toggle="buttons">
-                                <button id="clear" class="drawTools btn btn-secondary">Clear</button>
-                                <button id="fill" class="drawTools  btn btn-secondary">Fill Background</button>
-                            </div>
-                        </div>
-                        
-                        <div class="col-2">
-                            <div id="messageContainer">
-                                <div id="messages" class = "messages" ></div>
-                            </div>
-                            <div class="input-group">
-                                <form id="messagesForm" action="">
-                                    <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        </div>
+    <div class="game">
+        <div class="container-fluid">
+            <div id="infoBars" class="row">
+                <div id="round" class="col-2">
+                    <h5 id="roundInfo"></h5>
+                </div>
+                <div class="col-6">
+                    <div id="infoHolder" class="row">
+                        <img id="hourglass" src="/images/hourglass.png" alt="timer" width='30' height='30'>
+                        <h5 id="timer"></h5>
+                        <h2 id="secretword"></h2>
+                        <!-- <div id="secretword">Secret Wood</div> -->
                     </div>
                 </div>
-            
-                <div>
-                    <h4 id="timer"></h4>
-                    <p id="timeOut"></p>
+                <div class="col-3">
+                    <h3 id="currentRoom"></h3>
                 </div>
-            
-            <!-- check out below -->
-            
-                <div class="hover_bkgr_fricc" id="scoreBoard">
-                    <span class="helper"></span>
+            </div>
+            <div class="row">
+                <div id="scoreHolder" class="col-2">
+                    <ul id="scoreboard">
+                        <ul id="roundresults"></ul>
+                    </ul>
+                </div>
+                <div class="col-7">
+                    <canvas id="drawArea"></canvas>
+                    <!-- <hr> -->
                     <div>
-                            <h2 id="secretWord"></h2>
-                            <h4 id="timesUp"></h4>
-                            <ul id="roundResults"></ul>
+                        <div id="colorRow1" class="btn-group" role="group">
+                            <button id="red" class="btn btn-secondary drawTools colorButtons" style="background: red"
+                                type="button"></button>
+                            <button id="orange" class="btn btn-secondary drawTools colorButtons"
+                                style="background: orange" type="button"></button>
+                            <button id="yellow" class="btn btn-secondary drawTools colorButtons"
+                                style="background: yellow" type="button"></button>
+                            <button id="green" class="btn btn-secondary drawTools colorButtons"
+                                style="background: green" type="button"></button>
+                            <button id="blue" class="btn btn-secondary drawTools colorButtons" style="background: blue"
+                                type="button"></button>
+                            <button id="purple" class="btn btn-secondary drawTools colorButtons"
+                                style="background: rebeccapurple" type="button"></button>
+                            <button id="brown" class="btn btn-secondary drawTools colorButtons"
+                                style="background: sienna" type="button"></button>
+                            <button id="dimGray" class="btn btn-secondary drawTools colorButtons"
+                                style="background: dimgray" type="button"></button>
+                            <button id="black" class="btn btn-secondary drawTools colorButtons"
+                                style="background: black" type="button"></button>
+                        </div>
+                        <div id="colorWindow" class="drawTools"></div>
+                        <div id="colorRow2" class="btn-group" role="group">
+                            <button id="pink" class="btn btn-secondary drawTools colorButtons" style="background: pink"
+                                type="button"></button>
+                            <button id="tomato" class="btn btn-secondary drawTools colorButtons"
+                                style="background: tomato" type="button"></button>
+                            <button id="goldenrod" class="btn btn-secondary drawTools colorButtons"
+                                style="background: goldenrod" type="button"></button>
+                            <button id="chartreuse" class="btn btn-secondary drawTools colorButtons"
+                                style="background: chartreuse " type="button"></button>
+                            <button id="skyblue" class="btn btn-secondary drawTools colorButtons"
+                                style="background: skyblue" type="button"></button>
+                            <button id="fuchsia" class="btn btn-secondary drawTools colorButtons"
+                                style="background: fuchsia" type="button"></button>
+                            <button id="tan" class="btn btn-secondary drawTools colorButtons" style="background: tan"
+                                type="button"></button>
+                            <button id="lightGray" class="btn btn-secondary drawTools colorButtons"
+                                style="background: lightgray" type="button"></button>
+                            <button id="white" class="btn btn-secondary drawTools colorButtons"
+                                style="background: white" type="button"></button>
+                        </div>
+                    </div>
+                    <div id="sizes" class="btn-group btn-group-toggle btn-group-sm" role="group" data-toggle="buttons">
+                        <label class="btn btn-warning active drawTools sizeDotsButton">
+                            <input type="radio" name="options" id="xSmaller" checked>
+                            <div id="sizeDotxs"></div>
+                        </label>
+                        <label class="btn btn-warning drawTools sizeDotsButton">
+                            <input type="radio" name="options" id="small">
+                            <div id="sizeDots"></div>
+                        </label>
+                        <label class="btn btn-warning drawTools sizeDotsButton">
+                            <input type="radio" name="options" id="medium">
+                            <div id="sizeDotm"></div>
+                        </label>
+                        <label class="btn btn-warning drawTools sizeDotsButton">
+                            <input type="radio" name="options" id="large">
+                            <div id="sizeDotl"></div>
+                        </label>
+                        <label class="btn btn-warning drawTools sizeDotsButton">
+                            <input type="radio" name="options" id="xLarger">
+                            <div id="sizeDotxl"></div>
+                        </label>
+                    </div>
+                    <div id="miscButtons" class="btn-group btn-group-sm" role="group" data-toggle="buttons">
+                        <button id="clear" class="drawTools btn btn-secondary">Clear</button>
+                        <button id="fill" class="drawTools  btn btn-secondary">Fill Background</button>
                     </div>
                 </div>
-            
+                <div class="col-2">
+                    <div id="messageContainer">
+                        <div id="messages" class="messages"></div>
+                    </div>
+                    <div class="input-group">
+                        <form id="messagesForm" action="">
+                            <input id="messageInput" autocomplete="off" /><button id="chatSend">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h4 id="timer"></h4>
+        <p id="timeOut"></p>
+    </div>
+    <!-- check out below -->
+    <div class="hover_bkgr_fricc" id="scoreBoard">
+        <span class="helper"></span>
+        <div>
+            <h2 id="secretWord"></h2>
+            <h4 id="timesUp"></h4>
+            <ul id="roundResults"></ul>
+        </div>
+    </div>
     </div>
 </body>
 

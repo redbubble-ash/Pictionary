@@ -4,24 +4,19 @@ var path = require("path");
 var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = process.env.PORT || 3000;
-
-let main = "./public/main.js";
-
+// let main = "./public/main.js"; // delete this?
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
-
 // Routing, serve html
 app.use(express.static(path.join(__dirname, "public")));
-
 var rooms = {};
-var users = [];
-var canvas = [];
-var history = [];
-var roundStartTime;
 var roundTime = 95000; //make timer 95,000 before release
-let roundEndTime;
-
+// var users = []; //delete this?
+// var canvas = [];
+// var history = [];
+// var roundStartTime;
+// let roundEndTime;
 //Generate a random Icon images to the player
 const iconFolder = "./public/images/icon";
 const fs = require("fs");
@@ -32,7 +27,6 @@ var secretWord = {
   food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp"],
   random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flowers","chair"]
 };
-
 io.on("connection", function(socket) {
   //io.emit('userlist', users); //delete this?
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
@@ -43,7 +37,6 @@ io.on("connection", function(socket) {
     socket.totalScore = 0;
     socket.room = room;
     socket.icon = playerIcon;
-
     if (!rooms[room]) {
       console.log("room exists");
       rooms[room] = {
@@ -62,10 +55,8 @@ io.on("connection", function(socket) {
     if (rooms[room].users.length == 1) {
       rooms[room].roundEndTime = new Date().getTime() + 90000;
       rooms[room].secretWord = generateSecretWord(room);
-
-      console.log(rooms[room].secretWord);
-      console.log("round end time" + rooms[room].roundEndTime);
-
+      // console.log(rooms[room].secretWord); //delete this?
+      // console.log("round end time" + rooms[room].roundEndTime);
       io.to(socket.id).emit("gameStatus", {
         roomName: rooms[room].roomName,
         secretWord: rooms[room].secretWord,
@@ -82,10 +73,8 @@ io.on("connection", function(socket) {
         drawer: false
       });
       past(rooms[room].history);
-
       // io.to(socket.id).emit('timeRemaining', remainingTime); // delete this?
     }
-
     //update the score board when a new player joined the game
     io.to(room).emit("newPlayer", {
       userNames: rooms[room].users.map(x => x.userName),
@@ -95,19 +84,15 @@ io.on("connection", function(socket) {
     });
     io.to(socket.room).emit("playerChange",socket.userName,"joined");
   });
-
   socket.on("chat message", function(msg) {
     io.to(msg.roomName).emit("hello", msg);
   });
-
   socket.on("correct answer", function(msg) {
     socket.roundScore = msg.roundScore;
     //socket.totalScore += msg.roundScore;
     io.to(socket.room).emit("correct answer", msg);
   });
-
   socket.on("next round", startNextRound);
-
   socket.on("draw", function(line) {
     socket.to(socket.room).broadcast.emit("draw", line);
     //store the drawing history
@@ -122,13 +107,12 @@ io.on("connection", function(socket) {
   socket.on("fillScreen", function(colour) {
     io.emit("fillScreen", colour);
   });
-  // TODO: trigger next round when drawer left
   socket.on("disconnect", () => {
     if (rooms[socket.room].users[0] == socket) {
       if (rooms[socket.room].users.length == 1) {
         delete rooms[socket.room];
       } else {
-        //rooms[socket.room].users.pop();
+        //rooms[socket.room].users.pop(); //delete this?
         rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
         startNextRound(socket.room, "Drawer Left!");
       }
@@ -147,9 +131,8 @@ io.on("connection", function(socket) {
         round: rooms[socket.room].round
       });
       console.log("guesser disconnected");
-      // console.log(users.length);
+      // console.log(users.length); //delete this?
     }
-
     io.to(socket.room).emit("playerChange",socket.userName,"left");
   });
 });
@@ -169,18 +152,15 @@ let startNextRound = function(roomName, reason) {
     rooms[roomName].history = [];
     rooms[roomName].round++;
   }
-
   io.to(roomName).emit("clearScreen");
   rooms[roomName].users.push(rooms[roomName].users.shift());
-  // curTurnIdx = (curTurnIdx+1)%users.length;
-  console.log(
-    "next round: " + rooms[roomName].users[0].userName + " is now the drawer"
-  );
-
+  // curTurnIdx = (curTurnIdx+1)%users.length; // delete this?
+  // console.log(
+  //   "next round: " + rooms[roomName].users[0].userName + " is now the drawer"
+  // ); delete this?
   rooms[roomName].secretWord = generateSecretWord(roomName);
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
-
-  console.log("round end time" + rooms[roomName].roundEndTime);
+  //console.log("round end time" + rooms[roomName].roundEndTime); delete this?
 
   io.to(roomName).emit("roundResults", {
     userNames: rooms[roomName].users.map(x => x.userName),
