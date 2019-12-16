@@ -4,9 +4,11 @@
         "bkgr",
         "crossorigin",
         "fricc",
+        "lightgray",
         "remainting",
         "roundresults",
         "secretword",
+        "skyblue",
         "userlist"
     ]
 }
