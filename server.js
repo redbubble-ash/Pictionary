@@ -108,8 +108,8 @@ io.on("connection", function(socket) {
 
   socket.on("next round", startNextRound);
 
-  socket.on("draw", function(line, originalWidth) {
-    socket.to(socket.room).broadcast.emit("draw", line, originalWidth);
+  socket.on("draw", function(line) {
+    socket.to(socket.room).broadcast.emit("draw", line);
     //store the drawing history
     rooms[socket.room].history.push(line);
   });

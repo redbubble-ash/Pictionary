@@ -51,7 +51,7 @@ $(document).ready(function() {
       $("#newUser").html("Log in succeed: " + userName);
       socket.emit("join", userName, roomName, function(past) {
         past.forEach(line => draw(line));
-        past.forEach(x => console.log(x));
+        //past.forEach(x => console.log(x));
       });
       console.log(userName + " has joined!");
       $("body").css({
@@ -454,7 +454,9 @@ $(document).ready(function() {
           y: endY
         },
         strokeStyle: colour,
-        lineWidth: lineSize
+        lineWidth: lineSize,
+        originalWidth: canvas.width,
+        originalHeight: canvas.height
       };
       if (drawer) {
         socket.emit("draw", line, canvas.width);
@@ -594,26 +596,16 @@ $(document).ready(function() {
   }
 
   disableDrawing();
-  socket.on("draw", draw, originalWidth);
+  socket.on("draw", draw);
 
-  function draw(line, originalWidth) {
+  function draw(line) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
-    let scaleFactor = 1;
-    if (canvas.width !== originalWidth) {
-      if (originalWidth === 800 && canvas.width === 640) {
-        scaleFactor = 0.8;
-        console.log(
-          `big down to small OW: ${originalWidth}, CW: ${canvas.width}`
-        );
-      } else if (originalWidth === 640 && canvas.width === 800) {
-        scaleFactor = 1.25;
-        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`);
-      }
-    }
+    let scaleFactorWidth = (canvas.width)/(line.originalWidth);
+    let scaleFactorHeight = (canvas.height)/(line.originalHeight);
     ctx.beginPath();
-    ctx.moveTo(line.from.x * scaleFactor, line.from.y * scaleFactor);
-    ctx.lineTo(line.to.x * scaleFactor, line.to.y * scaleFactor);
+    ctx.moveTo(line.from.x * scaleFactorWidth, line.from.y * scaleFactorHeight);
+    ctx.lineTo(line.to.x * scaleFactorWidth, line.to.y * scaleFactorHeight);
     ctx.closePath();
     ctx.stroke();
   }
