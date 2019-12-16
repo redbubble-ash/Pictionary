@@ -6,18 +6,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Drawing Bee</title>
-
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Quicksand:300,500" rel="stylesheet">    
-    
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    
     <link rel="stylesheet" href="style.css" />
     <link rel='shortcut icon' type='image/x-icon' href='/images/051-bee.png' />
     <script src="/socket.io/socket.io.js"></script>
@@ -40,12 +36,10 @@
                 <option value = "custom">Custom</option>
             </select>
             <input id="roomName" type="text" placeholder="Room" maxlength="14" autofocus style="visibility:hidden;"/>
-
             <button type="submit" id="login-button">Join a game!</button>
             <p id="newUser"></p>
         </form>
     </div>
-
 
     <div class = "game">
             <div class="container-fluid">
@@ -74,18 +68,20 @@
                         <div class="col-7">
                             <canvas id="drawArea"></canvas>
                             <!-- <hr> -->
-                            <div id="settings" class="btn-group" role="group">
-                                <button id="red" class="btn btn-secondary drawTools colorButtons" style="background: red" type="button"></button>
-                                <button id="orange" class="btn btn-secondary drawTools colorButtons" style="background: orange"type="button"></button>
-                                <button id="yellow" class="btn btn-secondary drawTools colorButtons" style="background: yellow"type="button"></button>
-                                <button id="green" class="btn btn-secondary drawTools colorButtons" style="background: green" type="button"></button>
-                                <button id="blue" class="btn btn-secondary drawTools colorButtons" style="background: blue" type="button"></button>
-                                <button id="purple" class="btn btn-secondary drawTools colorButtons" style="background: rebeccapurple" type="button"></button>
-                                <button id="brown" class="btn btn-secondary drawTools colorButtons" style="background: sienna" type="button"></button>
-                                <button id="dimGray" class="btn btn-secondary drawTools colorButtons" style="background: dimgray" type="button"></button>
-                                <button id="black" class="btn btn-secondary drawTools colorButtons" style="background: black" type="button"></button>
-                            </div>
-                            <div id="settings" class="btn-group" role="group">
+                            <div>
+                                <div id="colorRow1" class="btn-group" role="group">
+                                    <button id="red" class="btn btn-secondary drawTools colorButtons" style="background: red" type="button"></button>
+                                    <button id="orange" class="btn btn-secondary drawTools colorButtons" style="background: orange"type="button"></button>
+                                    <button id="yellow" class="btn btn-secondary drawTools colorButtons" style="background: yellow"type="button"></button>
+                                    <button id="green" class="btn btn-secondary drawTools colorButtons" style="background: green" type="button"></button>
+                                    <button id="blue" class="btn btn-secondary drawTools colorButtons" style="background: blue" type="button"></button>
+                                    <button id="purple" class="btn btn-secondary drawTools colorButtons" style="background: rebeccapurple" type="button"></button>
+                                    <button id="brown" class="btn btn-secondary drawTools colorButtons" style="background: sienna" type="button"></button>
+                                    <button id="dimGray" class="btn btn-secondary drawTools colorButtons" style="background: dimgray" type="button"></button>
+                                    <button id="black" class="btn btn-secondary drawTools colorButtons" style="background: black" type="button"></button>
+                                </div>
+                                <div id="colorWindow" class="drawTools"></div>
+                            <div id="colorRow2" class="btn-group" role="group">
                                 <button id="pink" class="btn btn-secondary drawTools colorButtons" style="background: pink" type="button"></button>
                                 <button id="tomato" class="btn btn-secondary drawTools colorButtons" style="background: tomato"type="button"></button>
                                 <button id="goldenrod" class="btn btn-secondary drawTools colorButtons" style="background: goldenrod"type="button"></button>
@@ -96,21 +92,22 @@
                                 <button id="lightGray" class="btn btn-secondary drawTools colorButtons" style="background: lightgray" type="button"></button>
                                 <button id="white" class="btn btn-secondary drawTools colorButtons" style="background: white" type="button"></button>
                             </div>
-                            <div id="settings" class="btn-group btn-group-toggle btn-group-sm" role="group" data-toggle="buttons">
-                                <label class="btn btn-secondary active drawTools">
-                                  <input type="radio" name="options" id="xSmaller" checked>X Small</label>
-                                <label class="btn btn-secondary drawTools">
-                                  <input type="radio" name="options" id="small">Small</label>                        
-                                <label class="btn btn-secondary drawTools">
-                                  <input type="radio" name="options" id="medium">Med</label>
-                                <label class="btn btn-secondary drawTools">
-                                    <input type="radio" name="options" id="large">Large</label>
-                                <label class="btn btn-secondary drawTools">
-                                    <input type="radio" name="options" id="xLarger">X Large</label>
+                        </div>
+                            <div id="sizes" class="btn-group btn-group-toggle btn-group-sm" role="group" data-toggle="buttons">
+                                <label class="btn btn-warning active drawTools sizeDotsButton">
+                                  <input type="radio" name="options" id="xSmaller" checked><div id="sizeDotxs"></div></label>
+                                <label class="btn btn-warning drawTools sizeDotsButton">
+                                  <input type="radio" name="options" id="small"><div id="sizeDots"></div></label>                        
+                                <label class="btn btn-warning drawTools sizeDotsButton">
+                                  <input type="radio" name="options" id="medium"><div id="sizeDotm"></div></label>
+                                <label class="btn btn-warning drawTools sizeDotsButton">
+                                    <input type="radio" name="options" id="large"><div id="sizeDotl"></div></label>
+                                <label class="btn btn-warning drawTools sizeDotsButton">
+                                    <input type="radio" name="options" id="xLarger"><div id="sizeDotxl"></div></label>
                             </div>
-                            <div id="settings" class="btn-group btn-group-sm" role="group" data-toggle="buttons">
-                                <button id="clear" class="drawTools btn">Clear</button>
-                                <button id="fill" class="drawTools  btn">Fill</button>
+                            <div id="miscButtons" class="btn-group btn-group-sm" role="group" data-toggle="buttons">
+                                <button id="clear" class="drawTools btn btn-secondary">Clear</button>
+                                <button id="fill" class="drawTools  btn btn-secondary">Fill Background</button>
                             </div>
                         </div>
                         
@@ -145,13 +142,7 @@
                     </div>
                 </div>
             
-
-
     </div>
-
-
-
-
 </body>
 
 </html>
