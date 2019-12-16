@@ -34,7 +34,7 @@ $(document).ready(function() {
       }
       $("#userNameErrorMsg").empty();
       $("#roomErrorMsg").empty();
-      if(userName===''){
+      if (userName === "") {
         $("#userNameErrorMsg").text("name cannot be empty");
         return;
       }
@@ -58,8 +58,7 @@ $(document).ready(function() {
       });
     });
   }
-
-  function checkLogIn() {
+  async function checkLogIn() {
     return new Promise(resolve => {
       socket.on("canIJoin", function(msg) {
         if(msg === 'name already exist in room'){
@@ -70,7 +69,6 @@ $(document).ready(function() {
         }
         resolve(msg);
       });
-      
     });
   }
   loginSucceed();
@@ -292,22 +290,15 @@ $(document).ready(function() {
     $("#secretWord").append("The word was " + secretWord);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
-      let $roundScore = $(
-        "<p style='color:red'>" + "+  " + roundScores[i] + "</p>"
-      );
-      let $playerName = $(
-        "<p style='color:blue; float:left'>" +
-          "        " +
-          names[i] +
-          "                        " +
-          "</p>"
-      );
       let $playerList = $(
-        "<div style ='font-weight: bold; font-size:x-large'>"
+        "<div style ='font-weight: bold;height:40px; font-size:x-large' class='row''> <div style='color:blue;text-align: left' class='col-5''>" +
+          names[i] +
+          "</div><div style='color:red;text-align: left' class='col-5''>" +
+          "+ " +
+          roundScores[i] +
+          "</div></div>"
       );
       $("#roundResults").append($playerList);
-      $playerList.append($playerName);
-      $playerList.append($roundScore);
     }
     setTimeout(() => {
       $(".hover_bkgr_fricc").fadeOut("slow");
@@ -440,8 +431,7 @@ $(document).ready(function() {
     document.getElementById("colorWindow").style.background = color
   }
   colorWindowChanger(colour);
-  document.getElementById("red").onclick = function () {
-
+  document.getElementById("red").onclick = function() {
     colour = "red";
     colorWindowChanger(colour);
   };
@@ -478,7 +468,7 @@ $(document).ready(function() {
     colorWindowChanger(colour);
   };
   //second row
-  document.getElementById("white").onclick = function () {
+  document.getElementById("white").onclick = function() {
     colour = "white";
     colorWindowChanger(colour);
   };
@@ -554,8 +544,8 @@ $(document).ready(function() {
   function draw(line) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
-    let scaleFactorWidth = (canvas.width)/(line.originalWidth);
-    let scaleFactorHeight = (canvas.height)/(line.originalHeight);
+    let scaleFactorWidth = canvas.width / line.originalWidth;
+    let scaleFactorHeight = canvas.height / line.originalHeight;
     ctx.beginPath();
     ctx.moveTo(line.from.x * scaleFactorWidth, line.from.y * scaleFactorHeight);
     ctx.lineTo(line.to.x * scaleFactorWidth, line.to.y * scaleFactorHeight);
