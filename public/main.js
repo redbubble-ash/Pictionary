@@ -443,60 +443,82 @@ $(document).ready(function () {
 
   //this begins colour controls
   let colour = "black";
+  function colorWindowChanger(color){
+    document.getElementById("colorWindow").style.background = color
+  }
+  colorWindowChanger(colour);
   document.getElementById("red").onclick = function () {
     colour = "red";
+    colorWindowChanger(colour);
   };
   document.getElementById("orange").onclick = function () {
     colour = "orange";
+    colorWindowChanger(colour);
   };
   document.getElementById("yellow").onclick = function () {
     colour = "yellow";
+    colorWindowChanger(colour);
   };
   document.getElementById("green").onclick = function () {
     colour = "green";
+    colorWindowChanger(colour);
   };
   document.getElementById("blue").onclick = function () {
     colour = "blue";
+    colorWindowChanger(colour);
   };
   document.getElementById("purple").onclick = function () {
     colour = "rebeccapurple";
+    colorWindowChanger(colour);
   };
   document.getElementById("brown").onclick = function () {
     colour = "sienna";
+    colorWindowChanger(colour);
   };
   document.getElementById("black").onclick = function () {
     colour = "black";
+    colorWindowChanger(colour);
   };
   document.getElementById("dimGray").onclick = function() {
     colour = "dimgray";
+    colorWindowChanger(colour);
   };
   //second row
   document.getElementById("white").onclick = function () {
     colour = "white";
+    colorWindowChanger(colour);
   };
   document.getElementById("pink").onclick = function () {
     colour = "pink";
+    colorWindowChanger(colour);
   };
   document.getElementById("tomato").onclick = function () {
     colour = "tomato";
+    colorWindowChanger(colour);
   };
   document.getElementById("goldenrod").onclick = function () {
     colour = "goldenrod";
+    colorWindowChanger(colour);
   };
   document.getElementById("chartreuse").onclick = function () {
     colour = "chartreuse";
+    colorWindowChanger(colour);
   };
   document.getElementById("skyblue").onclick = function () {
     colour = "skyblue";
+    colorWindowChanger(colour);
   };
   document.getElementById("fuchsia").onclick = function () {
     colour = "fuchsia";
+    colorWindowChanger(colour);
   };
   document.getElementById("tan").onclick = function () {
     colour = "tan";
+    colorWindowChanger(colour);
   };
   document.getElementById("lightGray").onclick = function() {
     colour = "lightgray";
+    colorWindowChanger(colour);
   };
   //size changing
   let lineSize = 2;
@@ -511,6 +533,7 @@ $(document).ready(function () {
   };
   document.getElementById("large").onclick = function () {
     lineSize = 20;
+
   };
   document.getElementById("xLarger").onclick = function () {
     lineSize = 30;
