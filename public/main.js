@@ -1,16 +1,16 @@
 $(document).ready(function() {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
-  //let conversation = ""; delete this?
   let drawer;
   let secretWord;
   let roomName;
   let guessed = false;
   let reason;
-  //let icon; delete this?
   let index1; //These three are for the hint maker
   let index2;
   let index3;
+  let lineSize = 2;
+  let colour = "black";
 
   // Login
   function loginSucceed() {
@@ -64,9 +64,6 @@ $(document).ready(function() {
 
       //update the score board when a new player joined the game
       socket.on("newPlayer", scoreBoardDisplay);
-      //delete this?
-      // $(".user").fadeOut(300);
-      //$('input.guess-input').focus();
     });
   }
 
@@ -426,8 +423,6 @@ $(document).ready(function() {
 
     /* Drawing on Paint App */
     canvas.onmousedown = function(e) {
-      //   ctx.beginPath(); // delete this?
-      //   ctx.moveTo(mouse.x, mouse.y);
       startX = mouse.x;
       startY = mouse.y;
       canvas.addEventListener("mousemove", onPaint, false);
@@ -449,7 +444,6 @@ $(document).ready(function() {
         ctx.lineTo(endX, endY);
         ctx.stroke();
       }
-
       var line = {
         from: {
           x: startX,
@@ -465,22 +459,19 @@ $(document).ready(function() {
       if (drawer) {
         socket.emit("draw", line, canvas.width);
       }
-
       startX = endX;
       startY = endY;
     };
   };
 
   /* Mouse Capturing Work */
-
   socket.on("draw", draw);
 
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
 
   //this begins colour controls
-
-  let colour = "black";
+  
   function colorWindowChanger(color){
     document.getElementById("colorWindow").style.background = color
   }
@@ -525,7 +516,6 @@ $(document).ready(function() {
   };
   //second row
   document.getElementById("white").onclick = function () {
-
     colour = "white";
     colorWindowChanger(colour);
   };
@@ -562,7 +552,6 @@ $(document).ready(function() {
     colorWindowChanger(colour);
   };
   //size changing
-  let lineSize = 2;
   document.getElementById("xSmaller").onclick = function() {
     lineSize = 2;
   };
@@ -610,18 +599,7 @@ $(document).ready(function() {
   function draw(line, originalWidth) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
-    let scaleFactor = 1;
-    if (canvas.width !== originalWidth) {
-      if (originalWidth === 800 && canvas.width === 640) {
-        scaleFactor = 0.8;
-        console.log(
-          `big down to small OW: ${originalWidth}, CW: ${canvas.width}`
-        );
-      } else if (originalWidth === 640 && canvas.width === 800) {
-        scaleFactor = 1.25;
-        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`);
-      }
-    }
+    let scaleFactor = canvas.width/originalWidth;
     ctx.beginPath();
     ctx.moveTo(line.from.x * scaleFactor, line.from.y * scaleFactor);
     ctx.lineTo(line.to.x * scaleFactor, line.to.y * scaleFactor);
@@ -629,11 +607,8 @@ $(document).ready(function() {
     ctx.stroke();
   }
   canvas.onmousedown = function(e) {
-    //   ctx.beginPath(); // delete this?
-    //   ctx.moveTo(mouse.x, mouse.y);
     startX = mouse.x;
     startY = mouse.y;
-
     canvas.addEventListener("mousemove", onPaint, false);
   };
 
