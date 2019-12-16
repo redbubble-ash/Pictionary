@@ -1,16 +1,16 @@
 $(document).ready(function() {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
-  //let conversation = ""; delete this?
   let drawer;
   let secretWord;
   let roomName;
   let guessed = false;
   let reason;
-  //let icon; delete this?
   let index1; //These three are for the hint maker
   let index2;
   let index3;
+  let lineSize = 2;
+  let colour = "black";
 
   // Login
   function loginSucceed() {
@@ -458,8 +458,6 @@ $(document).ready(function() {
 
     /* Drawing on Paint App */
     canvas.onmousedown = function(e) {
-      //   ctx.beginPath(); // delete this?
-      //   ctx.moveTo(mouse.x, mouse.y);
       startX = mouse.x;
       startY = mouse.y;
       canvas.addEventListener("mousemove", onPaint, false);
@@ -481,7 +479,6 @@ $(document).ready(function() {
         ctx.lineTo(endX, endY);
         ctx.stroke();
       }
-
       var line = {
         from: {
           x: startX,
@@ -492,83 +489,105 @@ $(document).ready(function() {
           y: endY
         },
         strokeStyle: colour,
-        lineWidth: lineSize
+        lineWidth: lineSize,
+        originalWidth: canvas.width,
+        originalHeight: canvas.height
       };
       if (drawer) {
         socket.emit("draw", line, canvas.width);
       }
-
       startX = endX;
       startY = endY;
     };
   };
 
   /* Mouse Capturing Work */
-
   socket.on("draw", draw);
 
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
 
   //this begins colour controls
-  let colour = "black";
-  document.getElementById("red").onclick = function() {
+  
+  function colorWindowChanger(color){
+    document.getElementById("colorWindow").style.background = color
+  }
+  colorWindowChanger(colour);
+  document.getElementById("red").onclick = function () {
+
     colour = "red";
+    colorWindowChanger(colour);
   };
   document.getElementById("orange").onclick = function() {
     colour = "orange";
+    colorWindowChanger(colour);
   };
   document.getElementById("yellow").onclick = function() {
     colour = "yellow";
+    colorWindowChanger(colour);
   };
   document.getElementById("green").onclick = function() {
     colour = "green";
+    colorWindowChanger(colour);
   };
   document.getElementById("blue").onclick = function() {
     colour = "blue";
+    colorWindowChanger(colour);
   };
   document.getElementById("purple").onclick = function() {
     colour = "rebeccapurple";
+    colorWindowChanger(colour);
   };
   document.getElementById("brown").onclick = function() {
     colour = "sienna";
+    colorWindowChanger(colour);
   };
   document.getElementById("black").onclick = function() {
     colour = "black";
+    colorWindowChanger(colour);
   };
   document.getElementById("dimGray").onclick = function() {
     colour = "dimgray";
+    colorWindowChanger(colour);
   };
   //second row
-  document.getElementById("white").onclick = function() {
+  document.getElementById("white").onclick = function () {
     colour = "white";
+    colorWindowChanger(colour);
   };
   document.getElementById("pink").onclick = function() {
     colour = "pink";
+    colorWindowChanger(colour);
   };
   document.getElementById("tomato").onclick = function() {
     colour = "tomato";
+    colorWindowChanger(colour);
   };
   document.getElementById("goldenrod").onclick = function() {
     colour = "goldenrod";
+    colorWindowChanger(colour);
   };
   document.getElementById("chartreuse").onclick = function() {
     colour = "chartreuse";
+    colorWindowChanger(colour);
   };
   document.getElementById("skyblue").onclick = function() {
     colour = "skyblue";
+    colorWindowChanger(colour);
   };
   document.getElementById("fuchsia").onclick = function() {
     colour = "fuchsia";
+    colorWindowChanger(colour);
   };
   document.getElementById("tan").onclick = function() {
     colour = "tan";
+    colorWindowChanger(colour);
   };
   document.getElementById("lightGray").onclick = function() {
     colour = "lightgray";
+    colorWindowChanger(colour);
   };
   //size changing
-  let lineSize = 2;
   document.getElementById("xSmaller").onclick = function() {
     lineSize = 2;
   };
@@ -580,6 +599,7 @@ $(document).ready(function() {
   };
   document.getElementById("large").onclick = function() {
     lineSize = 20;
+
   };
   document.getElementById("xLarger").onclick = function() {
     lineSize = 30;
@@ -610,35 +630,22 @@ $(document).ready(function() {
   }
 
   disableDrawing();
-  socket.on("draw", draw, originalWidth);
+  socket.on("draw", draw);
 
-  function draw(line, originalWidth) {
+  function draw(line) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
-    let scaleFactor = 1;
-    if (canvas.width !== originalWidth) {
-      if (originalWidth === 800 && canvas.width === 640) {
-        scaleFactor = 0.8;
-        console.log(
-          `big down to small OW: ${originalWidth}, CW: ${canvas.width}`
-        );
-      } else if (originalWidth === 640 && canvas.width === 800) {
-        scaleFactor = 1.25;
-        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`);
-      }
-    }
+    let scaleFactorWidth = (canvas.width)/(line.originalWidth);
+    let scaleFactorHeight = (canvas.height)/(line.originalHeight);
     ctx.beginPath();
-    ctx.moveTo(line.from.x * scaleFactor, line.from.y * scaleFactor);
-    ctx.lineTo(line.to.x * scaleFactor, line.to.y * scaleFactor);
+    ctx.moveTo(line.from.x * scaleFactorWidth, line.from.y * scaleFactorHeight);
+    ctx.lineTo(line.to.x * scaleFactorWidth, line.to.y * scaleFactorHeight);
     ctx.closePath();
     ctx.stroke();
   }
   canvas.onmousedown = function(e) {
-    //   ctx.beginPath(); // delete this?
-    //   ctx.moveTo(mouse.x, mouse.y);
     startX = mouse.x;
     startY = mouse.y;
-
     canvas.addEventListener("mousemove", onPaint, false);
   };
 

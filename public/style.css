@@ -1,27 +1,18 @@
 * {
-  /* border: 2px solid black; */
   margin: 0px;
   padding: 0px;
   border-radius: 4px;
   border-color: #4a525a;
   box-sizing: content-box;
 }
-
 /* fonts */
 body {
   font-family: "Quicksand", sans-serif;
   font-weight: 300;
 }
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1,h2,h3,h4,h5,h6 {
   font-weight: 500;
 }
-
 html {
   box-sizing: border-box; /* do not change this, this will affect the canvas -RM*/
   -webkit-touch-callout: none; /* stops users from being able to select on iOS Safari */
@@ -62,11 +53,9 @@ body {
   text-align: center;
 }
 body {
-  /* font: 13px Helvetica, Arial; */
   height: 100%;
   background-image: url("/images/bkgBee.png");
   background-size: cover;
-  /* display:block; */
 }
 /* \/used for first popup box\/ */
 .hidden {
@@ -108,11 +97,9 @@ body {
   border-radius: 4px;
   background-color: #f2da73;
 }
-
 .game {
   visibility: hidden;
 }
-
 input[type="text"],
 select {
   width: 100%;
@@ -123,7 +110,6 @@ select {
   border-radius: 4px;
   box-sizing: border-box;
 }
-
 #room {
   font: inherit;
   width: 100%;
@@ -136,27 +122,74 @@ select {
 }
 /*/\used for login popup box/\ */
 /*\/used for canvas & controls\/ */
-/* #sketch {
-  border: 2px solid #4A525A;
-  height: 85%;
-  background-color: white;
-} */
 #drawArea {
   border: 2px solid #4a525a;
   background-color: white;
   max-width: 800;
   max-height: 600;
 }
-
-#settings {
-  background: white;
-  display: inline-flex;
+#colorWindow{
+  width:40px;
+  height: 40px;
+  border: 2px solid #4a525a;
+  display: inline-block;
   text-align: center;
+}
+#miscButtons{
+  height: 40px;
+}
+.sizeDotsButton{
+  width: 40px;
+  height: 40px;
+  background-color: khaki;
+  border: black;
+}
+#sizeDotxs{
+  display: inline-block;
+  width:4px;
+  height:4px;
+  border-radius: 2px;
+  background: black;
+  margin-top: 16px;
+}
+#sizeDots{
+  display: inline-block;
+  width:5px;
+  height:5px;
+  border-radius: 3px;
+  background: black;
+  margin-top: 16px;
+}
+#sizeDotm{
+  display: inline-block;
+  width:10px;
+  height:10px;
+  border-radius: 10px;
+  background: black;
+  margin-top: 14px;
+}
+#sizeDotl{
+  display: inline-block;
+  width:20px;
+  height:20px;
+  border-radius: 20px;
+  background: black;
+  margin-top: 9px;
+}
+#sizeDotxl{
+  display: inline-block;
+  margin-top: 5px;
+  width:30px;
+  height:30px;
+  border-radius: 30px;
+  background: black;
 }
 .colorButtons{
   width: 20px;
   height: 20px;
-  padding: 4px;
+  padding: 0px;
+  margin-bottom: 10px;
+  display: block;
 }
 /*/\used for canvas & controls/\ */
 /*\/used for chat box\/ */
@@ -166,8 +199,6 @@ form input {
   padding-bottom: 10px;
   padding-left: 5%;
   width: 65%;
-  /* margin-right: 0.5%;
-  margin-left:auto;     */
 }
 form button {
   width: 100%;
@@ -175,7 +206,6 @@ form button {
   border: none;
   padding: 10px;
 }
-
 #messageInput {
   border-right: 1px solid #4a525a;
   vertical-align: bottom;
@@ -190,7 +220,6 @@ form button {
   background-color: #f7eada;
   position: relative;
 }
-
 .messages {
   position: absolute;
   overflow-y: auto;
@@ -200,7 +229,6 @@ form button {
   max-height: 500px;
   font-weight: bold;
 }
-
 #chatSend {
   border-bottom: 2px solid black;
   border-top: 2px solid black;
@@ -211,13 +239,6 @@ form button {
 ul {
   vertical-align: bottom;
 }
-
-/* #messages {
-  width: 100%;
-  margin: 0%;
-  padding-top: 5px;
-  padding-bottom: 5px;
-} */
 #messages p:nth-child(odd) {
   background: #eee;
 }
