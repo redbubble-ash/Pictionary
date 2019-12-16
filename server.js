@@ -41,12 +41,12 @@ io.on("connection", function(socket) {
   socket.on("canIJoin", function(userName, roomName){
 
     if(rooms[roomName]!== undefined && rooms[roomName].users.filter(x=>x.userName==userName).length==1){
-      return io.to(socket.id).emit("canIJoin","name already exist in room");
+      return io.to(socket.id).emit("canIJoin","name already exists!");
       
     }
 
     else if (rooms[roomName]!== undefined && rooms[roomName].users.length==5){
-      return io.to(socket.id).emit("canIJoin","room is full");
+      return io.to(socket.id).emit("canIJoin","room is full!");
     }
 
     else  return io.to(socket.id).emit("canIJoin","true");
