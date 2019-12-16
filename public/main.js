@@ -599,7 +599,18 @@ $(document).ready(function() {
   function draw(line, originalWidth) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
-    let scaleFactor = canvas.width/originalWidth;
+    let scaleFactor = 1;
+    if (canvas.width !== originalWidth) {
+      if (originalWidth === 800 && canvas.width === 640) {
+        scaleFactor = 0.8;
+        console.log(
+          `big down to small OW: ${originalWidth}, CW: ${canvas.width}`
+        );
+      } else if (originalWidth === 640 && canvas.width === 800) {
+        scaleFactor = 1.25;
+        console.log(`small up to big OW: ${originalWidth}, CW:${canvas.width}`);
+      }
+    }
     ctx.beginPath();
     ctx.moveTo(line.from.x * scaleFactor, line.from.y * scaleFactor);
     ctx.lineTo(line.to.x * scaleFactor, line.to.y * scaleFactor);
