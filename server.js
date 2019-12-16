@@ -41,26 +41,7 @@ io.on("connection", function(socket) {
   //io.emit('userlist', users); //delete this?
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
   console.log(playerIcon);
-
-  socket.on("canIJoin", function(userName, roomName){
-
-    if(rooms[roomName]!== undefined && rooms[roomName].users.filter(x=>x.userName==userName).length==1){
-      return socket.emit("canIJoin","name already exist in room");
-      
-    }
-
-    else if (rooms[roomName]!== undefined && rooms[roomName].users.length==5){
-      return socket.emit("canIJoin","room is full");
-    }
-
-    else  return socket.emit("canIJoin","true");
-
-  });
-
-
-
   socket.on("join", function(name, room, past) {
-    console.log("EXECUTE JOIN FUNCTION");
     socket.userName = name;
     socket.roundScore = 0;
     socket.totalScore = 0;
@@ -68,7 +49,7 @@ io.on("connection", function(socket) {
     socket.icon = playerIcon;
 
     if (!rooms[room]) {
-      
+      console.log("room exists");
       rooms[room] = {
         roomName: room,
         users: [],
