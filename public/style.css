@@ -217,6 +217,7 @@ form button {
   bottom: 0;
   text-align: left;
   max-height: 500px;
+  font-weight: bold;
 }
 
 #chatSend {
