@@ -27,6 +27,7 @@ $(document).ready(function () {
     });
 
     $(".user").submit(function () {
+      
       event.preventDefault();
       userName = $("#userName")
         .val()
@@ -37,6 +38,57 @@ $(document).ready(function () {
           .val()
           .trim();
       }
+
+      $("#userNameErrorMsg").empty();
+      $("#roomErrorMsg").empty();
+
+
+      if(userName===''){
+        $("#userNameErrorMsg").text("name cannot be empty");
+        return false;
+      }
+
+      socket.emit("canIJoin", userName, roomName);
+      socket.on("canIJoin",function(msg){
+        if(msg=="true"){
+          $("#newUser").html("Log in succeed: " + userName);
+          socket.emit("join", userName, roomName, function (past) {
+            past.forEach(line => draw(line));
+            past.forEach(x => console.log(x));
+          });
+          console.log(userName + " has joined!");
+          $("body").css({
+            "background-image": "url(" + "/images/bkgbees.jpg" + ")",
+            "background-size": "initial",
+            "background-repeat": "repeat"
+          });
+          $(".grey-out").fadeOut(300);
+          $(".game").css("visibility", "visible");
+    
+          //update the score board when a new player joined the game
+          socket.on("newPlayer", scoreBoardDisplay);
+          //delete this?
+          // $(".user").fadeOut(300);
+          //$('input.guess-input').focus();
+
+        }
+
+        else if (msg=="name already exist in room"){
+          console.log(msg);
+          $("#userNameErrorMsg").text("name already exist in room");
+          return false;
+        }
+
+        else if (msg=="room is full"){
+          $("#roomErrorMsg").text("room is full");
+          return false;
+        }
+
+      })
+
+ 
+
+
       // re-enable this?
       // if (userName == "") {
       //     return false
@@ -49,25 +101,7 @@ $(document).ready(function () {
       //     return false
       // };
 
-      $("#newUser").html("Log in succeed: " + userName);
-      socket.emit("join", userName, roomName, function (past) {
-        past.forEach(line => draw(line));
-        past.forEach(x => console.log(x));
-      });
-      console.log(userName + " has joined!");
-      $("body").css({
-        "background-image": "url(" + "/images/bkgbees.jpg" + ")",
-        "background-size": "initial",
-        "background-repeat": "repeat"
-      });
-      $(".grey-out").fadeOut(300);
-      $(".game").css("visibility", "visible");
-
-      //update the score board when a new player joined the game
-      socket.on("newPlayer", scoreBoardDisplay);
-      //delete this?
-      // $(".user").fadeOut(300);
-      //$('input.guess-input').focus();
+     
     });
   }
 
