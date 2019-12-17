@@ -54,12 +54,12 @@ Your app should now be running on http://localhost:3000.
 
 ## Login Page
 
-![image](login.gif)
+![image](./public/images/login.gif)
 
 ## Drawer
 
-![image](drawer.gif)
+![image](./public/images/drawer.gif)
 
 ## Guesser
 
-![image](guesser.gif)
+![image](./public/images/guesser.gif)
