@@ -1,20 +1,24 @@
 $(document).ready(function() {
   let socket = io(); // load socket.io-client. exposes a io global, and then connect? does not specify URL, defaults to trying to connect to the host that serves the page
   let userName;
-  let drawer;
+  let drawer; // current player status true/false
   let secretWord;
   let roomName;
-  let guessed = false;
   let reason;
+  let guessed = false; // prevent double score in one around
   let index1; //These three are for the hint maker
   let index2;
   let index3;
   let lineSize = 2;
   let colour = "black";
 
-  // Login
+  // --------------------------------------- LOGIN START GAME --------------------------------------
+  loginSucceed();
+  socket.on("gameStatus", startGame);
+
+
+
   function loginSucceed() {
-    // $(".game").toggle();
     $(".grey-out").fadeIn(500);
 
     $("#room").on("change", function() {
@@ -76,7 +80,6 @@ $(document).ready(function() {
       });
     });
   }
-
   async function checkLogIn() {
     return new Promise(resolve => {
       socket.on("canIJoin", function(msg) {
@@ -93,8 +96,7 @@ $(document).ready(function() {
     });
   }
 
-  loginSucceed();
-
+  // initialize scoreboard
   const scoreBoardDisplay = function(results) {
     let names = results.userNames;
     let totalScores = results.totalScores;
@@ -157,69 +159,7 @@ $(document).ready(function() {
     }
   };
 
-  // Chat and guess area
-  $("#messagesForm").submit(function() {
-    if (drawer) {
-      reason = "Drawer Gave up!";
-      socket.emit("next round", roomName, reason);
-    }
-
-    let isAMatch = false;
-    let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
-    if (toBeEval.toLowerCase().search(secretWord) >= 0) {
-      // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
-      isAMatch = true;
-    }
-
-    if (!isAMatch) {
-      socket.emit("chat message", {
-        roomName: roomName,
-        userName: userName,
-        msg: $("#messageInput").val()
-      });
-    }
-
-    if (isAMatch && !guessed) {
-      guessed = true;
-      socket.emit("correct answer", {
-        userName: userName,
-        roundScore: 50
-      });
-      isAMatch = false; // resets isAMatch to false
-      //socket.emit("next round");
-    }
-    $("#messageInput").val("");
-    return false;
-  });
-
-  function dashMaker(secretWord) {
-    return secretWord.replace(/[a-zA-Z]/g, "_");
-  }
-
-  let newHint = "";
-  function hintMaker(word, seconds) {
-    let hint = dashMaker(word);
-    //console.log(hint)
-    newHint = hint;
-    if (seconds <= 60) {
-      newHint =
-        hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
-    }
-    if (seconds <= 30) {
-      newHint =
-        newHint.substring(0, index2) +
-        word[index2] +
-        newHint.substring(index2 + 1);
-    }
-    if (seconds <= 10) {
-      newHint =
-        newHint.substring(0, index3) +
-        word[index3] +
-        newHint.substring(index3 + 1);
-    }
-    return newHint;
-  }
-  socket.on("gameStatus", function(status) {
+  function startGame(status) {
     console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu
     drawer = status.drawer;
     roomName = status.roomName;
@@ -257,6 +197,13 @@ $(document).ready(function() {
 
     $("#currentRoom").text("Room: " + roomName);
 
+    ChangeBoardFeature(drawer);
+    
+    startDrawing();
+    countDownTimer;
+  }
+
+  function ChangeBoardFeature(drawer){
     if (drawer) {
       document.getElementById("chatSend").innerHTML = "Give up turn?";
       document.getElementById("messageInput").value =
@@ -277,12 +224,41 @@ $(document).ready(function() {
       }
     }
 
-    startDrawing();
-    countDownTimer;
-  });
+  }
 
+ // ---------------------------------------------- HINT MAKER -----------------------------------------
+ function dashMaker(secretWord) {
+  return secretWord.replace(/[a-zA-Z]/g, "_");
+}
+
+ let newHint = "";
+  function hintMaker(word, seconds) {
+    let hint = dashMaker(word);
+    //console.log(hint)
+    newHint = hint;
+    if (seconds <= 60) {
+      newHint =
+        hint.substring(0, index1) + word[index1] + hint.substring(index1 + 1);
+    }
+    if (seconds <= 30) {
+      newHint =
+        newHint.substring(0, index2) +
+        word[index2] +
+        newHint.substring(index2 + 1);
+    }
+    if (seconds <= 10) {
+      newHint =
+        newHint.substring(0, index3) +
+        word[index3] +
+        newHint.substring(index3 + 1);
+    }
+    return newHint;
+  }
+ 
+
+ // ------------------------------------------------ GAME TIMER --------------------------------------------
+ 
   function gameTimer() {
-    //console.log("end time: " + roundEndTime);
     let now = new Date().getTime();
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
@@ -299,30 +275,82 @@ $(document).ready(function() {
   }
   var countDownTimer = setInterval(gameTimer, 1000);
 
-  socket.on("hello", function(msg) {
+
+  // ------------------------------------------- CHAT AREA --------------------------------------------------
+
+  socket.on("hello", onMessage);
+  socket.on("correct answer", onCorrectAnswer);
+  socket.on("playerChange", onPlayerChange);
+  $("#messagesForm").submit(checkAnswer);
+
+
+  function onMessage(msg){
     $(".messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
 
     $(".messages").scrollTop($(".messages")[0].scrollHeight);
-  });
-  socket.on("correct answer", function(msg) {
+  };
+
+  function onCorrectAnswer(msg) {
     $(".messages").append(
       $("<ul>")
         .text(msg.userName + " has the correct answer!")
         .css("color", "green")
     );
     $(".messages").scrollTop($(".messages")[0].scrollHeight);
-  });
+  };
 
-  socket.on("playerChange", function(name, status) {
+  function onPlayerChange(name, status) {
     $(".messages").append(
       $("<ul>")
         .text(name + " has " + status + " the room.")
         .css("color", "red")
     );
     $(".messages").scrollTop($(".messages")[0].scrollHeight);
-  });
+  }
 
-  socket.on("roundResults", function(results) {
+  function checkAnswer(){
+    if (drawer) {
+      reason = "Drawer Gave up!";
+      socket.emit("next round", roomName, reason);
+    }
+
+    let isAMatch = false;
+    let toBeEval = $("#messageInput").val(); // sets input to a nicer variable
+    if (toBeEval.toLowerCase().search(secretWord) >= 0) {
+      // makes the whole string lowercase and searches for the correct string, search returns index -1 if not found
+      isAMatch = true;
+    }
+
+    if (!isAMatch) {
+      socket.emit("chat message", {
+        roomName: roomName,
+        userName: userName,
+        msg: $("#messageInput").val()
+      });
+    }
+
+    if (isAMatch && !guessed) {
+      guessed = true;
+      socket.emit("correct answer", {
+        userName: userName,
+        roundScore: 50
+      });
+      isAMatch = false; // resets isAMatch to false
+      //socket.emit("next round");
+    }
+    $("#messageInput").val("");
+    return false;
+  }
+
+
+
+
+  // ------------------------------------- SCOREBOARD ROUND RESULTS ----------------------------------------
+
+  //update the score board when guesser left the game
+  socket.on("guesserLeft", scoreBoardDisplay);
+  socket.on("roundResults", onRoundResults);
+  function onRoundResults(results) {
     $("#timer").hide();
     let names = results.userNames;
     let roundScores = results.roundScores;
@@ -410,12 +438,11 @@ $(document).ready(function() {
       $("#roundresults").append($scoreList);
       $("#roundInfo").text("Round " + gameRound);
     }
-  });
+  }
 
-  //update the score board when guesser left the game
-  socket.on("guesserLeft", scoreBoardDisplay);
+  
 
-  // Canvas drawing area
+  // ----------------------------------------------- DRAWING AREA --------------------------------------------
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
 
