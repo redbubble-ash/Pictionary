@@ -198,7 +198,7 @@ form input {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 5%;
-  width: 65%;
+  width: 100%;
 }
 form button {
   width: 100%;
@@ -210,8 +210,6 @@ form button {
   border-right: 1px solid #4a525a;
   vertical-align: bottom;
 }
-
-
 #messageContainer {
   overflow: auto;
   width: 100%;
@@ -238,8 +236,9 @@ form button {
 
 ul {
   vertical-align: bottom;
+  margin: 0px;
 }
-#messages p:nth-child(odd) {
+#messages ul:nth-child(odd) {
   background: #eee;
 }
 /*/\used for chat box/\ */
