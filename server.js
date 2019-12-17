@@ -34,7 +34,19 @@ io.on("connection", function(socket) {
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
   console.log(playerIcon);
 
-  socket.on("canIJoin", function(userName, roomName){
+  socket.on("canIJoin", loginCheck);
+  socket.on("join", initiatePlayer);
+  socket.on("draw", onDraw);
+  socket.on("clearScreen", onClearScreen);
+  socket.on("fillScreen", onFillScreen);
+  socket.on("chat message", sendMessage);
+  socket.on("correct answer", onCorrectAnswer);
+  socket.on("next round", startNextRound);
+  socket.on("disconnect", onDisconnect);
+
+
+
+  function loginCheck(userName, roomName){
 
     if(rooms[roomName]!== undefined && rooms[roomName].users.filter(x=>x.userName==userName).length==1){
       return io.to(socket.id).emit("canIJoin","name already exists!");
@@ -47,11 +59,9 @@ io.on("connection", function(socket) {
 
     else  return io.to(socket.id).emit("canIJoin","true");
 
-  });
+  }
 
-
-
-  socket.on("join", function(name, room, past) {
+  function initiatePlayer(name, room, past) {
     console.log("EXECUTE JOIN FUNCTION");
     socket.userName = name;
     socket.roundScore = 0;
@@ -109,36 +119,33 @@ io.on("connection", function(socket) {
       round: rooms[room].round
     });
     io.to(socket.room).emit("playerChange",socket.userName,"joined");
-  });
+  }
 
-  socket.on("chat message", function(msg) {
-    io.to(msg.roomName).emit("hello", msg);
-  });
-
-  socket.on("correct answer", function(msg) {
-    socket.roundScore = msg.roundScore;
-    //socket.totalScore += msg.roundScore;
-    io.to(socket.room).emit("correct answer", msg);
-  });
-
-  socket.on("next round", startNextRound);
-
-  socket.on("draw", function(line) {
+  function onDraw(line) {
     socket.to(socket.room).broadcast.emit("draw", line);
     //store the drawing history
     rooms[socket.room].history.push(line);
-  });
+  }
 
-  socket.on("clearScreen", function() {
+  function onClearScreen() {
     rooms[socket.room].history = [];
     io.to(socket.room).emit("clearScreen");
-  });
+  }
 
-  socket.on("fillScreen", function(colour) {
+  function onFillScreen(colour) {
     io.emit("fillScreen", colour);
-  });
-  // TODO: trigger next round when drawer left
-  socket.on("disconnect", () => {
+  }
+
+  function sendMessage(msg) {
+    io.to(msg.roomName).emit("hello", msg);
+  }
+
+  function onCorrectAnswer(msg) {
+    socket.roundScore = msg.roundScore;
+    io.to(socket.room).emit("correct answer", msg);
+  }
+
+  function onDisconnect(){
     if (rooms[socket.room].users[0] == socket) {
       if (rooms[socket.room].users.length == 1) {
         delete rooms[socket.room];
@@ -166,7 +173,7 @@ io.on("connection", function(socket) {
     }
 
     io.to(socket.room).emit("playerChange",socket.userName,"left");
-  });
+  }
 });
 
 let generateSecretWord = function(room) {
