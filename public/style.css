@@ -203,7 +203,7 @@ form input {
 form button {
   width: 100%;
   background: rgb(130, 224, 255);
-  border: none;
+  border: 2px solid black;
   padding: 10px;
 }
 #messageInput {
@@ -228,13 +228,6 @@ form button {
   max-height: 600px;
   font-weight: bold;
 }
-#chatSend {
-  border-bottom: 2px solid black;
-  border-top: 2px solid black;
-  border-right: 2px solid black;
-  border-left: 1px solid black;
-}
-
 ul {
   vertical-align: bottom;
   margin: 0px;
