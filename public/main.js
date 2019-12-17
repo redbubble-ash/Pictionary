@@ -282,7 +282,6 @@ $(document).ready(function() {
   });
 
   function gameTimer() {
-    //console.log("end time: " + roundEndTime);
     let now = new Date().getTime();
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
@@ -299,28 +298,42 @@ $(document).ready(function() {
   }
   var countDownTimer = setInterval(gameTimer, 1000);
 
-  socket.on("hello", function(msg) {
+
+  // ------------------------------------------- CHAT AREA --------------------------------------------------
+
+  socket.on("hello", onMessage);
+  socket.on("correct answer", onCorrectAnswer);
+  socket.on("playerChange", onPlayerChange);
+
+
+  function onMessage(msg){
     $(".messages").append($("<ul>").text(msg.userName + ": " + msg.msg));
 
     $(".messages").scrollTop($(".messages")[0].scrollHeight);
-  });
-  socket.on("correct answer", function(msg) {
+  };
+
+
+  function onCorrectAnswer(msg) {
     $(".messages").append(
       $("<ul>")
         .text(msg.userName + " has the correct answer!")
         .css("color", "green")
     );
     $(".messages").scrollTop($(".messages")[0].scrollHeight);
-  });
+  };
 
-  socket.on("playerChange", function(name, status) {
+  function onPlayerChange(name, status) {
     $(".messages").append(
       $("<ul>")
         .text(name + " has " + status + " the room.")
         .css("color", "red")
     );
     $(".messages").scrollTop($(".messages")[0].scrollHeight);
-  });
+  }
+
+
+
+  // ------------------------------------- SCOREBOARD ROUND RESULTS ----------------------------------------
 
   socket.on("roundResults", function(results) {
     $("#timer").hide();
