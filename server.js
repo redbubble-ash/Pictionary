@@ -5,6 +5,7 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = process.env.PORT || 3000;
 
+
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
@@ -66,7 +67,8 @@ io.on("connection", function(socket) {
         secretWord: "",
         roundEndTime: "",
         icon: [],
-        round: 1
+        round: 1,
+        fillScreenColor: "white"
       };
     }
     rooms[room].users.push(socket);
@@ -90,6 +92,7 @@ io.on("connection", function(socket) {
         drawer: false
       });
       past(rooms[room].history);
+      io.emit("fillScreen", rooms[room].fillScreenColor);
     }
     //update the score board when a new player joined the game
     io.to(room).emit("newPlayer", {
@@ -114,6 +117,7 @@ io.on("connection", function(socket) {
 
   function onFillScreen(colour) {
     io.emit("fillScreen", colour);
+    rooms[socket.room].fillScreenColor = colour;
   }
 
   function sendMessage(msg) {
