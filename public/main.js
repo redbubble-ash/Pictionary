@@ -469,81 +469,64 @@ $(document).ready(function() {
   ctx.lineCap = "round";
   //this begins colour controls
   function colorWindowChanger(color){
+    colour = color;
     document.getElementById("colorWindow").style.background = color
   }
   colorWindowChanger(colour);
   document.getElementById("red").onclick = function() {
-    colour = "red";
-    colorWindowChanger(colour);
+    colorWindowChanger("red");
   };
   document.getElementById("orange").onclick = function() {
-    colour = "orange";
-    colorWindowChanger(colour);
+    colorWindowChanger("orange");
   };
   document.getElementById("yellow").onclick = function() {
-    colour = "yellow";
-    colorWindowChanger(colour);
+    colorWindowChanger("yellow");
   };
   document.getElementById("green").onclick = function() {
-    colour = "green";
-    colorWindowChanger(colour);
+    colorWindowChanger("green");
   };
   document.getElementById("blue").onclick = function() {
-    colour = "blue";
-    colorWindowChanger(colour);
+    colorWindowChanger("blue");
   };
   document.getElementById("purple").onclick = function() {
-    colour = "rebeccapurple";
-    colorWindowChanger(colour);
+    colorWindowChanger("rebeccapurple");
   };
   document.getElementById("brown").onclick = function() {
-    colour = "sienna";
-    colorWindowChanger(colour);
+    colorWindowChanger("sienna");
   };
   document.getElementById("black").onclick = function() {
-    colour = "black";
-    colorWindowChanger(colour);
+    colorWindowChanger("black");
   };
   document.getElementById("dimGray").onclick = function() {
-    colour = "dimgray";
-    colorWindowChanger(colour);
+    colorWindowChanger("dimgray");
   };
   //second row
   document.getElementById("white").onclick = function() {
-    colour = "white";
-    colorWindowChanger(colour);
+    colorWindowChanger("white");
   };
   document.getElementById("pink").onclick = function() {
-    colour = "pink";
-    colorWindowChanger(colour);
+    colorWindowChanger("pink");
   };
   document.getElementById("tomato").onclick = function() {
-    colour = "tomato";
-    colorWindowChanger(colour);
+    colorWindowChanger("tomato");
   };
   document.getElementById("goldenrod").onclick = function() {
-    colour = "goldenrod";
-    colorWindowChanger(colour);
+    colorWindowChanger("goldenrod");
   };
   document.getElementById("chartreuse").onclick = function() {
-    colour = "chartreuse";
-    colorWindowChanger(colour);
+    colorWindowChanger("chartreuse");
   };
   document.getElementById("skyblue").onclick = function() {
-    colour = "skyblue";
-    colorWindowChanger(colour);
+    colorWindowChanger("skyblue");
   };
   document.getElementById("fuchsia").onclick = function() {
-    colour = "fuchsia";
-    colorWindowChanger(colour);
+    colorWindowChanger("fuchsia");
   };
   document.getElementById("tan").onclick = function() {
-    colour = "tan";
-    colorWindowChanger(colour);
+    colorWindowChanger("tan");
   };
   document.getElementById("lightGray").onclick = function() {
-    colour = "lightgray";
-    colorWindowChanger(colour);
+    colorWindowChanger("lightgray");
   };
   //size changing
   document.getElementById("xSmaller").onclick = function() {
@@ -567,6 +550,7 @@ $(document).ready(function() {
   };
   function clearScreen() {
     canvas.removeEventListener("mousemove", onPaint, false);
+    fillScreen("white");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
   socket.on("clearScreen", clearScreen);
@@ -576,10 +560,7 @@ $(document).ready(function() {
   };
   socket.on("fillScreen", fillScreen);
   function fillScreen(colour) {
-    ctx.globalCompositeOperation = "destination-over";
-    ctx.fillStyle = colour;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = "source-over";
+    document.getElementById("drawArea").style.backgroundColor = colour;
   }
   disableDrawing();
   socket.on("draw", draw);

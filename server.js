@@ -5,6 +5,7 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = process.env.PORT || 3000;
 
+
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
@@ -18,9 +19,9 @@ const fs = require("fs");
 const iconFiles = fs.readdirSync(iconFolder);
 
 var secretWord = {
-  animal: ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn","orangutan","owl","fox","armadillo","opossum","llama","clownfish","capybara","shrimp"],
-  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp"],
-  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flowers","chair"]
+  animal: ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn","orangutan","owl","fox","armadillo","opossum","llama","clownfish","capybara","shrimp","bird","cat", "dog","cow","chicken","snail", "hippo", "human", "rat", "slug", "bear","ladybug", "frog", "seagull", "bat"],
+  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp","beans", "fruit", "vegetable", "bread", "orange", "beets", "syrup", "cherries", "stew", "jelly", "chips", "chicken", "soda"],
+  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flower","chair","ice","santa", "throne", "ghost","rose", "emerald","spring", "moon","scarf", "cloud", "fall", "cave", "quarter", "music", "crayon", "ocean", "bone", "wind"]
 };
 io.on("connection", function(socket) {
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
@@ -66,7 +67,8 @@ io.on("connection", function(socket) {
         secretWord: "",
         roundEndTime: "",
         icon: [],
-        round: 1
+        round: 1,
+        fillScreenColor: "white"
       };
     }
     rooms[room].users.push(socket);
@@ -90,6 +92,7 @@ io.on("connection", function(socket) {
         drawer: false
       });
       past(rooms[room].history);
+      io.emit("fillScreen", rooms[room].fillScreenColor);
     }
     //update the score board when a new player joined the game
     io.to(room).emit("newPlayer", {
@@ -114,6 +117,7 @@ io.on("connection", function(socket) {
 
   function onFillScreen(colour) {
     io.emit("fillScreen", colour);
+    rooms[socket.room].fillScreenColor = colour;
   }
 
   function sendMessage(msg) {
@@ -126,27 +130,33 @@ io.on("connection", function(socket) {
   }
 
   function onDisconnect(){
-    if (rooms[socket.room].users[0] == socket) {
-      if (rooms[socket.room].users.length == 1) {
-        delete rooms[socket.room];
+
+    if(socket.room != undefined){
+      if (rooms[socket.room].users[0] == socket) {
+        if (rooms[socket.room].users.length == 1) {
+          delete rooms[socket.room];
+        } else {
+          rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
+          startNextRound(socket.room, "Drawer Left!");
+        }
       } else {
-        rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
-        startNextRound(socket.room, "Drawer Left!");
+        rooms[socket.room].users.splice(
+          rooms[socket.room].users.indexOf(socket),
+          1
+        );
+        //update the score board when guesser left the game
+        io.to(socket.room).emit("guesserLeft", {
+          userNames: rooms[socket.room].users.map(x => x.userName),
+          totalScores: rooms[socket.room].users.map(x => x.totalScore),
+          icons: rooms[socket.room].users.map(x => x.icon),
+          round: rooms[socket.room].round
+        });
       }
-    } else {
-      rooms[socket.room].users.splice(
-        rooms[socket.room].users.indexOf(socket),
-        1
-      );
-      //update the score board when guesser left the game
-      io.to(socket.room).emit("guesserLeft", {
-        userNames: rooms[socket.room].users.map(x => x.userName),
-        totalScores: rooms[socket.room].users.map(x => x.totalScore),
-        icons: rooms[socket.room].users.map(x => x.icon),
-        round: rooms[socket.room].round
-      });
+      io.to(socket.room).emit("playerChange",socket.userName,"left");
+
     }
-    io.to(socket.room).emit("playerChange",socket.userName,"left");
+
+   
   }
 });
 let generateSecretWord = function(room) {
