@@ -126,27 +126,33 @@ io.on("connection", function(socket) {
   }
 
   function onDisconnect(){
-    if (rooms[socket.room].users[0] == socket) {
-      if (rooms[socket.room].users.length == 1) {
-        delete rooms[socket.room];
+
+    if(socket.room != undefined){
+      if (rooms[socket.room].users[0] == socket) {
+        if (rooms[socket.room].users.length == 1) {
+          delete rooms[socket.room];
+        } else {
+          rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
+          startNextRound(socket.room, "Drawer Left!");
+        }
       } else {
-        rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
-        startNextRound(socket.room, "Drawer Left!");
+        rooms[socket.room].users.splice(
+          rooms[socket.room].users.indexOf(socket),
+          1
+        );
+        //update the score board when guesser left the game
+        io.to(socket.room).emit("guesserLeft", {
+          userNames: rooms[socket.room].users.map(x => x.userName),
+          totalScores: rooms[socket.room].users.map(x => x.totalScore),
+          icons: rooms[socket.room].users.map(x => x.icon),
+          round: rooms[socket.room].round
+        });
       }
-    } else {
-      rooms[socket.room].users.splice(
-        rooms[socket.room].users.indexOf(socket),
-        1
-      );
-      //update the score board when guesser left the game
-      io.to(socket.room).emit("guesserLeft", {
-        userNames: rooms[socket.room].users.map(x => x.userName),
-        totalScores: rooms[socket.room].users.map(x => x.totalScore),
-        icons: rooms[socket.room].users.map(x => x.icon),
-        round: rooms[socket.room].round
-      });
+      io.to(socket.room).emit("playerChange",socket.userName,"left");
+
     }
-    io.to(socket.room).emit("playerChange",socket.userName,"left");
+
+   
   }
 });
 let generateSecretWord = function(room) {
