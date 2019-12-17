@@ -5,7 +5,6 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = process.env.PORT || 3000;
 
-let main = "./public/main.js";
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
@@ -15,8 +14,6 @@ server.listen(port, () => {
 app.use(express.static(path.join(__dirname, "public")));
 
 var rooms = {};
-var users = [];
-var canvas = [];
 var history = [];
 var roundStartTime;
 var roundTime = 95000; //make timer 95,000 before release
@@ -34,7 +31,6 @@ var secretWord = {
 };
 
 io.on("connection", function(socket) {
-  //io.emit('userlist', users); //delete this?
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
   console.log(playerIcon);
 
