@@ -66,11 +66,11 @@ $(document).ready(function() {
   async function checkLogIn() {
     return new Promise(resolve => {
       socket.on("canIJoin", function(msg) {
-        if(msg === 'name already exist in room'){
-          $("#userNameErrorMsg").text("name already exist in room");
+        if(msg === 'name already exists!'){
+          $("#userNameErrorMsg").text(msg);
         }
-        else if (msg=="room is full"){
-          $("#roomErrorMsg").text("room is full");
+        else if (msg=="room is full!"){
+          $("#roomErrorMsg").text(msg);
         }
         resolve(msg);
       });
