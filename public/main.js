@@ -566,6 +566,7 @@ $(document).ready(function() {
     socket.emit("clearScreen");
   };
   function clearScreen() {
+    canvas.removeEventListener("mousemove", onPaint, false);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
   socket.on("clearScreen", clearScreen);
