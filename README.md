@@ -18,7 +18,7 @@ To start a game, simply login by providing a user name and selecting one of the 
 
 ## Features
 
-![image](features.PNG)
+![image](./public/images/features.PNG)
 
 ## Technologies
 
@@ -29,7 +29,7 @@ To start a game, simply login by providing a user name and selecting one of the 
 * Canvas
 * MySQL
 * Express.js
-* socket.io
+* Socket.io
 * Path.js
 * Nodemon.js
 * Heroku
