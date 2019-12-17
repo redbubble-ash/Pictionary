@@ -217,6 +217,7 @@ form button {
   border: 2px solid #4a525a;
   background-color: #f7eada;
   position: relative;
+  height: 600px;
 }
 .messages {
   position: absolute;
@@ -287,4 +288,5 @@ ul {
 #scoreHolder {
   border: 2px solid black;
   background-color: #f7eada;
+  height: 600px;
 }
