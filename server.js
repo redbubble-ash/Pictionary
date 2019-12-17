@@ -18,9 +18,9 @@ const fs = require("fs");
 const iconFiles = fs.readdirSync(iconFolder);
 
 var secretWord = {
-  animal: ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn","orangutan","owl","fox","armadillo","opossum","llama","clownfish","capybara","shrimp"],
-  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp"],
-  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flowers","chair"]
+  animal: ["shark","kangaroo","zebra","peacock","camel","turtle","elephant","unicorn","orangutan","owl","fox","armadillo","opossum","llama","clownfish","capybara","shrimp","bird","cat", "dog","cow","chicken","snail", "hippo", "human", "rat", "slug", "bear","ladybug", "frog", "seagull", "bat"],
+  food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp","beans", "fruit", "vegetable", "bread", "orange", "beets", "syrup", "cherries", "stew", "jelly", "chips", "chicken", "soda"],
+  random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flower","chair","ice","santa", "throne", "ghost","rose", "emerald","spring", "moon","scarf", "cloud", "fall", "cave", "quarter", "music", "crayon", "ocean", "bone", "wind"]
 };
 io.on("connection", function(socket) {
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
