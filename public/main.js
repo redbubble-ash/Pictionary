@@ -550,6 +550,7 @@ $(document).ready(function() {
   };
   function clearScreen() {
     canvas.removeEventListener("mousemove", onPaint, false);
+    fillScreen("white");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
   socket.on("clearScreen", clearScreen);
@@ -559,10 +560,7 @@ $(document).ready(function() {
   };
   socket.on("fillScreen", fillScreen);
   function fillScreen(colour) {
-    ctx.globalCompositeOperation = "destination-over";
-    ctx.fillStyle = colour;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = "source-over";
+    document.getElementById("drawArea").style.backgroundColor = colour;
   }
   disableDrawing();
   socket.on("draw", draw);
