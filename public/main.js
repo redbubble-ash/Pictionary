@@ -94,6 +94,7 @@ $(document).ready(function() {
   }
 
   loginSucceed();
+  socket.on("gameStatus", startGame);
 
   const scoreBoardDisplay = function(results) {
     let names = results.userNames;
@@ -219,7 +220,11 @@ $(document).ready(function() {
     }
     return newHint;
   }
-  socket.on("gameStatus", function(status) {
+
+  
+
+
+  function startGame(status) {
     console.log(userName + " has joined " + status.roomName); // check if correct room is logged in with dropdown menu
     drawer = status.drawer;
     roomName = status.roomName;
@@ -257,6 +262,15 @@ $(document).ready(function() {
 
     $("#currentRoom").text("Room: " + roomName);
 
+    ChangeBoardFeature(drawer);
+    
+    startDrawing();
+    countDownTimer;
+  }
+  
+
+
+  function ChangeBoardFeature(drawer){
     if (drawer) {
       document.getElementById("chatSend").innerHTML = "Give up turn?";
       document.getElementById("messageInput").value =
@@ -277,10 +291,13 @@ $(document).ready(function() {
       }
     }
 
-    startDrawing();
-    countDownTimer;
-  });
+  }
 
+ 
+ 
+ 
+ // ------------------------------------------------ GAME TIMER --------------------------------------------
+ 
   function gameTimer() {
     let now = new Date().getTime();
     let distance = roundEndTime - now;
@@ -335,7 +352,10 @@ $(document).ready(function() {
 
   // ------------------------------------- SCOREBOARD ROUND RESULTS ----------------------------------------
 
-  socket.on("roundResults", function(results) {
+  //update the score board when guesser left the game
+  socket.on("guesserLeft", scoreBoardDisplay);
+  socket.on("roundResults", onRoundResults);
+  function onRoundResults(results) {
     $("#timer").hide();
     let names = results.userNames;
     let roundScores = results.roundScores;
@@ -423,12 +443,11 @@ $(document).ready(function() {
       $("#roundresults").append($scoreList);
       $("#roundInfo").text("Round " + gameRound);
     }
-  });
+  }
 
-  //update the score board when guesser left the game
-  socket.on("guesserLeft", scoreBoardDisplay);
+  
 
-  // Canvas drawing area
+  // ----------------------------------------------- DRAWING AREA --------------------------------------------
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
 
