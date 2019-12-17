@@ -5,7 +5,6 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = process.env.PORT || 3000;
 
-
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
@@ -36,8 +35,6 @@ io.on("connection", function(socket) {
   socket.on("correct answer", onCorrectAnswer);
   socket.on("next round", startNextRound);
   socket.on("disconnect", onDisconnect);
-
-
 
   function loginCheck(userName, roomName){
 

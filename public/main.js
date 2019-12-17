@@ -13,6 +13,7 @@ $(document).ready(function() {
   let colour = "black";
 
   // --------------------------------------- LOGIN START GAME --------------------------------------
+  
   loginSucceed();
   socket.on("gameStatus", startGame);
 
@@ -226,7 +227,6 @@ $(document).ready(function() {
     return newHint;
   }
  
-
  // ------------------------------------------------ GAME TIMER --------------------------------------------
  
   function gameTimer() {
@@ -243,7 +243,6 @@ $(document).ready(function() {
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
-
 
   // ------------------------------------------- CHAT AREA --------------------------------------------------
 
@@ -310,9 +309,6 @@ $(document).ready(function() {
     $("#messageInput").val("");
     return false;
   }
-
-
-
 
   // ------------------------------------- SCOREBOARD ROUND RESULTS ----------------------------------------
 
