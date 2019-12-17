@@ -5,20 +5,13 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server); // initialize a new instance of socket.io by passing the http server object
 var port = process.env.PORT || 3000;
 
-
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
-
 // Routing, serve html
 app.use(express.static(path.join(__dirname, "public")));
-
 var rooms = {};
-var history = [];
-var roundStartTime;
 var roundTime = 95000; //make timer 95,000 before release
-let roundEndTime;
-
 //Generate a random Icon images to the player
 const iconFolder = "./public/images/icon";
 const fs = require("fs");
@@ -29,7 +22,6 @@ var secretWord = {
   food: ["apple", "banana", "strawberry", "lollipop", "pumpkin", "pizza", "dumplings", "sushi", "salad", "lasagna","cheesecake", "muffin","croissant", "pineapple","shrimp"],
   random: ["rainbow", "toothpaste", "mermaid", "computer", "microsoft", "table", "oklahoma", "egypt", "fireplace", "xbox", "batman", "money","television","flowers","chair"]
 };
-
 io.on("connection", function(socket) {
   let playerIcon = iconFiles[Math.floor(Math.random() * iconFiles.length)];
   console.log(playerIcon);
@@ -43,8 +35,6 @@ io.on("connection", function(socket) {
   socket.on("correct answer", onCorrectAnswer);
   socket.on("next round", startNextRound);
   socket.on("disconnect", onDisconnect);
-
-
 
   function loginCheck(userName, roomName){
 
@@ -68,9 +58,7 @@ io.on("connection", function(socket) {
     socket.totalScore = 0;
     socket.room = room;
     socket.icon = playerIcon;
-
     if (!rooms[room]) {
-      
       rooms[room] = {
         roomName: room,
         users: [],
@@ -83,14 +71,9 @@ io.on("connection", function(socket) {
     }
     rooms[room].users.push(socket);
     socket.join(room);
-
     if (rooms[room].users.length == 1) {
       rooms[room].roundEndTime = new Date().getTime() + 90000;
       rooms[room].secretWord = generateSecretWord(room);
-
-      console.log(rooms[room].secretWord);
-      console.log("round end time" + rooms[room].roundEndTime);
-
       io.to(socket.id).emit("gameStatus", {
         roomName: rooms[room].roomName,
         secretWord: rooms[room].secretWord,
@@ -107,10 +90,7 @@ io.on("connection", function(socket) {
         drawer: false
       });
       past(rooms[room].history);
-
-      // io.to(socket.id).emit('timeRemaining', remainingTime); // delete this?
     }
-
     //update the score board when a new player joined the game
     io.to(room).emit("newPlayer", {
       userNames: rooms[room].users.map(x => x.userName),
@@ -150,12 +130,9 @@ io.on("connection", function(socket) {
       if (rooms[socket.room].users.length == 1) {
         delete rooms[socket.room];
       } else {
-        //rooms[socket.room].users.pop();
         rooms[socket.room].users.shift(); //remove the drawer (the first element) before start the next turn
         startNextRound(socket.room, "Drawer Left!");
       }
-      console.log("drawer disconnected");
-      // console.log(users.length);
     } else {
       rooms[socket.room].users.splice(
         rooms[socket.room].users.indexOf(socket),
@@ -168,21 +145,16 @@ io.on("connection", function(socket) {
         icons: rooms[socket.room].users.map(x => x.icon),
         round: rooms[socket.room].round
       });
-      console.log("guesser disconnected");
-      // console.log(users.length);
     }
-
     io.to(socket.room).emit("playerChange",socket.userName,"left");
   }
 });
-
 let generateSecretWord = function(room) {
   let words;
   if (room == "animal" || room == "food") words = secretWord[room];
   else words = secretWord.random;
   return words[Math.floor(Math.random() * words.length)];
 };
-
 let startNextRound = function(roomName, reason) {
   for (let i = 0; i < rooms[roomName].users.length; i++) {
     rooms[roomName].users[i].totalScore += rooms[roomName].users[i].roundScore;
@@ -191,19 +163,10 @@ let startNextRound = function(roomName, reason) {
     rooms[roomName].history = [];
     rooms[roomName].round++;
   }
-
   io.to(roomName).emit("clearScreen");
   rooms[roomName].users.push(rooms[roomName].users.shift());
-  // curTurnIdx = (curTurnIdx+1)%users.length;
-  console.log(
-    "next round: " + rooms[roomName].users[0].userName + " is now the drawer"
-  );
-
   rooms[roomName].secretWord = generateSecretWord(roomName);
   rooms[roomName].roundEndTime = new Date().getTime() + roundTime;
-
-  console.log("round end time" + rooms[roomName].roundEndTime);
-
   io.to(roomName).emit("roundResults", {
     userNames: rooms[roomName].users.map(x => x.userName),
     roundScores: rooms[roomName].users.map(x => x.roundScore),

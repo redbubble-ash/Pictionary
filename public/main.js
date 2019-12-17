@@ -13,14 +13,12 @@ $(document).ready(function() {
   let colour = "black";
 
   // --------------------------------------- LOGIN START GAME --------------------------------------
+  
   loginSucceed();
   socket.on("gameStatus", startGame);
 
-
-
   function loginSucceed() {
     $(".grey-out").fadeIn(500);
-
     $("#room").on("change", function() {
       if (this.value === "custom") {
         $("#roomName").css("visibility", "visible");
@@ -28,7 +26,6 @@ $(document).ready(function() {
         $("#roomName").css("visibility", "hidden");
       }
     });
-
     $(".user").submit(function() {
       event.preventDefault();
       userName = $("#userName")
@@ -40,29 +37,19 @@ $(document).ready(function() {
           .val()
           .trim();
       }
-
-      console.log("ROOM INFO: Name: " + userName + ", Room: " + roomName);
-
       $("#userNameErrorMsg").empty();
       $("#roomErrorMsg").empty();
-
       if (userName === "") {
         $("#userNameErrorMsg").text("name cannot be empty");
         return;
       }
-
       socket.emit("canIJoin", userName, roomName);
-      console.log("SOCKET EMITTED");
-
       checkLogIn().then(function(value) {
-        console.log(value);
-        if (value == "true") {
+        if (value=='true') {
           $("#newUser").html("Log in succeed: " + userName);
           socket.emit("join", userName, roomName, function(past) {
             past.forEach(line => draw(line));
-            past.forEach(x => console.log(x));
           });
-          console.log(userName + " has joined!");
           $("body").css({
             "background-image": "url(" + "/images/bkgbees.jpg" + ")",
             "background-size": "initial",
@@ -70,12 +57,8 @@ $(document).ready(function() {
           });
           $(".grey-out").fadeOut(300);
           $(".game").css("visibility", "visible");
-
           //update the score board when a new player joined the game
           socket.on("newPlayer", scoreBoardDisplay);
-          //delete this?
-          // $(".user").fadeOut(300);
-          //$('input.guess-input').focus();
         }
       });
     });
@@ -83,14 +66,12 @@ $(document).ready(function() {
   async function checkLogIn() {
     return new Promise(resolve => {
       socket.on("canIJoin", function(msg) {
-        if (msg === "name already exists!") {
-          $("#userNameErrorMsg").text(msg);
-        } else if (msg == "room is full!") {
-          $("#roomErrorMsg").text(msg);
+        if(msg === 'name already exist in room'){
+          $("#userNameErrorMsg").text("name already exist in room");
         }
-
-        console.log("CHECKED LOGGIN");
-
+        else if (msg=="room is full"){
+          $("#roomErrorMsg").text("room is full");
+        }
         resolve(msg);
       });
     });
@@ -102,18 +83,15 @@ $(document).ready(function() {
     let totalScores = results.totalScores;
     let playerIcons = results.icons;
     let gameRound = results.round;
-
     $("#roundResults").empty();
     $("#timesUp").empty();
     $("#roundresults").empty();
-
     //update the score board
     let scores = [];
     for (let i = 0; i < names.length; i++) {
       scores.push(totalScores[i]);
       scores = scores.sort((a, b) => b - a);
     }
-
     for (let i = 0; i < names.length; i++) {
       function findScore(score) {
         return score === totalScores[i];
@@ -170,13 +148,9 @@ $(document).ready(function() {
     index1 = Math.floor(Math.random() * secretWord.length); // these make a new index each round for the hinter
     index2 = noMatch12();
     index3 = noMatch123();
-
-    console.log(`here are those indexes:${index1},${index2},${index3}`);
-    function noMatch12() {
-      // the noMatch functions ensure unique letters for 5-letter words and above
+    function noMatch12() { // the noMatch functions ensure unique letters for 5-letter words and above
       temp = Math.floor(Math.random() * secretWord.length);
-      if (secretWord.length === 4) {
-        //causes only two unique letters for four letter words
+      if (secretWord.length === 4) {//causes only two unique letters for four letter words
         temp = index1;
       } else if (temp === index1) {
         noMatch12();
@@ -185,8 +159,7 @@ $(document).ready(function() {
     }
     function noMatch123() {
       temp = Math.floor(Math.random() * secretWord.length);
-      if (secretWord.length === 3) {
-        // only reveals one letter for three letter words
+      if (secretWord.length === 3) {// only reveals one letter for three letter words
         temp = index1;
         index2 = index1;
       } else if (temp === index1 || temp === index2) {
@@ -194,7 +167,6 @@ $(document).ready(function() {
       }
       return temp;
     }
-
     $("#currentRoom").text("Room: " + roomName);
 
     ChangeBoardFeature(drawer);
@@ -255,26 +227,22 @@ $(document).ready(function() {
     return newHint;
   }
  
-
  // ------------------------------------------------ GAME TIMER --------------------------------------------
  
   function gameTimer() {
     let now = new Date().getTime();
     let distance = roundEndTime - now;
     let seconds = Math.floor(distance / 1000);
-
     document.getElementById("secretword").innerHTML = drawer
       ? secretWord
       : hintMaker(secretWord, seconds);
     $("#timer").html(seconds + " Seconds");
-
     if (distance <= 0 && drawer) {
       reason = "Time's up!";
       socket.emit("next round", roomName, reason);
     }
   }
   var countDownTimer = setInterval(gameTimer, 1000);
-
 
   // ------------------------------------------- CHAT AREA --------------------------------------------------
 
@@ -342,9 +310,6 @@ $(document).ready(function() {
     return false;
   }
 
-
-
-
   // ------------------------------------- SCOREBOARD ROUND RESULTS ----------------------------------------
 
   //update the score board when guesser left the game
@@ -358,16 +323,13 @@ $(document).ready(function() {
     let reasonNextRound = results.reason;
     let playerIcons = results.icons;
     let gameRound = results.round;
-
     $("#roundResults").empty();
     $("#secretWord").empty();
     $("#timesUp").empty();
     $("#roundresults").empty();
-
     //Popup window
     $(".hover_bkgr_fricc").show();
     $("#secretWord").append("The word was " + secretWord);
-    console.log("REASON IS " + reasonNextRound);
     $("#timesUp").append(reasonNextRound);
     for (let i = 0; i < names.length; i++) {
       let $playerList = $(
@@ -383,18 +345,15 @@ $(document).ready(function() {
     setTimeout(() => {
       $(".hover_bkgr_fricc").fadeOut("slow");
     }, 5000);
-
     setTimeout(() => {
       $("#timer").show();
     }, 5000);
-
     //update the score board
     let scores = [];
     for (let i = 0; i < names.length; i++) {
       scores.push(totalScores[i]);
       scores = scores.sort((a, b) => b - a);
     }
-
     for (let i = 0; i < names.length; i++) {
       function findScore(score) {
         return score === totalScores[i];
@@ -440,53 +399,40 @@ $(document).ready(function() {
     }
   }
 
-  
-
   // ----------------------------------------------- DRAWING AREA --------------------------------------------
   let canvas = document.getElementById("drawArea");
   let ctx = canvas.getContext("2d");
-
-  console.log(window.innerWidth);
   if (window.innerWidth >= 1300) {
-    console.log("Hey I am large");
     canvas.width = 800;
     canvas.height = 600;
   } else {
-    console.log("Hey I am medium");
     canvas.width = 640;
     canvas.height = 480;
   }
-
   let startX, startY, endX, endY;
-
   let mouse = {
     x: 0,
     y: 0
   };
-
   var startDrawing = function() {
-    console.log("draw on canvas");
     canvas.onmousemove = function(e) {
       mouse.x = e.pageX - $(this).offset().left;
       mouse.y = e.pageY - $(this).offset().top;
       endX = mouse.x;
       endY = mouse.y;
     };
-
     /* Drawing on Paint App */
     canvas.onmousedown = function(e) {
       startX = mouse.x;
       startY = mouse.y;
       canvas.addEventListener("mousemove", onPaint, false);
     };
-
     canvas.onmouseup = function() {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
     canvas.onmouseout = function() {
       canvas.removeEventListener("mousemove", onPaint, false);
     };
-
     var onPaint = function() {
       if (drawer) {
         ctx.strokeStyle = colour;
@@ -517,17 +463,13 @@ $(document).ready(function() {
       startY = endY;
     };
   };
-
   /* Mouse Capturing Work */
   socket.on("draw", draw);
-
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
-
   //this begins colour controls
-
-  function colorWindowChanger(color) {
-    document.getElementById("colorWindow").style.background = color;
+  function colorWindowChanger(color){
+    document.getElementById("colorWindow").style.background = color
   }
   colorWindowChanger(colour);
   document.getElementById("red").onclick = function() {
@@ -619,34 +561,27 @@ $(document).ready(function() {
   document.getElementById("xLarger").onclick = function() {
     lineSize = 30;
   };
-
   // canvas clear functions
   document.getElementById("clear").onclick = function() {
-    socket.emit("clearScreen", console.log("clear screen was sent"));
+    socket.emit("clearScreen");
   };
-
   function clearScreen() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("This screen was cleared");
   }
   socket.on("clearScreen", clearScreen);
-
   // canvas fill function
   document.getElementById("fill").onclick = function() {
     socket.emit("fillScreen", colour);
   };
   socket.on("fillScreen", fillScreen);
-
   function fillScreen(colour) {
     ctx.globalCompositeOperation = "destination-over";
     ctx.fillStyle = colour;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = "source-over";
   }
-
   disableDrawing();
   socket.on("draw", draw);
-
   function draw(line) {
     ctx.strokeStyle = line.strokeStyle;
     ctx.lineWidth = line.lineWidth;
@@ -663,11 +598,9 @@ $(document).ready(function() {
     startY = mouse.y;
     canvas.addEventListener("mousemove", onPaint, false);
   };
-
   canvas.onmouseup = function() {
     canvas.removeEventListener("mousemove", onPaint, false);
   };
-
   var onPaint = function() {
     ctx.strokeStyle = colour; //allows color to change
     ctx.lineWidth = lineSize; // allows size to change
@@ -675,7 +608,6 @@ $(document).ready(function() {
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
     ctx.stroke();
-
     var line = {
       from: {
         x: startX,
@@ -692,7 +624,6 @@ $(document).ready(function() {
     startX = endX;
     startY = endY;
   };
-
   // disable buttons when it's not user's turn to draw
   function disableDrawing() {
     var buttons = document.getElementsByClassName("painting");
