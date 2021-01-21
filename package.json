@@ -22,6 +22,6 @@
     "nodemon": "^2.0.1",
     "path": "^0.12.7",
     "sequelize": "^5.21.2",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   }
 }
